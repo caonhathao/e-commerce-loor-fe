@@ -1,0 +1,126 @@
+.sign-in-container {
+    width: 100vw;
+    min-height: 100vh;
+    background: #fff;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    align-items: center;
+}
+
+.sign-in-container .header {
+    background: orange;
+    width: inherit;
+    max-height: calc(100px - 40px);
+    max-width: calc(100vw - 40px);
+    color: white;
+    font-weight: bold;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: row;
+}
+
+.sign-in-container .header .header-banner {
+    font-size: 3.2em;
+}
+
+.sign-in-container .header .header-toolbar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.sign-in-container .footer {
+    background: var(--bg-color-btn);
+    width: inherit;
+    height: 100px;
+}
+
+.sign-in-container .sign-in-content {
+    border-radius: 10px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+    padding: 10px;
+    display: flex;
+    min-width: 800px;
+    min-height: 400px;
+    justify-content: center;
+    align-items: center;
+}
+
+.sign-in-container .sign-in-content .sign-in-banner {
+    color: #ffffff;
+    background: rgb(255, 168, 0);
+    padding: 16px;
+    border-radius: 10px;
+    width: 400px;
+    min-height: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 26px;
+}
+
+.sign-in-container .sign-in-content .sign-in-form {
+    width: 400px;
+    min-height: 400px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.sign-in-container .sign-in-content .sign-in-form .form-css .option-btns {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+}
+
+.feature-btn {
+    background-color: var(--bg-color-btn);
+    padding: 13px 15px !important;
+    border: none;
+    margin: 10px;
+    color: var(--text-color);
+}
+
+.feature-btn:hover {
+    outline: none;
+    border: none;
+    padding: 13px 15px !important;
+    cursor: pointer;
+}
+
+.feature-btn:focus {
+    outline: none;
+}
+
+/*format tag*/
+
+.fieldset-css {
+    margin-top: 10px;
+    border-radius: 5px;
+    border: thin solid gray;
+    padding: 0;
+}
+
+.input-css {
+    border: none;
+    background: transparent;
+    padding: 0 3px;
+    width: calc(100% - 8px);
+    height: 40px;
+    border-radius: 5px;
+}
+
+.input-css:focus {
+    outline: 3px solid var(--bg-color-btn);
+}
+
+.legend-css {
+    color: var(--bg-color-btn);
+    font-size: 14px;
+    font-weight: bold;
+}

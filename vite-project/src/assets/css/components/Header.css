@@ -1,0 +1,83 @@
+.header-container {
+    width: 100vw;
+    min-height: 200px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.header-container .header-content {
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: column;
+}
+
+.header-container .header-content .header-content-banner img {
+    width: calc(100vw - 20px);
+}
+
+.header-container .header-content .header-content-navbar {
+    width: 70%;
+}
+
+.header-content-navbar ul.header-navbar {
+    list-style: none;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 0;
+}
+
+.header-content .header-content-search {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: row;
+    width: 60%;
+}
+
+.header-content-search .search-logo {
+    width: 15%;
+}
+
+.header-content-search .search-logo img {
+    width: 100%;
+    height: 100px;
+    object-fit: cover;
+}
+
+.header-content-search .search-input {
+    width: 55%;
+}
+
+.header-content-search .search-ads {
+    width: 15%;
+}
+
+.header-content-search .search-ads img {
+    width: 100%;
+    height: 100px;
+    object-fit: cover;
+}
+
+.header-content-search .search-input .form-css {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.header-content-search .search-input .form-css .fieldset-css {
+    margin: 0;
+    width: 100%;
+}
+
+.header-content-search .search-input .form-css .feature-btn {
+    padding: 0;
+    transition: padding 0.5s ease-in;
+}
+
+.header-content-search .search-input .form-css .feature-btn:hover {
+    padding: 13px 15px;
+}

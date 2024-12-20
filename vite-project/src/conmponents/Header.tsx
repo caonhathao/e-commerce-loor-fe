@@ -15,7 +15,7 @@ const Header = () => {
                     <ul className={'header-navbar'}>
                         <li><Link to={'/feedback'}>FEEDBACK</Link></li>
                         <li><Link to={'/app'}>SAVE MORE ON APP</Link></li>
-                        <li><Link to={'/saler'}>SELL ON LOLI</Link></li>
+                        <li><Link to={'/sell-on-loli'}>SELL ON LOLI</Link></li>
                         <li><Link to={'/customer-care'}>CUSTOMER CARE</Link></li>
                         <li><Link to={'/track-my-order'}>TRACK MY ORDER</Link></li>
                         <li><Link to={'/account'}>ACCOUNT</Link></li>
@@ -24,7 +24,7 @@ const Header = () => {
                 </div>
                 <div className={'header-content-search'}>
                     <div className={'search-logo'}>
-                        <Link to={'/home'}>
+                        <Link to={'/'}>
                             <img src={logo} alt="logo"/>
                         </Link>
                     </div>

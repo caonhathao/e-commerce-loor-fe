@@ -4,7 +4,7 @@ import axios from "axios";
 import * as Yup from "yup";
 import {Tooltip} from "@mui/material";
 import Typewriter from "typewriter-effect";
-import {Link, useNavigate} from "react-router-dom";
+import {Link, Router, useNavigate} from "react-router-dom";
 import '../../assets/css/pages/customer/SignUp.css'
 import {ToastContainer, toast} from "react-toastify";
 
@@ -22,12 +22,18 @@ const VendorSignIn = () => {
         onSubmit: async (values) => {
             try {
                 const url = import.meta.env.VITE_API_HOST + import.meta.env.VITE_SERVER_PORT + import.meta.env.VITE_API_BRAND_LOGIN;
+
+                /*return: response will have a jwt string*/
+
+                // we need to convert jwt and find the role
                 const response = await axios.post(url, values);
                 if (response) {
-                    sessionStorage.setItem("currRole", 'ROLE_VENDOR');
-                    console.log(response.data);
-                    toast.success('Sign in successfully.');
-                    navigate('/vendor-manage');
+                    sessionStorage.setItem("userToken", response.data);
+                    toast.success('Sign in successfully.', {autoClose: 2000});
+                    setTimeout(() => {
+                        navigate('/vendor');
+                        window.location.reload();
+                    }, 2500);
                 } else toast.warning('Sign in failed.');
             } catch (err) {
                 // eslint-disable-next-line @typescript-eslint/ban-ts-comment

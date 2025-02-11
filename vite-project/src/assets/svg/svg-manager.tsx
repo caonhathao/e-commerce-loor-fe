@@ -1,0 +1,1 @@
+//manager svgs which not in built-in library

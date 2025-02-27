@@ -5,8 +5,12 @@ import {toast} from "react-toastify";
 import axios from "axios";
 import {useProduct} from "../../context/ProductContext.tsx";
 
-const AuthenticateBox = ({setIsDelete, message}: { setIsDelete: any, message: string }) => {
-    const {product, setProduct} = useProduct();
+const AuthenticateBox = ({setIsDelete, setIsAllow, message}: {
+    setIsDelete: any,
+    setIsAllow: any,
+    message: string
+}) => {
+    const {setProduct} = useProduct();
 
     const handleCancel = () => {
         setIsDelete(false);
@@ -20,7 +24,7 @@ const AuthenticateBox = ({setIsDelete, message}: { setIsDelete: any, message: st
             onSubmit: async (values) => {
                 try {
                     const id = JWTDecode(sessionStorage.getItem('userToken')).id;
-                    const url = import.meta.env.VITE_API_HOST + import.meta.env.VITE_SERVER_PORT + import.meta.env.VITE_API_BRAND_VERIFY + id;
+                    const url = import.meta.env.VITE_API_HOST + import.meta.env.VITE_SERVER_PORT + import.meta.env.VITE_API_V_BRAND + id;
                     const response = await axios.post(url, values, {
                         headers: {
                             Authorization: `Bearer ${sessionStorage.getItem('userToken')}`
@@ -29,24 +33,8 @@ const AuthenticateBox = ({setIsDelete, message}: { setIsDelete: any, message: st
                     if (response) {
                         toast.success('Xác thực thành công', {autoClose: 1000});
                         //try to delete the product
-                        try {
-                            const url = import.meta.env.VITE_API_HOST + import.meta.env.VITE_SERVER_PORT + import.meta.env.VITE_API_D_PRODUCT + product.id;
-                            const response = await axios.delete(url, {
-                                headers: {
-                                    Authorization: `Bearer ${sessionStorage.getItem('userToken')}`
-                                }
-                            });
-
-                            if (response) {
-                                toast.success('Xóa sản phẩm thanh công', {autoClose: 1000});
-                                setTimeout(() => {
-                                    setProduct(null)
-                                }, 1500)
-                            }
-
-                        } catch (e) {
-                            console.error('Failed to delete', e);
-                        }
+                        setIsAllow(true);
+                        setIsDelete(false);
                     }
                 } catch (e) {
                     console.log('Failed to verify', e)

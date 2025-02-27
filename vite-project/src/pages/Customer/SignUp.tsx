@@ -1,4 +1,4 @@
-import {Link} from 'react-router-dom'
+import {Link, useNavigate} from 'react-router-dom'
 import '../../assets/css/pages/customer/SignUp.css'
 import {useEffect, useState} from "react";
 import {useFormik} from "formik";
@@ -9,7 +9,7 @@ import Typewriter from 'typewriter-effect'
 import {toast} from "react-toastify";
 
 function SignUp() {
-
+    const navigate = useNavigate();
     const [greeting, setGreeting] = useState('');
     const [currDate] = useState(new Date());
 
@@ -94,11 +94,11 @@ function SignUp() {
                 <div className={'sign-in-banner'}>
                     <h3>
                         <Typewriter
-                        options={{
-                            strings:[greeting],
-                            autoStart: true,
-                            delay: 100,
-                        }}
+                            options={{
+                                strings: [greeting],
+                                autoStart: true,
+                                delay: 100,
+                            }}
                         />
                     </h3>
                 </div>
@@ -161,7 +161,10 @@ function SignUp() {
                         }}>
                             <div className={'option-btns'}>
                                 <button className={'feature-btn'} type={'submit'}>Submit</button>
-                                <button className={'feature-btn'}>Cancel</button>
+                                <button className={'feature-btn'} onClick={() => {
+                                    navigate(-1)
+                                }}>Cancel
+                                </button>
                             </div>
                             <Link to={'/sign-in'}>You are our member? Login in here</Link>
                         </div>

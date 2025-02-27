@@ -4,12 +4,22 @@ import {toast, ToastContainer} from "react-toastify";
 import {useNavigate} from "react-router-dom";
 import axios from "axios";
 import {useEffect, useState} from "react";
+import * as Bs from 'react-icons/bs'
+import Loading from "../../loading/Loading.tsx";
+
+interface img {
+    file: File,
+    url: string,
+}
 
 const NewProduct = () => {
     const navigate = useNavigate();
 
     const [category, setCategory] = useState([]);
     const [subCategory, setSubCategory] = useState([]);
+    const [images, setImages] = useState<img[]>([]);
+
+    const [isFetching, setIsFetching] = useState(false);
 
     const formData = useFormik({
         initialValues: {
@@ -18,26 +28,48 @@ const NewProduct = () => {
             subCategory_id: '',
             name: '',
             origin: '',
-            price: null,
+            price: 0,
             status: 0,
             description: '',
-            stock: null,
+            stock: 0,
             promotion: 0,
-            tags: ''
+            tags: '',
+            images: [] //store images as array
         },
         onSubmit: async (values) => {
+            setIsFetching(true);
             try {
+                const dataSend = new FormData()
+
+                dataSend.append('id', values.id)
+                dataSend.append('category_id', values.category_id)
+                dataSend.append('subCategory_id', values.subCategory_id)
+                dataSend.append('name', values.name)
+                dataSend.append('origin', values.origin)
+                dataSend.append('price', values.price.toString())
+                dataSend.append('status', values.status.toString())
+                dataSend.append('description', values.description)
+                dataSend.append('stock', values.stock.toString())
+                dataSend.append('promotion', values.promotion)
+                dataSend.append('tags', values.tags)
+
+                values.images.forEach(image => {
+                    dataSend.append('images', image["file"])
+                })
+
                 const url = import.meta.env.VITE_API_HOST + import.meta.env.VITE_SERVER_PORT + import.meta.env.VITE_API_C_PRODUCT;
-                const response = await axios.post(url, values, {
+                const response = await axios.post(url, dataSend, {
                     headers: {
-                        Authorization: `Bearer ${sessionStorage.getItem("userToken")}`
-                    }
+                        Authorization: `Bearer ${sessionStorage.getItem("userToken")}`,
+                        "Content-Type": "multipart/form-data",
+                    },
                 });
                 if (response) {
+                    setIsFetching(false);
                     toast.success('Sản phẩm đã dược tạo thành công!', {autoClose: 1000});
                     setTimeout(() => {
                         navigate(-1);
-                    }, 1200)
+                    }, 1500)
                 } else toast.error("Khởi tạo thất bại! Vui lòng kiểm tra các trường nhập!");
             } catch (error) {
                 toast.error('Failed');
@@ -54,16 +86,27 @@ const NewProduct = () => {
             status: Yup.number().required('Please enter status'),
             description: Yup.string().required('Please enter description'),
             stock: Yup.number().required('Please enter stock').min(0, 'Wrong input'),
+            images: Yup.array().min(1).required(' Please choose at least one picture'),
         }),
         validateOnBlur: true,
     })
 
-    // useEffect(() => {
-    //     if (Object.keys(formData.errors).length > 0) {
-    //         toast.error('Failed to submit! Please check the fields again!')
-    //     }
-    // }, [formData.errors]);
+    const handleGetImage = (e) => {
+        e.preventDefault();
+        const files = Array.from(e.target.files);
+        const images = files.map((item) => ({
+            file: item,
+            url: URL.createObjectURL(item as File)
+        }))
+        setImages((prevImages) => [...prevImages, ...images]);
+        formData.setFieldValue('images', [...formData.values.images, ...images]);
+    }
 
+    const handleRemoveImage = (obj: img) => {
+        setImages((prev) => prev.filter(item => item["file"] !== obj.file));
+    }
+
+    //get all categories
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -79,20 +122,27 @@ const NewProduct = () => {
         fetchData()
     }, []);
 
+    //get all sub categories from any category
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const id = formData.values.category_id;
-                const url = import.meta.env.VITE_API_HOST + import.meta.env.VITE_SERVER_PORT + import.meta.env.VITE_API_G_SUBCATEGORY + id;
-                const response = await axios.get(url);
-                if (response) setSubCategory(response.data);
-                else toast.error('Failed to get sub categories!');
-            } catch (err) {
-                console.log(err);
+        if (formData.values.category_id !== '') {
+            const fetchData = async () => {
+                try {
+                    const id = formData.values.category_id;
+                    const url = import.meta.env.VITE_API_HOST + import.meta.env.VITE_SERVER_PORT + import.meta.env.VITE_API_G_SUBCATEGORY + id;
+                    const response = await axios.get(url);
+                    if (response) setSubCategory(response.data);
+                    else toast.error('Failed to get sub categories!');
+                } catch (err) {
+                    console.log(err);
+                }
             }
+            fetchData()
         }
-        fetchData()
     }, [formData.values.category_id]);
+
+    if (isFetching) {
+        return <Loading/>
+    }
 
     return (
         <div className={'w-auto h-full ml-8 p-2 my-2 flex flex-col justify-start items-center'}>
@@ -206,7 +256,7 @@ const NewProduct = () => {
                 <fieldset
                     className={'w-full border border-gray-700 rounded-lg leading-8 m-2 flex flex-row items-center justify-between'}>
                     <legend>Mô tả</legend>
-                    <textarea className={'w-full pl-2'} name={'description'} placeholder={'Mô tả sản phẩm'}
+                    <textarea className={'w-full h-40 pl-2'} name={'description'} placeholder={'Mô tả sản phẩm'}
                               onChange={formData.handleChange}
                               onBlur={formData.handleBlur}></textarea>
                 </fieldset>
@@ -215,6 +265,44 @@ const NewProduct = () => {
                         <small className={'text-red-600 italic'}>{formData.errors.description}</small>
                     </p>
                 )}
+
+                {/*Choose any image here*/}
+                <fieldset
+                    className={'w-full border border-gray-700 rounded-lg leading-8 m-2 flex flex-row items-center justify-between'}>
+                    <legend>Hình ảnh</legend>
+                    <div className={'flex flex-row  flex-wrap items-center justify-start'}>
+                        {images && images.map((item, i) => (
+                            <div
+                                className={'w-15 h-15 relative mx-1 border-indigo-500 border-2 rounded-lg flex item-center justify-center'}
+                                key={i}>
+                                {/*delete button here (remove image*/}
+                                <button className={'absolute -top-2 -right-2'} type={'button'}
+                                        onClick={() => handleRemoveImage(item)}><Bs.BsXCircleFill color={'red'}/>
+                                </button>
+                                <img className={'object-contain'} src={item.url} alt={'image'}/>
+                            </div>
+                        ))}
+                        <input type={'file'} hidden={true} accept={'image/*'} id={'imageInput'} multiple={true}
+                               onChange={(e) => {
+                                   handleGetImage(e)
+                               }}/>
+                        <button type={'button'}
+                                className={'w-15 h-15 m-1 rounded-lg flex justify-center items-center focus:outline-indigo-400 focus:outline-2 '}
+                                onClick={() => {
+                                    const input = document.getElementById("imageInput") as HTMLInputElement;
+                                    if (input) {
+                                        input.click();
+                                    }
+                                }}>
+                            <Bs.BsPlusSquare className={'w-20 h-20'} color={'gray'}/>
+                        </button>
+                    </div>
+                    {formData.errors.images && formData.touched.images && (
+                        <p className={'text-red-600'}>
+                            <small className={'text-red-600 italic'}>{formData.errors.images}</small>
+                        </p>
+                    )}
+                </fieldset>
 
                 {/*The status of product*/}
                 <fieldset

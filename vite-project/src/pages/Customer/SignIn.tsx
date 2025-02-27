@@ -1,4 +1,4 @@
-import {Link} from 'react-router-dom'
+import {Link, useNavigate} from 'react-router-dom'
 import '../../assets/css/pages/customer/SignUp.css'
 import {useEffect, useState} from "react";
 import {useFormik} from "formik";
@@ -9,10 +9,10 @@ import Typewriter from "typewriter-effect";
 import {ToastContainer, toast} from "react-toastify";
 
 function SignIn() {
-
+    const navigate = useNavigate();
     const [greeting, setGreeting] = useState('');
     const [currDate] = useState(new Date());
-    
+
     const [count, setCount] = useState(0);
 
     const formData = useFormik({
@@ -57,7 +57,7 @@ function SignIn() {
         <div className="sign-in-container">
             <div className={'header'}>
                 <div className={'header-banner'}>
-                    <Link to={'/'} style={{color:'white',fontWeight:'bold'}}> Welcome to Loli shopping</Link>
+                    <Link to={'/'} style={{color: 'white', fontWeight: 'bold'}}> Welcome to Loli shopping</Link>
                 </div>
                 <div className={'header-toolbar'}>
                     <Tooltip title={'love list'}>
@@ -139,7 +139,10 @@ function SignIn() {
                         }}>
                             <div className={'option-btns'}>
                                 <button className={'feature-btn'} type={'submit'}>Submit</button>
-                                <button className={'feature-btn'}>Cancel</button>
+                                <button className={'feature-btn'} onClick={() => {
+                                    navigate(-1)
+                                }}>Cancel
+                                </button>
                             </div>
                             <Link to={'/sign-up'}>You are new? Sign up here</Link>
                         </div>

@@ -1,44 +1,79 @@
 import {useFormik} from "formik";
 import * as Yup from "yup";
 import {toast, ToastContainer} from "react-toastify";
-import {useNavigate} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import axios from "axios";
 import {useEffect, useState} from "react";
-import {useProduct} from "../../../context/ProductContext.tsx";
 import Loading from "../../loading/Loading.tsx";
+import * as Bs from "react-icons/bs";
 
-const NewProduct = () => {
+interface img {
+    file: File,
+    url: string,
+}
+
+const UpdateProduct = () => {
     const navigate = useNavigate();
+    const params = useParams();
 
     const [category, setCategory] = useState([]);
     const [subCategory, setSubCategory] = useState([]);
+    const [data, setData] = useState(null);
+    const [isResponse, setIsResponse] = useState(false);
+    const [isSubmitted, setIsSubmitted] = useState(false);
+    const [imageData, setImageData] = useState([]);//store image in previous
+    const [imgUpload, setImgUpload] = useState<img[]>([]);//store image to upload
 
-    const {product} = useProduct();
+    const formattedTags = (str: string) => {
+        return str.replace(/[{}"]/g, '')
+    }
 
     const formData = useFormik({
         initialValues: {
-            id: product.id,
-            category_id: product.category_id,
-            subCategory_id: product.subcategory_id,
-            name: product.name,
-            origin: product.origin,
-            price: product.price,
-            status: product.status,
-            description: product.description,
-            stock: product.stock,
-            promotion: product.promotion,
-            tags: product.tags,
+            id: '',
+            category_id: '',
+            subCategory_id: '',
+            name: '',
+            origin: '',
+            price: '',
+            status: '',
+            description: '',
+            stock: '',
+            promotion: '',
+            tags: '',
+            images: [],//new image to upload
+            deletedImages: [] //store image'id that will be deleted
         },
         onSubmit: async (values) => {
             try {
+                const dataSend = new FormData()
+
+                dataSend.append('id', values.id)
+                dataSend.append('category_id', values.category_id)
+                dataSend.append('subCategory_id', values.subCategory_id)
+                dataSend.append('name', values.name)
+                dataSend.append('origin', values.origin)
+                dataSend.append('price', values.price.toString())
+                dataSend.append('status', values.status.toString())
+                dataSend.append('description', values.description)
+                dataSend.append('stock', values.stock.toString())
+                dataSend.append('promotion', values.promotion)
+                dataSend.append('tags', values.tags)
+                dataSend.append('deletedImages', JSON.stringify(values.deletedImages))
+
+                values.images.forEach(image => {
+                    dataSend.append('images', image["file"])
+                })
+
                 const id = formData.values.id;
                 const url = import.meta.env.VITE_API_HOST + import.meta.env.VITE_SERVER_PORT + import.meta.env.VITE_API_U_PRODUCT + id;
-                const response = await axios.put(url, values, {
+                const response = await axios.put(url, dataSend, {
                     headers: {
                         Authorization: `Bearer ${sessionStorage.getItem("userToken")}`
                     }
                 });
-                if (response) {
+                if (response.status === 200) {
+                    setIsResponse(true);
                     toast.success('Sản phẩm đã dược cập nhật thành công!', {autoClose: 1000});
                     setTimeout(() => {
                         navigate(-1);
@@ -62,6 +97,50 @@ const NewProduct = () => {
         validateOnBlur: true,
     })
 
+    const handleGetImage = (e) => {
+        e.preventDefault();
+        const files = Array.from(e.target.files);
+        const images = files.map((item) => ({
+            file: item,
+            url: URL.createObjectURL(item as File)
+        }))
+        setImgUpload((prevImgUpload) => [...prevImgUpload, ...images]);
+        formData.setFieldValue('images', [...formData.values.images, ...images]);
+    }
+
+    //remove image:
+    //1. Remove image from db or
+    //2. Remove image when it added (while edit info)
+    const handleRemoveImage = (obj: never, type: string) => {
+        console.log(type);
+        if (type === 'db')
+            setImageData((prev) => prev.filter(item => item["image_id"] !== obj["image_id"]));
+        else if (type === 'upload') {
+            console.log(imgUpload);
+            setImgUpload((prev) => prev.filter(item => item["file"] !== obj["file"]));
+        }
+    }
+
+    const handleResetForm = () => {
+        console.log('reset form');
+        formData.setValues({
+            id: data ? data["id"] : "",
+            category_id: data ? data['category_id'] : '',
+            subCategory_id: data ? data['subcategory_id'] : '',
+            name: data ? data['name'] : '',
+            origin: data ? data['origin'] : '',
+            price: data ? data['price'] : '',
+            status: data ? data['status'] : '',
+            description: data ? data['description'] : '',
+            stock: data ? data['stock'] : '',
+            promotion: data ? data['promotion'] : '',
+            tags: data ? formattedTags(data['tags']) : '',
+            images: [],
+            deletedImages: []
+        })
+        setImageData(data['imageProducts'])
+    }
+
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -78,33 +157,79 @@ const NewProduct = () => {
     }, []);
 
     useEffect(() => {
+        if (category !== null) {
+            const fetchData = async () => {
+                try {
+                    const id = data['category_id'];
+                    const url = import.meta.env.VITE_API_HOST + import.meta.env.VITE_SERVER_PORT + import.meta.env.VITE_API_G_SUBCATEGORY + id;
+                    const response = await axios.get(url);
+                    if (response) setSubCategory(response.data);
+                    else toast.error('Failed to get sub categories!');
+                } catch (err) {
+                    console.log(err);
+                    toast.error('Failed to get sub categories!');
+                }
+            }
+            fetchData()
+        }
+    }, [category]);
+
+    useEffect(() => {
+        if (data !== null) {
+            formData.setFieldValue('id', data["id"]);
+            formData.setFieldValue('category_id', data["category_id"]);
+            formData.setFieldValue('subCategory_id', data["subcategory_id"]);
+            formData.setFieldValue('name', data["name"]);
+            formData.setFieldValue('origin', data["origin"]);
+            formData.setFieldValue('price', data["price"]);
+            formData.setFieldValue('status', data["status"]);
+            formData.setFieldValue('description', data["description"]);
+            formData.setFieldValue('stock', data["stock"]);
+            formData.setFieldValue('promotion', data["promotion"]);
+            formData.setFieldValue('tags', formattedTags(data["tags"]));
+            setImageData(data['imageProducts'])
+        }
+    }, [data]);
+
+    useEffect(() => {
         const fetchData = async () => {
             try {
-                const id = formData.values.category_id;
-                const url = import.meta.env.VITE_API_HOST + import.meta.env.VITE_SERVER_PORT + import.meta.env.VITE_API_G_SUBCATEGORY + id;
+                const id = params.id;
+                const url = import.meta.env.VITE_API_HOST + import.meta.env.VITE_SERVER_PORT + import.meta.env.VITE_API_G_A_PRODUCT + id;
                 const response = await axios.get(url);
-                if (response) setSubCategory(response.data);
+                if (response) setData(response.data);
                 else toast.error('Failed to get sub categories!');
-            } catch (err) {
-                console.log(err);
+            } catch (e) {
+                console.log(e);
             }
         }
         fetchData()
-    }, []);
+    }, [])
 
-    if (category.length === 0 || subCategory.length === null) return (
+    useEffect(() => {
+        // console.log('data:', data);
+        // console.log('formData:', formData.values);
+        // console.log('subCategory_id:', subCategory);
+        console.log('Image upload:', imgUpload);
+    }, [imgUpload]);
+
+    if (category.length === 0 || subCategory.length === 0 || data === null) return (
         <>
             <Loading/>
         </>
     )
 
+    if (isSubmitted && !isResponse) {
+        return <Loading/>
+    }
+
     return (
-        <div className={'w-auto h-full ml-8 p-2 my-2 flex flex-col justify-start items-center'}>
+        <div className={'w-auto h-full m-2 p-2 my-2 flex flex-col justify-start items-center'}>
             <form
                 className={'w-full h-fit flex flex-col items-center justify-center'}
                 onSubmit={(e) => {
                     e.preventDefault();
-                    console.log("Form submitted!");
+                    setIsSubmitted(true);
                     formData.handleSubmit(e);
                 }}>
                 <h3 className={'font-bold text-lg w-fit m-2 text-yellow-600'}>Tạo sản phẩm mới</h3>
@@ -133,7 +258,7 @@ const NewProduct = () => {
                             <select name={'subCategory_id'}
                                     className={'w-full'}
                                     onChange={formData.handleChange}
-                                    value={formData.values.subCategory_id}
+                                    value={formData.values.subCategory_id ? formData.values.subCategory_id : data['subcategory_id']}
                                     onBlur={formData.handleBlur}>
                                 <option value={'0'}>none</option>
                                 {subCategory && subCategory.map((item, i) => (
@@ -227,7 +352,58 @@ const NewProduct = () => {
                     </p>
                 )}
 
-                {/*The status of product*/}
+
+                {/*Choose any image here*/}
+                <fieldset
+                    className={'w-full border border-gray-700 rounded-lg leading-8 m-2 flex flex-row items-center justify-between'}>
+                    <legend>Hình ảnh</legend>
+                    <div className={'flex flex-row  flex-wrap items-center justify-start'}>
+                        {imageData && imageData.map((item, i) => (
+                            <div
+                                className={'w-15 h-15 relative mx-1 border-indigo-500 border-2 rounded-lg flex item-center justify-center'}
+                                key={i}>
+                                {/*delete button here (remove image*/}
+                                <button className={'absolute -top-2 -right-2'} type={'button'}
+                                        onClick={() => handleRemoveImage(item, 'db')}><Bs.BsXCircleFill color={'red'}/>
+                                </button>
+                                <img className={'object-contain'} src={item["image_link"]} alt={'image'}/>
+                            </div>
+                        ))}
+                        {imgUpload && imgUpload.map((item, i) => (
+                            <div
+                                className={'w-15 h-15 relative mx-1 border-indigo-500 border-2 rounded-lg flex item-center justify-center'}
+                                key={i}>
+                                {/*delete button here (remove image*/}
+                                <button className={'absolute -top-2 -right-2'} type={'button'}
+                                        onClick={() => handleRemoveImage(item, 'upload')}><Bs.BsXCircleFill
+                                    color={'red'}/>
+                                </button>
+                                <img className={'object-contain'} src={item["url"]} alt={'image'}/>
+                            </div>
+                        ))}
+                        <input type={'file'} hidden={true} accept={'image/*'} id={'imageInput'} multiple={true}
+                               onChange={(e) => {
+                                   handleGetImage(e)
+                               }}/>
+                        <button type={'button'}
+                                className={'w-15 h-15 m-1 rounded-lg flex justify-center items-center focus:outline-indigo-400 focus:outline-2 '}
+                                onClick={() => {
+                                    const input = document.getElementById("imageInput") as HTMLInputElement;
+                                    if (input) {
+                                        input.click();
+                                    }
+                                }}>
+                            <Bs.BsPlusSquare className={'w-20 h-20'} color={'gray'}/>
+                        </button>
+                    </div>
+                    {formData.errors.images && formData.touched.images && (
+                        <p className={'text-red-600'}>
+                            <small className={'text-red-600 italic'}>{formData.errors.images}</small>
+                        </p>
+                    )}
+                </fieldset>
+
+                {/*The status of data*/}
                 <fieldset
                     className={'w-full border border-gray-700 rounded-lg p-2 m-2 flex flex-row items-center justify-between'}>
                     <legend>Tình trang hàng hóa</legend>
@@ -285,11 +461,20 @@ const NewProduct = () => {
                     />
                 </fieldset>
 
-                <div className={'flex flex-row justify-center items-between'}>
-                    <button type={'button'} className={'bg-purple-500 p-2 rounded-4xl text-white font-bold mr-5'}
-                            onClick={() => navigate(-1)}>Cancel
+                <div className={'flex flex-row justify-around items-center'}>
+                    <button type={'button'}
+                            className={'bg-purple-500 p-2 rounded-4xl text-white font-bold flex justify-center items-center'}
+                            onClick={() => navigate(-1)}>
+                        Cancel
                     </button>
-                    <button type={'submit'} className={'bg-purple-500 p-2 rounded-4xl text-white font-bold ml-5'}>Submit
+                    <button type={'button'}
+                            className={'bg-purple-500 p-2 rounded-4xl text-white font-bold mx-5 flex justify-center items-center'}
+                            onClick={handleResetForm}>
+                        Reset
+                    </button>
+                    <button type={'submit'}
+                            className={'bg-purple-500 p-2 rounded-4xl text-white font-bold flex justify-center items-center'}>
+                        Submit
                     </button>
                 </div>
             </form>
@@ -297,4 +482,4 @@ const NewProduct = () => {
         </div>
     )
 }
-export default NewProduct;
+export default UpdateProduct;

@@ -4,12 +4,12 @@ import axios from "axios";
 import * as Yup from "yup";
 import {Tooltip} from "@mui/material";
 import Typewriter from "typewriter-effect";
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import '../../assets/css/pages/customer/SignUp.css'
 import {ToastContainer, toast} from "react-toastify";
 
 const VendorSignUp = () => {
-
+    const navigate = useNavigate();
     const [greeting, setGreeting] = useState('');
     const [currDate] = useState(new Date());
 
@@ -175,7 +175,10 @@ const VendorSignUp = () => {
                         }}>
                             <div className={'option-btns'}>
                                 <button className={'feature-btn'} type={'submit'}>Submit</button>
-                                <button className={'feature-btn'}>Cancel</button>
+                                <button type={'button'} className={'feature-btn'} onClick={() => {
+                                    navigate(-1)
+                                }}>Cancel
+                                </button>
                             </div>
                             <Link to={'/sign-in-vendor'}>You are our member? Login in here</Link>
                         </div>

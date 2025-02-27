@@ -17,19 +17,22 @@ import {ToastContainer} from "react-toastify";
 import Loading from "./components/loading/Loading.tsx";
 import UpdateProduct from "./components/vendor/Control/UpdateProduct.tsx";
 import {ProductProvider} from "./context/ProductContext.tsx";
+import VendorProfile from "./pages/Brand/Admin/VendorProfile.tsx";
+import VendorOrders from "./pages/Brand/Admin/VendorOrders.tsx";
+import Home from "./pages/Home.tsx";
 
 function App() {
-    const [token, setToken] = useState<string | null>('');
     const [roleName, setRoleName] = useState<string>('');
 
-    useEffect(() => {
-        setToken(sessionStorage.getItem('userToken'));
-    }, [])
 
     useEffect(() => {
-        if (!token) setRoleName("ROLE_CUSTOMER");
-        else setRoleName(JWTDecode(token).role);
-    }, [token]);
+        if (sessionStorage.getItem('userToken') === null) setRoleName("ROLE_CUSTOMER");
+        else {
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-expect-error
+            setRoleName(JWTDecode(sessionStorage.getItem('userToken'))["role"]);
+        }
+    }, []);
 
     if (roleName === '') return (
         <div className="w-screen h-screen flex flex-col items-center justify-center">
@@ -42,7 +45,7 @@ function App() {
             {roleName === 'ROLE_CUSTOMER' ?
                 <BrowserRouter basename={'/'}>
                     <Routes>
-                        <Route path={'/'} element={<Layout child={null}/>}/>
+                        <Route path={'/'} element={<Layout child={<Home/>}/>}/>
                         <Route path={'/sell-on-loli'} element={<Layout child={<VendorOffer/>}/>}/>
                         <Route path="/sign-up" element={<SignUp/>}/>
                         <Route path="/sign-in" element={<SignIn/>}/>
@@ -54,12 +57,13 @@ function App() {
                 : <BrowserRouter basename={'/vendor'}>
                     <ProductProvider>  {/* Bọc toàn bộ Routes */}
                         <Routes>
-                            <Route path={'/'} element={<VendorLayout child={<VendorHome />} />} />
-                            <Route path={'/manage'} element={<VendorLayout child={<VendorManager />} />} />
-                            <Route path={'/manager/create'} element={<VendorLayout child={<NewProduct />} />} />
-                            <Route path={'/manager/e/:id'} element={<VendorLayout child={<UpdateProduct />} />} />
-                            <Route path={'/orders'} element={<VendorLayout child={null} />} />
-                            <Route path={'/support'} element={<VendorLayout child={null} />} />
+                            <Route path={'/'} element={<VendorLayout child={<VendorHome/>}/>}/>
+                            <Route path={'/manage'} element={<VendorLayout child={<VendorManager/>}/>}/>
+                            <Route path={'/manager/create'} element={<VendorLayout child={<NewProduct/>}/>}/>
+                            <Route path={'/manager/e/:id'} element={<VendorLayout child={<UpdateProduct/>}/>}/>
+                            <Route path={'/orders'} element={<VendorLayout child={<VendorOrders/>}/>}/>
+                            <Route path={'/support'} element={<VendorLayout child={null}/>}/>
+                            <Route path={'/shop-info'} element={<VendorLayout child={<VendorProfile/>}/>}/>
                         </Routes>
                     </ProductProvider>
                 </BrowserRouter>

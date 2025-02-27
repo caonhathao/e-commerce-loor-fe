@@ -4,7 +4,7 @@ import axios from "axios";
 import * as Yup from "yup";
 import {Tooltip} from "@mui/material";
 import Typewriter from "typewriter-effect";
-import {Link, Router, useNavigate} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import '../../assets/css/pages/customer/SignUp.css'
 import {ToastContainer, toast} from "react-toastify";
 
@@ -21,7 +21,7 @@ const VendorSignIn = () => {
         },
         onSubmit: async (values) => {
             try {
-                const url = import.meta.env.VITE_API_HOST + import.meta.env.VITE_SERVER_PORT + import.meta.env.VITE_API_BRAND_LOGIN;
+                const url = import.meta.env.VITE_API_HOST + import.meta.env.VITE_SERVER_PORT + import.meta.env.VITE_API_L_BRAND;
 
                 /*return: response will have a jwt string*/
 
@@ -30,6 +30,7 @@ const VendorSignIn = () => {
                 if (response) {
                     sessionStorage.setItem("userToken", response.data);
                     toast.success('Sign in successfully.', {autoClose: 2000});
+                    console.log(response.data);
                     setTimeout(() => {
                         navigate('/vendor');
                         window.location.reload();
@@ -147,7 +148,10 @@ const VendorSignIn = () => {
                         }}>
                             <div className={'option-btns'}>
                                 <button className={'feature-btn'} type={'submit'}>Submit</button>
-                                <button className={'feature-btn'}>Cancel</button>
+                                <button className={'feature-btn'} onClick={() => {
+                                    navigate(-1)
+                                }}>Cancel
+                                </button>
                             </div>
                             <Link to={'/register-new-vendor'}>You are new? Register here</Link>
                         </div>

@@ -1,5 +1,10 @@
 :root{
-    --bg-color-btn:#FCCD2A;
-    --bg-color:#FCCD2A;
-    --text-color:#FFFBE6;
+    --bg-color-btn-1:#F5004F;
+    --bg-color-btn-2:#FFAF00;
+    --bg-color:#7C00FE;
+    --text-color: #FFAF00;
+    --text-color-btn:#FFFFFF;
+    --title-color-1:#F9E400;
+    --title-color-2:#B8001F;
+    --text-error:#F5004F;
 }

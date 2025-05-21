@@ -3,12 +3,12 @@ import '../assets/css/components/Layout.css'
 
 const Layout = ({child}) => {
     return (
-        <div className={'layout-container'}>
-            <div className={'layout-content'}>
-                <div className={'layout-header'}>
+        <div className={'bg-white w-full h-screen flex justify-center items-center'}>
+            <div className={'w-full h-full flex flex-col justify-between items-center'}>
+                <div className={'w-full'}>
                     <Header />
                 </div>
-                <div className={'layout-body'}>
+                <div className={'w-full'}>
                     {child}
                 </div>
                 <div className={'layout-footer'}></div>

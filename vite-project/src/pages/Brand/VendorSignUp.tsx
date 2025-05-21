@@ -7,6 +7,7 @@ import Typewriter from "typewriter-effect";
 import {Link, useNavigate} from "react-router-dom";
 import '../../assets/css/pages/customer/SignUp.css'
 import {ToastContainer, toast} from "react-toastify";
+import {BsBagHeart, BsCart, BsPersonCircle} from "react-icons/bs";
 
 const VendorSignUp = () => {
     const navigate = useNavigate();
@@ -23,14 +24,15 @@ const VendorSignUp = () => {
         },
         onSubmit: async (values) => {
             try {
-                const url = import.meta.env.VITE_API_HOST + import.meta.env.VITE_SERVER_PORT + import.meta.env.VITE_API_BRAND_REGISTER;
+                const url = import.meta.env.VITE_API_HOST + import.meta.env.VITE_SERVER_PORT + import.meta.env.VITE_API_R_BRAND;
+                console.log(url);
                 const response = await axios.post(url, values);
                 console.log(response.data);
                 toast.success(response.data.message);
             } catch (err) {
                 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                 // @ts-expect-error
-                toast.error(err.response.data.message);
+                toast.error(err.response);
                 console.log(err)
             }
         },
@@ -57,42 +59,32 @@ const VendorSignUp = () => {
     }, []);
 
     return (
-        <div className="sign-in-container">
-            <div className={'header'}>
-                <div className={'header-banner'}><Link to={'/'}>Welcome to Loli shopping, vendor</Link></div>
-                <div className={'header-toolbar'}>
+        <div className="w-screen min-h-screen bg-white flex jus-center items-center flex-col relative">
+            <div
+                className={'bg-[var(--bg-color)] w-full max-w-[calc(100vw-40px)] text-white font-bold p-2 flex justify-between items-center flex-row rounded-b-lg'}>
+                <div className={'text-2xl w-[70%]'}><Link to={'/'}>Welcome to Loli shopping, vendor</Link></div>
+                <div className={'flex flex-row flex-wrap justify-center items-center w-[30%]'}>
                     <Tooltip title={'love list'}>
-                        <div className={'feature-btn'}>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
-                                 className="bi bi-bag-heart" viewBox="0 0 16 16">
-                                <path fill-rule="evenodd"
-                                      d="M10.5 3.5a2.5 2.5 0 0 0-5 0V4h5zm1 0V4H15v10a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V4h3.5v-.5a3.5 3.5 0 1 1 7 0M14 14V5H2v9a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1M8 7.993c1.664-1.711 5.825 1.283 0 5.120-5.825-3.85-1.664-6.843 0-5.120"/>
-                            </svg>
+                        <div className={'text-[var(--text-color)] p-3'}>
+                            <BsBagHeart size={20}/>
                         </div>
                     </Tooltip>
                     <Tooltip title={'shopping cart'}>
-                        <div className={'feature-btn'}>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
-                                 className="bi bi-cart" viewBox="0 0 16 16">
-                                <path
-                                    d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5M3.102 4l1.313 7h8.17l1.313-7zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4m7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4m-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2m7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2"/>
-                            </svg>
+                        <div className={'text-[var(--text-color)] p-3'}>
+                            <BsCart size={20}/>
                         </div>
                     </Tooltip>
                     <Tooltip title={'your Customer'}>
-                        <div className={'feature-btn'}>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
-                                 className="bi bi-person-circle" viewBox="0 0 16 16">
-                                <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
-                                <path fill-rule="evenodd"
-                                      d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"/>
-                            </svg>
+                        <div className={'text-[var(--text-color)] p-3'}>
+                            <BsPersonCircle size={20}/>
                         </div>
                     </Tooltip>
                 </div>
             </div>
-            <div className={'sign-in-content'}>
-                <div className={'sign-in-banner'}>
+            <div
+                className={'w-[80%] rounded-lg shadow-lg shadow-gray-600 p-2 flex justify-center items-center flex-col my-5'}>
+                <div
+                    className={'text-white bg-[var(--bg-color)] p-4 rounded-lg min-w-full max-w-full min-h-[200px] flex items-center jus-center text-center text-lg'}>
                     <h3>
                         <Typewriter
                             options={{
@@ -104,21 +96,21 @@ const VendorSignUp = () => {
                         />
                     </h3>
                 </div>
-                <div className={'sign-in-form'}>
-                    <form className={'form-css'} onSubmit={formData.handleSubmit}>
-                        <h3 style={{color: 'orange'}}>Vendor, we need your information...</h3>
-                        <fieldset className={'fieldset-css'}>
-                            <legend className={'legend-css'}>Brand name</legend>
-                            <input className={'input-css'} type='text' name={'brand_name'}
+                <div className={'flex justify-center items-center'}>
+                    <form className={''} onSubmit={formData.handleSubmit}>
+                        <h3 style={{color: 'var(--text-color)'}}>Vendor, we need your information...</h3>
+                        <fieldset className={'mt-2.5 rounded-lg border-1 border-gray-500'}>
+                            <legend className={'text-[var(--text-color)]'}>Brand name</legend>
+                            <input className={'p-2 outline-0 w-full'} type='text' name={'brand_name'}
                                    placeholder={'You can set your brand name later.'}
                                    onChange={formData.handleChange}
                                    onBlur={formData.handleBlur}
                             />
                         </fieldset>
 
-                        <fieldset className={'fieldset-css'}>
-                            <legend className={'legend-css'}>Your email</legend>
-                            <input className={'input-css'} type='text' name={'email'}
+                        <fieldset className={'mt-2.5 rounded-lg border-1 border-gray-500'}>
+                            <legend className={'text-[var(--text-color)]'}>Your email</legend>
+                            <input className={'p-2 outline-0 w-full'} type='text' name={'email'}
                                    placeholder={'We want to take an authentication'}
                                    onChange={formData.handleChange}
                                    onBlur={formData.handleBlur}
@@ -129,9 +121,9 @@ const VendorSignUp = () => {
                                 style={{color: 'red', fontStyle: 'italic'}}>{formData.errors.email}</small>
                             </p>)}
 
-                        <fieldset className={'fieldset-css'}>
-                            <legend className={'legend-css'}>Your phone number</legend>
-                            <input className={'input-css'} type='text' name={'numberphone'}
+                        <fieldset className={'mt-2.5 rounded-lg border-1 border-gray-500'}>
+                            <legend className={'text-[var(--text-color)]'}>Your phone number</legend>
+                            <input className={'p-2 outline-0 w-full'} type='text' name={'numberphone'}
                                    placeholder={'We need to contact to you'}
                                    onChange={formData.handleChange}
                                    onBlur={formData.handleBlur}
@@ -142,9 +134,9 @@ const VendorSignUp = () => {
                                 style={{color: 'red', fontStyle: 'italic'}}>{formData.errors.numberphone}</small>
                             </p>)}
 
-                        <fieldset className={'fieldset-css'}>
-                            <legend className={'legend-css'}>Your password</legend>
-                            <input className={'input-css'} type='text' name={'password'}
+                        <fieldset className={'mt-2.5 rounded-lg border-1 border-gray-500'}>
+                            <legend className={'text-[var(--text-color)]'}>Your password</legend>
+                            <input className={'p-2 outline-0 w-full'} type='text' name={'password'}
                                    placeholder={'From 6 characters or above'}
                                    onChange={formData.handleChange}
                                    onBlur={formData.handleBlur}
@@ -155,9 +147,9 @@ const VendorSignUp = () => {
                                 style={{color: 'red', fontStyle: 'italic'}}>{formData.errors.password}</small>
                             </p>)}
 
-                        <fieldset className={'fieldset-css'}>
-                            <legend className={'legend-css'}>Confirm your password</legend>
-                            <input className={'input-css'} type='text' name={'confirmPassword'}
+                        <fieldset className={'mt-2.5 rounded-lg border-1 border-gray-500'}>
+                            <legend className={'text-[var(--text-color)]'}>Confirm your password</legend>
+                            <input className={'p-2 outline-0 w-full'} type='text' name={'confirmPassword'}
                                    placeholder={'Do not forget your password'}
                                    onChange={formData.handleChange}
                                    onBlur={formData.handleBlur}
@@ -167,15 +159,15 @@ const VendorSignUp = () => {
                             <p className={'show-errors'}><small
                                 style={{color: 'red', fontStyle: 'italic'}}>{formData.errors.confirmPassword}</small>
                             </p>)}
-                        <div style={{
-                            display: 'flex',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            flexDirection: 'column'
-                        }}>
-                            <div className={'option-btns'}>
-                                <button className={'feature-btn'} type={'submit'}>Submit</button>
-                                <button type={'button'} className={'feature-btn'} onClick={() => {
+                        <div className={'flex flex-col justify-center items-center'}>
+                            <div className={'flex justify-center item-center flex-row'}>
+                                <button
+                                    className={'rounded-full border-2 border-[var(--bg-color-btn-2)] px-2 py-3 m-2.5 text-[var(--text-color)]'}
+                                    type={'submit'}>Submit
+                                </button>
+                                <button
+                                    className={'rounded-full border-2 border-[var(--bg-color-btn-2)] px-2 py-3 m-2.5 text-[var(--text-color)]'}
+                                    type={'button'} onClick={() => {
                                     navigate(-1)
                                 }}>Cancel
                                 </button>

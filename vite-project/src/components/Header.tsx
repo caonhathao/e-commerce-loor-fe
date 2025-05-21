@@ -3,16 +3,17 @@ import logo from '../assets/img/loli.png'
 import '../assets/css/components/Header.css'
 import {Link} from "react-router-dom";
 import {Tooltip} from "@mui/material";
+import {BsBasket, BsSearch} from "react-icons/bs";
 
 const Header = () => {
     return (
-        <div className={'header-container'}>
-            <div className={'header-content'}>
+        <div className={'w-full min-h-[200px] flex justify-center items-center'}>
+            <div className={'p-3 flex justify-between flex-col items-center'}>
                 <div className={'header-content-banner'}>
                     <img src={banner} alt="banner"/>
                 </div>
-                <div className={'header-content-navbar'}>
-                    <ul className={'header-navbar'}>
+                <div className={'w-[90%] my-2'}>
+                    <ul className={'flex flex-row flex-wrap justify-between items-center'}>
                         <li><Link to={'/feedback'}>FEEDBACK</Link></li>
                         <li><Link to={'/app'}>SAVE MORE ON APP</Link></li>
                         <li><Link to={'/sell-on-loli'}>SELL ON LOLI</Link></li>
@@ -22,38 +23,31 @@ const Header = () => {
                         <li><Link to={'/get-voucher'}>GET MORE VOUCHERS</Link></li>
                     </ul>
                 </div>
-                <div className={'header-content-search'}>
-                    <div className={'search-logo'}>
+                <div className={'flex justify-between items-center w-full flex-row'}>
+                    <div className={'hidden'}>
                         <Link to={'/'}>
                             <img src={logo} alt="logo"/>
                         </Link>
                     </div>
-                    <div className={'search-input'}>
-                        <form className={'form-css'}>
-                            <fieldset className={'fieldset-css'}>
-                                <input className={'input-css'} type='text' name='keyword' placeholder='type anything'/>
-                            </fieldset>
-                            <button className={'feature-btn'} type="submit">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
-                                     className="bi bi-search" viewBox="0 0 16 16">
-                                    <path
-                                        d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
-                                </svg>
-                            </button>
-                        </form>
-                    </div>
-                    <div className={'search-cart'} style={{'width': '10%'}} >
+                    <div className={'w-[10%] text-center'}>
                         <Tooltip title={'cart'}>
-                            <button className={'feature-btn'}>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
-                                     className="bi bi-cart" viewBox="0 0 16 16">
-                                    <path
-                                        d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5M3.102 4l1.313 7h8.17l1.313-7zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4m7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4m-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2m7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2"/>
-                                </svg>
+                            <button className={' text-[var(--title-color-1)]'}>
+<BsBasket size={20}/>
                             </button>
                         </Tooltip>
                     </div>
-                    <div className={'search-ads'}>
+                    <div className={'w-[90%]'}>
+                        <form className={'w-full flex justify-around items-center flex-row'}>
+                            <fieldset className={'w-[80%] border-2 border-[var(--title-color-1)] rounded-full p-2'}>
+                                <input className={'outline-0'} type='text' name='keyword' placeholder='type anything'/>
+                            </fieldset>
+                            <button className={'w-[10%]'} type="submit">
+                                <BsSearch size={20} color={'var(--title-color-1)'}/>
+                            </button>
+                        </form>
+                    </div>
+
+                    <div className={'hidden'}>
                         <Link to={'/vouchers'}>
                             <img src={logo} alt="logo"/>
                         </Link>

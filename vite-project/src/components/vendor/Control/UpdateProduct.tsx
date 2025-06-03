@@ -18,7 +18,6 @@ interface data {
     subcategory_id: string,
     name: string,
     origin: string,
-    price: number,
     status: number,
     description: string,
     promotion: number,
@@ -77,10 +76,9 @@ const UpdateProduct = () => {
             subCategory_id: data ? data['subcategory_id'] :'',
             name: data ? data['name'] :'',
             origin: data ? data['origin'] :'',
-            price: data ? data['price'] :'',
             status: data ? data['status'] :'',
             description: data ? data['description'] :'',
-            stock: data ? data['stock'] :'',
+            stock: data ? data['stock'] :0,
             promotion: data ? data['promotion'] :'',
             tags: data ? data['tags'] :'',
             images: [],
@@ -96,7 +94,6 @@ const UpdateProduct = () => {
     //         formData.setFieldValue('subCategory_id', data["subcategory_id"]);
     //         formData.setFieldValue('name', data["name"]);
     //         formData.setFieldValue('origin', data["origin"]);
-    //         formData.setFieldValue('price', data["price"]);
     //         formData.setFieldValue('status', data["status"]);
     //         formData.setFieldValue('description', data["description"]);
     //         formData.setFieldValue('stock', data["stock"]);
@@ -106,6 +103,7 @@ const UpdateProduct = () => {
     //     }
     // }, [data]);
 
+    //fetch data of current product
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -123,6 +121,7 @@ const UpdateProduct = () => {
         fetchData()
     }, [])
 
+    //fetch data of categories
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -143,11 +142,12 @@ const UpdateProduct = () => {
         if (category !== null && data !== null) {
             const fetchData = async () => {
                 try {
-                    const id = data['category_id'];
-                    const url = import.meta.env.VITE_API_HOST + import.meta.env.VITE_SERVER_PORT + import.meta.env.VITE_API_G_SUBCATEGORY + id;
-                    const response = await axios.get(url);
-                    if (response) setSubCategory(response.data);
-                    else toast.error('Failed to get sub categories!');
+                    if (data) {
+                        const id = data['category_id'];
+                        const url = import.meta.env.VITE_API_HOST + import.meta.env.VITE_SERVER_PORT + import.meta.env.VITE_API_G_SUBCATEGORY + id;
+                        const response = await axios.get(url);
+                        if (response) setSubCategory(response.data);
+                    }
                 } catch (err) {
                     console.log(err);
                     toast.error('Failed to get sub categories!');
@@ -157,16 +157,15 @@ const UpdateProduct = () => {
         }
     }, [category, data]);
 
-    // useEffect(() => {
-    //     console.log('data:', data);
-    //     console.log('formData:', formData.values);
-    //     // console.log('subCategory_id:', subCategory);
-    //     // console.log('Image upload:', imgUpload);
-    // }, [data, formData.values, subCategory, imgUpload]);
+    useEffect(() => {
+        console.log('data:', data);
+        // console.log('subCategory_id:', subCategory);
+        // console.log('Image upload:', imgUpload);
+    }, [data]);
 
     useEffect(() => {
         if (data) {
-            setImageData(data.imageProducts??[]);
+            setImageData(data.imageProducts ?? []);
         }
     }, [data]);
 
@@ -189,10 +188,8 @@ const UpdateProduct = () => {
                     subCategory_id: data ? data['subcategory_id'] :'',
                     name: data ? data['name'] :'',
                     origin: data ? data['origin'] :'',
-                    price: data ? data['price'] :'',
                     status: data ? data['status'] :'',
                     description: data ? data['description'] :'',
-                    stock: data ? data['stock'] :'',
                     promotion: data ? data['promotion'] :'',
                     tags: data ? data['tags'] :'',
                     images: [],         // new image to upload
@@ -204,10 +201,8 @@ const UpdateProduct = () => {
                     subCategory_id: Yup.string().required('Please choose a sub category'),
                     name: Yup.string().required('Please enter a name'),
                     origin: Yup.string().required('Please enter origin'),
-                    price: Yup.number().required('Please enter price').min(0, 'Wrong input'),
                     status: Yup.number().required('Please enter status'),
                     description: Yup.string().required('Please enter description'),
-                    stock: Yup.number().required('Please enter stock').min(0, 'Wrong input'),
                 })}
                 validateOnBlur={true}
                 onSubmit={async (values, {setSubmitting}) => {
@@ -219,10 +214,8 @@ const UpdateProduct = () => {
                         data.append('subCategory_id', values.subCategory_id);
                         data.append('name', values.name);
                         data.append('origin', values.origin);
-                        data.append('price', values.price.toString());
                         data.append('status', values.status.toString());
                         data.append('description', values.description);
-                        data.append('stock', values.stock.toString());
                         data.append('promotion', values.promotion?.toString() || '0');
                         data.append('tags', values.tags);
                         data.append('deletedImages', JSON.stringify(values.deletedImages));
@@ -367,21 +360,6 @@ const UpdateProduct = () => {
 
                             <fieldset
                                 className={'w-full border border-gray-700 rounded-lg leading-8 m-2 flex flex-row items-center justify-between'}>
-                                <legend>Giá</legend>
-                                <input className={'w-full pl-2'} type='number' name={'price'}
-                                       placeholder={'Giá trị sản phẩm'}
-                                       onChange={handleChange}
-                                       onBlur={handleBlur}
-                                       value={values.price}/>
-                            </fieldset>
-                            {errors.price && touched.price && (
-                                <p className={'text-red-600'}>
-                                    <small className={'text-red-600 italic'}>{errors.price}</small>
-                                </p>
-                            )}
-
-                            <fieldset
-                                className={'w-full border border-gray-700 rounded-lg leading-8 m-2 flex flex-row items-center justify-between'}>
                                 <legend>Mô tả</legend>
                                 <textarea className={'w-full pl-2'} name={'description'} placeholder={'Mô tả sản phẩm'}
                                           onChange={handleChange}
@@ -471,18 +449,10 @@ const UpdateProduct = () => {
                                 </div>
                                 <div className={'w-1/2'}>
                                     <fieldset>
-                                        <legend>Tồn kho</legend>
+                                        <legend>Tổng tồn kho</legend>
                                         <input className={'w-full pl-2'} type={'number'} name={'stock'}
-                                               placeholder={'Tối thiểu là 1'}
-                                               onChange={handleChange}
-                                               onBlur={handleBlur}
-                                               value={values.stock}/>
+                                               value={data ? data['stock'] :'0'}/>
                                     </fieldset>
-                                    {errors.stock && touched.stock && (
-                                        <p className={'text-red-600'}>
-                                            <small className={'text-red-600 italic'}>{errors.stock}</small>
-                                        </p>
-                                    )}
                                 </div>
                             </fieldset>
 

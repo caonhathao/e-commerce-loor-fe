@@ -1,4 +1,4 @@
-import {useFormik, Formik} from "formik";
+import {Formik} from "formik";
 import * as Yup from "yup";
 import {toast, ToastContainer} from "react-toastify";
 import {useNavigate, useParams} from "react-router-dom";
@@ -108,7 +108,7 @@ const UpdateProduct = () => {
         const fetchData = async () => {
             try {
                 const id = params.id;
-                const url = import.meta.env.VITE_API_HOST + import.meta.env.VITE_SERVER_PORT + import.meta.env.VITE_API_G_A_PRODUCT + id;
+                const url = import.meta.env.VITE_API_HOST + import.meta.env.VITE_SERVER_PORT + import.meta.env.VITE_API_G_O_PRODUCT + id;
                 const response = await axios.get(url);
                 if (response) setData(response.data);
                 else {

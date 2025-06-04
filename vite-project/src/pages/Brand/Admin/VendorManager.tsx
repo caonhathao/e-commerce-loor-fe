@@ -59,7 +59,7 @@ const VendorManager = () => {
         if (obj) {
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-expect-error
-            navigate('/manager/e/' + obj.id);
+            navigate('/manager/show-variant/' + obj.id);
         } else toast.error("Failed to get data!");
     }
 
@@ -115,7 +115,7 @@ const VendorManager = () => {
                 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                 // @ts-expect-error
                 const id = JWTDecode(sessionStorage.getItem("userToken")).id;
-                const url = import.meta.env.VITE_API_HOST + import.meta.env.VITE_SERVER_PORT + import.meta.env.VITE_API_G_PRODUCT + id;
+                const url = import.meta.env.VITE_API_HOST + import.meta.env.VITE_SERVER_PORT + import.meta.env.VITE_API_G_A_PRODUCT + id;
                 const response = await axios.get(url, {
                     headers: {
                         Authorization: `Bearer ${sessionStorage.getItem('userToken')}`,

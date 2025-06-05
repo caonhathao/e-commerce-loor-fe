@@ -31,7 +31,7 @@ const VendorSignIn = () => {
                 if (response) {
                     sessionStorage.setItem("userToken", response.data);
                     toast.success('Sign in successfully.', {autoClose: 2000});
-                    console.log(response.data);
+                    // console.log(response.data);
                     setTimeout(() => {
                         navigate('/vendor');
                         window.location.reload();

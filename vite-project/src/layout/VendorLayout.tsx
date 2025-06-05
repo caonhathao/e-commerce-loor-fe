@@ -1,5 +1,5 @@
 import avatar from '../assets/img/loli.png'
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import {useEffect, useRef, useState} from "react";
 import * as Bs from 'react-icons/bs'
 import {AnimatePresence, motion, MotionConfig} from 'motion/react'
@@ -13,13 +13,14 @@ const VendorLayout = ({child}) => {
     const [activeTab, setActiveTab] = useState([false, false, false, false, false, false]);
     const [currentTab, setCurrentTab] = useState(-1);
     const [minimizeMenu, setMinimizeMenu] = useState(false);
+    const navigate = useNavigate();
 
     const [posAnchor, setPosAnchor] = useState({top: 0, left: 0});
 
     const navRef = useRef<HTMLDivElement>(null);
     const constraintsRef = useRef<HTMLDivElement | null>(null)
 
-    const activeCurrTab = (index: number) => {
+    const activeCurrTab = (index: number, url: string) => {
         setActiveTab((prevState) => {
             const newContent = [...prevState];
             if (currentTab !== index) {
@@ -30,6 +31,7 @@ const VendorLayout = ({child}) => {
             return newContent;
         })
         setMinimizeMenu(!minimizeMenu);
+        navigate(url);
     }
 
     const signOut = () => {
@@ -47,28 +49,28 @@ const VendorLayout = ({child}) => {
     const getMotionConfig = (isClosed: boolean) => {
         return {
             initial: {
-                width: isClosed ? 0 : 'max-content',
-                height: isClosed ? 0 : 'max-content',
-                opacity: isClosed ? 0 : 1,
-                fontSize: isClosed ? '0' : '16px',
+                width: isClosed ? 0 :'max-content',
+                height: isClosed ? 0 :'max-content',
+                opacity: isClosed ? 0 :1,
+                fontSize: isClosed ? '0' :'16px',
             },
             animate: {
-                width: isClosed ? 'max-content' : 0,
-                height: isClosed ? 'max-content' : 0,
-                opacity: isClosed ? 1 : 0,
-                fontSize: isClosed ? '16px' : '0',
+                width: isClosed ? 'max-content' :0,
+                height: isClosed ? 'max-content' :0,
+                opacity: isClosed ? 1 :0,
+                fontSize: isClosed ? '16px' :'0',
             },
             transition: {
-                width: {duration: 0.3, delay: isClosed ? 0.2 : 0},
-                height: {duration: 0.3, delay: isClosed ? 0.2 : 0},
-                opacity: {duration: 0.3, delay: isClosed ? 0.5 : 0},
-                fontSize: {duration: 0.3, delay: isClosed ? 0.5 : 0},
+                width: {duration: 0.3, delay: isClosed ? 0.2 :0},
+                height: {duration: 0.3, delay: isClosed ? 0.2 :0},
+                opacity: {duration: 0.3, delay: isClosed ? 0.5 :0},
+                fontSize: {duration: 0.3, delay: isClosed ? 0.5 :0},
             },
             exit: {
-                width: isClosed ? 0 : 'max-content',
-                height: isClosed ? 0 : 'max-content',
-                opacity: isClosed ? 0 : 1,
-                fontSize: isClosed ? '0' : '16px',
+                width: isClosed ? 0 :'max-content',
+                height: isClosed ? 0 :'max-content',
+                opacity: isClosed ? 0 :1,
+                fontSize: isClosed ? '0' :'16px',
                 overflow: 'hidden',
             },
         }
@@ -186,35 +188,31 @@ const VendorLayout = ({child}) => {
                                                className={`w-full h-full bg-gradient-to-b from-indigo-500 via-purple-500 to-pink-500 py-0.5 px-1 rounded-lg text-yellow-300 pointer-events-auto overflow-y-hidden shadow-lg shadow-gray-600`}
                                     >
                                         <li
-                                            className={`text-center p-2 ${activeTab[0] ? `bg-gradient-to-l from-red-400 to-teal-400 text-white font-bold` : `bg-transparent`} rounded-md`}
-                                            onClick={() => activeCurrTab(0)}>
-                                            <Link to={'/'}>Tổng quan</Link></li>
-                                        <li className={`text-center py-2 ${activeTab[1] ? `bg-gradient-to-l from-red-400 to-teal-400 text-white font-bold` : `bg-transparent`} rounded-md`}
-                                            onClick={() => activeCurrTab(1)}>
-                                            <Link
-                                                to={'/manage'}>Quản lí</Link>
+                                            className={`text-center p-2 ${activeTab[0] ? `bg-gradient-to-l from-red-400 to-teal-400 text-white font-bold` :`bg-transparent`} rounded-md`}
+                                            onClick={() => activeCurrTab(0,'/')}>
+                                            Tổng quan</li>
+                                        <li className={`text-center py-2 ${activeTab[1] ? `bg-gradient-to-l from-red-400 to-teal-400 text-white font-bold` :`bg-transparent`} rounded-md`}
+                                            onClick={() => activeCurrTab(1,'/manage')}>
+                                            Quản lí
                                         </li>
-                                        <li className={`text-center p-2 ${activeTab[2] ? `bg-gradient-to-l from-red-400 to-teal-400 text-white font-bold` : `bg-transparent`} rounded-md`}
-                                            onClick={() => activeCurrTab(2)}>
-                                            <Link
-                                                to={'/orders'}>Đơn hàng</Link>
+                                        <li className={`text-center p-2 ${activeTab[2] ? `bg-gradient-to-l from-red-400 to-teal-400 text-white font-bold` :`bg-transparent`} rounded-md`}
+                                            onClick={() => activeCurrTab(2,'/orders')}>
+                                            Đơn hàng
                                         </li>
-                                        <li className={`text-center p-2 ${activeTab[3] ? `bg-gradient-to-l from-red-400 to-teal-400 text-white font-bold` : `bg-transparent`} rounded-md`}
-                                            onClick={() => activeCurrTab(3)}>
-                                            <Link
-                                                to={'/support'}>Hỗ trợ</Link>
+                                        <li className={`text-center p-2 ${activeTab[3] ? `bg-gradient-to-l from-red-400 to-teal-400 text-white font-bold` :`bg-transparent`} rounded-md`}
+                                            onClick={() => activeCurrTab(3,'/support')}>
+                                            Hỗ trợ
                                         </li>
-                                        <li className={`text-center p-2 ${activeTab[4] ? `bg-gradient-to-l from-red-400 to-teal-400 text-white font-bold` : `bg-transparent`} rounded-md`}
-                                            onClick={() => activeCurrTab(4)}>
-                                            <Link
-                                                to={'/shop-info'}>Cá nhân</Link>
+                                        <li className={`text-center p-2 ${activeTab[4] ? `bg-gradient-to-l from-red-400 to-teal-400 text-white font-bold` :`bg-transparent`} rounded-md`}
+                                            onClick={() => activeCurrTab(4,'/shop-info')}>
+                                            Cá nhân
                                         </li>
-                                        <li className={`text-center p-2 ${activeTab[5] ? `bg-gradient-to-l from-red-400 to-teal-400 text-white font-bold` : `bg-transparent`} rounded-md`}
+                                        <li className={`text-center p-2 ${activeTab[5] ? `bg-gradient-to-l from-red-400 to-teal-400 text-white font-bold` :`bg-transparent`} rounded-md`}
                                             onClick={() => signOut()}>
                                             Đăng xuất
                                         </li>
                                     </motion.ul>
-                                ) : null}
+                                ) :null}
                             </AnimatePresence>
                         </MotionConfig>
                     </div>

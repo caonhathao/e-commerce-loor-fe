@@ -21,6 +21,7 @@ import VendorProfile from "./pages/Brand/Admin/VendorProfile.tsx";
 import VendorOrders from "./pages/Brand/Admin/VendorOrders.tsx";
 import Home from "./pages/Home.tsx";
 import VendorVariant from "./pages/Brand/Product/VendorVariant.tsx";
+import UpdateVariant from "./components/vendor/Control/UpdateVariant.tsx";
 
 function App() {
     const [roleName, setRoleName] = useState<string>('');
@@ -63,7 +64,7 @@ function App() {
                             <Route path={'/manager/create'} element={<VendorLayout child={<NewProduct/>}/>}/>
                             <Route path={'/manager/show-variant/:id'} element={<VendorLayout child={<VendorVariant/>}/>}/>
                             <Route path={'/manager/show-variant/update-main-description/:id'} element={<VendorLayout child={<UpdateProduct/>}/>}/>
-                            <Route path={'/manager/show-variant/update-variant-description/:id'} element={<VendorLayout child={<VendorVariant/>}/>}/>
+                            <Route path={'/manager/show-variant/update-variant-description/:id'} element={<VendorLayout child={<UpdateVariant/>}/>}/>
                             <Route path={'/orders'} element={<VendorLayout child={<VendorOrders/>}/>}/>
                             <Route path={'/support'} element={<VendorLayout child={null}/>}/>
                             <Route path={'/shop-info'} element={<VendorLayout child={<VendorProfile/>}/>}/>

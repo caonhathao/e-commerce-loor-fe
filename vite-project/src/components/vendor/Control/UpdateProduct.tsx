@@ -23,7 +23,7 @@ interface data {
     promotion: number,
     tags: string,
     stock: number,
-    imageProducts: [],
+    image_products: [],
 }
 
 const UpdateProduct = () => {
@@ -36,6 +36,7 @@ const UpdateProduct = () => {
     const [isResponse, setIsResponse] = useState(false);
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [imageData, setImageData] = useState([]);//store image in previous
+    const [delImage, setDelImage] = useState([]); //store image's id that will be deleted
     const [imgUpload, setImgUpload] = useState<img[]>([]);//store image to upload
 
 
@@ -60,9 +61,10 @@ const UpdateProduct = () => {
     //2. Remove the image when it is added (while edit info)
     const handleRemoveImage = (obj: never, type: string) => {
         console.log(type);
-        if (type === 'db')
+        if (type === 'db') {
             setImageData((prev) => prev.filter(item => item["image_id"] !== obj["image_id"]));
-        else if (type === 'upload') {
+            setDelImage(prev => [...prev, obj]);
+        } else if (type === 'upload') {
             console.log(imgUpload);
             setImgUpload((prev) => prev.filter(item => item["file"] !== obj["file"]));
         }
@@ -84,24 +86,9 @@ const UpdateProduct = () => {
             images: [],
             deletedImages: []
         })
-        setImageData(data['imageProducts'])
+        setImageData(data ? data['image_products'] :[])
+        setDelImage([]);
     }
-
-    // useEffect(() => {
-    //     if (data !== null) {
-    //         formData.setFieldValue('id', data["id"]);
-    //         formData.setFieldValue('category_id', data["category_id"]);
-    //         formData.setFieldValue('subCategory_id', data["subcategory_id"]);
-    //         formData.setFieldValue('name', data["name"]);
-    //         formData.setFieldValue('origin', data["origin"]);
-    //         formData.setFieldValue('status', data["status"]);
-    //         formData.setFieldValue('description', data["description"]);
-    //         formData.setFieldValue('stock', data["stock"]);
-    //         formData.setFieldValue('promotion', data["promotion"]);
-    //         formData.setFieldValue('tags', data["tags"].toString());
-    //         setImageData(data['imageProducts'])
-    //     }
-    // }, [data]);
 
     //fetch data of current product
     useEffect(() => {
@@ -159,15 +146,17 @@ const UpdateProduct = () => {
 
     useEffect(() => {
         console.log('data:', data);
-        // console.log('subCategory_id:', subCategory);
-        // console.log('Image upload:', imgUpload);
     }, [data]);
 
     useEffect(() => {
         if (data) {
-            setImageData(data.imageProducts ?? []);
+            setImageData(data.image_products ?? []);
         }
     }, [data]);
+
+    useEffect(() => {
+        console.log('deleted:', delImage);
+    }, [delImage]);
 
     if (category.length === 0 || subCategory.length === 0 || data === null) return (
         <>
@@ -192,7 +181,7 @@ const UpdateProduct = () => {
                     description: data ? data['description'] :'',
                     promotion: data ? data['promotion'] :'',
                     tags: data ? data['tags'] :'',
-                    images: [],         // new image to upload
+                    images: data ? data['image_products'] :[],         // new image to upload
                     deletedImages: []   // store image ids to delete
                 }}
                 enableReinitialize={true}
@@ -205,7 +194,9 @@ const UpdateProduct = () => {
                     description: Yup.string().required('Please enter description'),
                 })}
                 validateOnBlur={true}
-                onSubmit={async (values, {setSubmitting}) => {
+                onSubmit={async (values) => {
+                    setIsSubmitted(true);
+                    setIsResponse(false)
                     try {
                         const data = new FormData();
 
@@ -218,11 +209,13 @@ const UpdateProduct = () => {
                         data.append('description', values.description);
                         data.append('promotion', values.promotion?.toString() || '0');
                         data.append('tags', values.tags);
-                        data.append('deletedImages', JSON.stringify(values.deletedImages));
+                        data.append('deletedImages', JSON.stringify(delImage));
 
-                        values.images.forEach(image => {
-                            data.append('images', image.file);
-                        });
+                        if (values.images.length > 0) {
+                            values.images.forEach(image => {
+                                data.append('images', image.file);
+                            });
+                        }
 
                         const url = `${import.meta.env.VITE_API_HOST}${import.meta.env.VITE_SERVER_PORT}${import.meta.env.VITE_API_U_PRODUCT}${values.id}`;
                         const response = await axios.put(url, data, {
@@ -231,20 +224,21 @@ const UpdateProduct = () => {
                             }
                         });
 
-                        if (response.status === 200) {
-                            toast.success('Sản phẩm đã được cập nhật thành công!', {autoClose: 1000});
-                            setTimeout(() => {
-                                navigate(-1);
-                            }, 1200);
-                        } else {
-                            toast.error('Cập nhật thất bại! Vui lòng kiểm tra các trường nhập!');
+                        if (response) {
+                            setIsSubmitted(false);
+                            setIsResponse(true);
+                            if (response.status === 200) {
+                                toast.success('Sản phẩm đã được cập nhật thành công!', {autoClose: 1000});
+                                setTimeout(() => {
+                                    window.location.reload();
+                                }, 1200);
+                            } else {
+                                toast.error('Cập nhật thất bại! Vui lòng kiểm tra các trường nhập!');
+                            }
                         }
-
                     } catch (error) {
                         toast.error('Failed');
                         console.log(error);
-                    } finally {
-                        setSubmitting(false);
                     }
                 }}
             >
@@ -450,7 +444,7 @@ const UpdateProduct = () => {
                                 <div className={'w-1/2'}>
                                     <fieldset>
                                         <legend>Tổng tồn kho</legend>
-                                        <input className={'w-full pl-2'} type={'number'} name={'stock'}
+                                        <input className={'w-full pl-2'} type={'number'} name={'stock'} disabled={true}
                                                value={data ? data['stock'] :'0'}/>
                                     </fieldset>
                                 </div>

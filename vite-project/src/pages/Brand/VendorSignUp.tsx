@@ -8,6 +8,8 @@ import {Link, useNavigate} from "react-router-dom";
 import '../../assets/css/pages/customer/SignUp.css'
 import {ToastContainer, toast} from "react-toastify";
 import {BsBagHeart, BsCart, BsPersonCircle} from "react-icons/bs";
+import apiClient from "../../services/apiClient.tsx";
+import endpoints from "../../services/endpoints.tsx";
 
 const VendorSignUp = () => {
     const navigate = useNavigate();
@@ -24,10 +26,7 @@ const VendorSignUp = () => {
         },
         onSubmit: async (values) => {
             try {
-                const url = import.meta.env.VITE_API_HOST + import.meta.env.VITE_SERVER_PORT + import.meta.env.VITE_API_R_BRAND;
-                console.log(url);
-                const response = await axios.post(url, values);
-                console.log(response.data);
+                const response = await apiClient.post(endpoints.auth.brandRegister, values)
                 toast.success(response.data.message);
             } catch (err) {
                 // eslint-disable-next-line @typescript-eslint/ban-ts-comment

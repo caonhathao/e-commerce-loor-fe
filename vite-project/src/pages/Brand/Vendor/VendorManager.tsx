@@ -4,15 +4,20 @@ import {useNavigate} from "react-router-dom";
 import {toast, ToastContainer} from "react-toastify";
 import {useEffect, useState} from "react";
 import {io} from 'socket.io-client'
-import axios from 'axios'
 import JWTDecode from "../../../security/JWTDecode.tsx";
 import * as Bs from 'react-icons/bs'
 import {useProduct} from "../../../context/ProductContext.tsx";
 import AuthenticateBox from "../../../components/authenticate/AuthenticateBox.tsx";
 import Loading from "../../../components/loading/Loading.tsx";
 import {useFormik} from "formik";
+import endpoints from "../../../services/endpoints.tsx";
+import apiClient from "../../../services/apiClient.tsx";
+import {getAccessToken} from "../../../services/tokenStore.tsx";
 
-const socket = io(import.meta.env.VITE_API_HOST + import.meta.env.VITE_SERVER_PORT);
+const socket = io(endpoints.system.socketConnection, {
+    withCredentials: true,
+    transports: ['websocket', 'polling'],
+});
 
 const VendorManager = () => {
     const navigate = useNavigate();
@@ -30,8 +35,7 @@ const VendorManager = () => {
         },
         onSubmit: async () => {
             try {
-                const api = import.meta.env.VITE_API_HOST + import.meta.env.VITE_SERVER_PORT + import.meta.env.VITE_API_S_PRODUCT + formData.values.keyword
-                const response = await axios.get(api);
+                const response = await apiClient.post(endpoints.public.getProductByKeyword(formData.values.keyword))
                 if (response.status === 200) {
                     toast.success(response.data.message, {autoClose: 1500});
                     setTimeout(() => setData(response.data), 1600);
@@ -52,7 +56,10 @@ const VendorManager = () => {
     const handleItem = (obj: object) => {
         if (isDelete) {
             deleteItem(obj);
-        } else updateItem(obj);
+        } else {
+            setProduct(obj)
+            updateItem(obj);
+        }
     }
 
     const updateItem = (obj: object) => {
@@ -63,12 +70,12 @@ const VendorManager = () => {
         } else toast.error("Failed to get data!");
     }
 
-    const deleteItem = (obj: any) => {
+    const deleteItem = (obj: object) => {
         setProduct(obj);
     }
 
     const handleSortItem = () => {
-        //if sort follow status open
+        //if sort follows status open
         if (sortStatus) {
             setSortStatus(false);
             setData((prev) => {
@@ -114,13 +121,8 @@ const VendorManager = () => {
             try {
                 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                 // @ts-expect-error
-                const id = JWTDecode(sessionStorage.getItem("userToken")).id;
-                const url = import.meta.env.VITE_API_HOST + import.meta.env.VITE_SERVER_PORT + import.meta.env.VITE_API_G_A_PRODUCT + id;
-                const response = await axios.get(url, {
-                    headers: {
-                        Authorization: `Bearer ${sessionStorage.getItem('userToken')}`,
-                    }
-                });
+                const id = JWTDecode(getAccessToken()).id;
+                const response = await apiClient.get(endpoints.public.getAllProducts(id))
 
                 if (response) {
                     toast.success('Load data successfully.', {
@@ -145,12 +147,7 @@ const VendorManager = () => {
         if (isAllow) {
             const fetch = async () => {
                 try {
-                    const url = import.meta.env.VITE_API_HOST + import.meta.env.VITE_SERVER_PORT + import.meta.env.VITE_API_D_PRODUCT + product.id;
-                    const response = await axios.delete(url, {
-                        headers: {
-                            Authorization: `Bearer ${sessionStorage.getItem('userToken')}`
-                        }
-                    });
+                    const response = await apiClient.post(endpoints.brand.deleteProduct(product.id))
 
                     if (response) {
                         toast.success('Xóa sản phẩm thanh công', {autoClose: 1000});

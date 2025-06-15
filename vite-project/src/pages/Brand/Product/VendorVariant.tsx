@@ -1,9 +1,10 @@
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import {useParams} from "react-router-dom";
 import {useEffect, useState} from "react";
-import axios from "axios";
 import {toast} from "react-toastify";
-import {BsPlayCircle} from "react-icons/bs";
+import {BsPlayCircle, BsPlusCircle} from "react-icons/bs";
+import apiClient from "../../../services/apiClient.tsx";
+import endpoints from "../../../services/endpoints.tsx";
 
 interface data {
     id: string;
@@ -13,17 +14,13 @@ interface data {
 const VendorVariant = () => {
     const params = useParams();
     const [data, setData] = useState([]);
+    const navigator = useNavigate();
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const id = params.id;
-                const url = import.meta.env.VITE_API_HOST + import.meta.env.VITE_SERVER_PORT + import.meta.env.VITE_API_G_A_VARIANT + id;
-                const response = await axios.get(url, {
-                    headers: {
-                        Authorization: `Bearer ${sessionStorage.getItem('userToken')}`,
-                    }
-                });
+                const response = await apiClient.get(endpoints.public.getAllVariant(id));
                 if (response) setData(response.data);
                 else {
                     toast.error('Failed to get product!');
@@ -35,12 +32,24 @@ const VendorVariant = () => {
         fetchData()
     }, [])
 
+    const handleCreateVariant = () => {
+        navigator('/manager/show-variant/create-new-variant/' + params.id);
+    }
+
     return (
         <div className={'w-full h-full flex flex-col justify-center items-center'}>
             {/*show button to access update main description of product*/}
             {/*others to access update variant's description of product*/}
-            <div className={'w-full p-2 my-2 text-2xl text-center font-bold border-b-2 border-gray-400'}>
-                Chỉnh sửa thông tin<br/> sản phẩm và phiên bản
+            <div className={'w-[80%]  p-2 my-2 text-2xl text-center font-bold border-b-2 border-gray-400'}>
+                Sản phẩm và phiên bản
+            </div>
+            <div className={'border-[1px] border-[var(--bg-color)] p-2 rounded-lg text-xs italic w-[80%]'}>
+                <ol className={'list-decimal list-inside'}>
+                    <li>Sản phẩm và phiên bản là trang quản lí các mẫu mã của một sản phẩm bất kì mà ban đang xem.</li>
+                    <li>Mọi thông tin chung của sản phẩm sẽ được cập nhật ở mục "Thông tin chung".</li>
+                    <li>Với các phiên bản (mẫu mã) của sản phẩm, vui lòng thêm bên dưới và cung cấp thông tin.</li>
+                    <li>Không cho phép trùng nhau giữa các phiên bản.</li>
+                </ol>
             </div>
             <ul className={'w-[80%]'}>
                 <li className={'w-full border-2 border-[var(--bg-color-btn-2)] p-2 rounded-lg my-2 flex flex-row justify-between items-center'}>
@@ -52,13 +61,15 @@ const VendorVariant = () => {
                     </div>
                     <div className={'w-[20%]'}>
                         <div className={'w-full flex flex-row justify-center items-center'}>
-                            <Link to={'/manager/show-variant/update-main-description/' + params['id']}><BsPlayCircle size={30} color={'var(--text-color)'}/></Link>
+                            <Link to={'/manager/show-variant/update-main-description/' + params['id']}><BsPlayCircle
+                                size={30} color={'var(--text-color)'}/></Link>
 
                         </div>
                     </div>
                 </li>
                 {data && data.map((item: data, i) => (
-                    <li key={i} className={'w-full border-2 border-[var(--bg-color-btn-2)] p-2 rounded-lg my-2 flex flex-row justify-between items-center'}>
+                    <li key={i}
+                        className={'w-full border-2 border-[var(--bg-color-btn-2)] p-2 rounded-lg my-2 flex flex-row justify-between items-center'}>
                         <div className={'w-[80%] border-r-2 border-[var(--text-color)]'}>
                             <strong
                                 className={'text-lg border-b-2 border-[var(--text-color)]'}>Thông tin
@@ -67,12 +78,27 @@ const VendorVariant = () => {
                         </div>
                         <div className={'w-[20%]'}>
                             <div className={'w-full flex flex-row justify-center items-center'}>
-                                <Link to={'/manager/show-variant/update-variant-description/' + item.id}><BsPlayCircle size={30} color={'var(--text-color)'}/></Link>
+                                <Link to={'/manager/show-variant/update-variant-description/' + item.id}><BsPlayCircle
+                                    size={30} color={'var(--text-color)'}/></Link>
                             </div>
                         </div>
                     </li>
                 ))}
+                <li
+                    className={'w-full border-2 border-[var(--bg-color-btn-2)] p-2 rounded-lg my-2 flex flex-row justify-between items-center'}>
+                    <div className={'w-[80%] border-r-2 border-[var(--text-color)]'}>
+                        <strong
+                            className={'text-lg border-b-2 border-[var(--text-color)]'}>Thêm phiên bản mới</strong>
+                    </div>
+                    <div className={'w-[20%]'}>
+                        <div className={'w-full flex flex-row justify-center items-center'}>
+                            <button type={'button'}><BsPlusCircle
+                                size={30} color={'var(--text-color)'} onClick={() => handleCreateVariant()}/></button>
+                        </div>
+                    </div>
+                </li>
             </ul>
+
         </div>
     )
 }

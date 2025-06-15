@@ -1,4 +1,4 @@
-import Header from "../components/Header.tsx";
+import Header from "../components/modules/Header.tsx";
 import '../assets/css/components/Layout.css'
 
 const Layout = ({child}) => {

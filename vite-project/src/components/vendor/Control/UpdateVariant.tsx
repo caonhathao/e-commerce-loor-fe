@@ -3,10 +3,11 @@ import {Formik} from "formik";
 import * as Yup from "yup";
 import {toast, ToastContainer} from "react-toastify";
 import {useNavigate, useParams} from "react-router-dom";
-import axios from "axios";
 import {useEffect, useState} from "react";
 import Loading from "../../loading/Loading.tsx";
 import * as Bs from "react-icons/bs";
+import endpoints from "../../../services/endpoints.tsx";
+import apiClient from "../../../services/apiClient.tsx";
 
 interface data {
     id: string,
@@ -29,11 +30,11 @@ const UpdateProduct = () => {
     const handleResetForm = ({setValues}) => {
         console.log('reset form');
         setValues({
-            name: data ? data['name'] :'unknown',
-            price: data ? data['price'] :0,
-            sku: data ? data['sku'] :'',
-            status: data ? data['status'] :false,
-            stock: data ? data['stock'] :0,
+            name: data ? data['name'] : 'unknown',
+            price: data ? data['price'] : 0,
+            sku: data ? data['sku'] : '',
+            status: data ? data['status'] : false,
+            stock: data ? data['stock'] : 0,
         })
     }
 
@@ -42,12 +43,7 @@ const UpdateProduct = () => {
         const fetchData = async () => {
             try {
                 const id = params.id;
-                const url = import.meta.env.VITE_API_HOST + import.meta.env.VITE_SERVER_PORT + import.meta.env.VITE_API_G_O_VARIANT + id;
-                const response = await axios.get(url, {
-                    headers: {
-                        Authorization: `Bearer ${sessionStorage.getItem('userToken')}`
-                    }
-                });
+                const response = await apiClient.get(endpoints.public.getVariantDetail(id));
                 if (response) setData(response.data);
                 else {
                     toast.error('Failed to get product!');
@@ -75,12 +71,12 @@ const UpdateProduct = () => {
         <div className={'w-auto h-full m-2 p-2 my-2 flex flex-col justify-start items-center'}>
             <Formik
                 initialValues={{
-                    id: data ? data["id"] :'',
-                    name: data ? data["name"] :'unknown',
-                    sku: data ? data['sku'] :'',
-                    price: data ? data['price'] :0,
-                    stock: data ? data['stock'] :0,
-                    status: data ? data['status'] :false,
+                    id: data ? data["id"] : '',
+                    name: data ? data["name"] : 'unknown',
+                    sku: data ? data['sku'] : '',
+                    price: data ? data['price'] : 0,
+                    stock: data ? data['stock'] : 0,
+                    status: data ? data['status'] : false,
                 }}
                 enableReinitialize={true}
                 validationSchema={Yup.object({
@@ -102,12 +98,7 @@ const UpdateProduct = () => {
                         data.append('stock', values.stock.toString());
 
 
-                        const url = import.meta.env.VITE_API_HOST + import.meta.env.VITE_SERVER_PORT + import.meta.env.VITE_API_U_VARIANT + params.id;
-                        const response = await axios.put(url, data, {
-                            headers: {
-                                Authorization: `Bearer ${sessionStorage.getItem('userToken')}`
-                            }
-                        });
+                        const response = await apiClient.put(endpoints.brand.updateVariant(params.id))
 
                         if (response.status === 200) {
                             toast.success('Sản phẩm đã được cập nhật thành công!', {autoClose: 1000});
@@ -145,7 +136,7 @@ const UpdateProduct = () => {
                             <fieldset
                                 className={'w-full p-0 leading-8 border border-gray-700 rounded-lg m-2 flex flex-row items-center justify-between'}>
                                 <legend>ID</legend>
-                                <textarea className={'w-full p-2 overflow-clip'} type={'text'} name={'id'}
+                                <textarea className={'w-full p-2 overflow-clip'} name={'id'}
                                           placeholder={'ID sản phẩm'}
                                           disabled
                                           value={values.id}></textarea>

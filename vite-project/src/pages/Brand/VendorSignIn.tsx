@@ -1,6 +1,5 @@
 import {useEffect, useState} from "react";
 import {useFormik} from "formik";
-import axios from "axios";
 import * as Yup from "yup";
 import {Tooltip} from "@mui/material";
 import Typewriter from "typewriter-effect";
@@ -8,6 +7,9 @@ import {Link, useNavigate} from "react-router-dom";
 import '../../assets/css/pages/customer/SignUp.css'
 import {ToastContainer, toast} from "react-toastify";
 import {BsBagHeart, BsCart, BsPersonCircle} from "react-icons/bs";
+import apiClient from "../../services/apiClient.tsx";
+import endpoints from "../../services/endpoints.tsx";
+import {setAccessToken} from "../../services/tokenStore.tsx";
 
 const VendorSignIn = () => {
 
@@ -21,15 +23,13 @@ const VendorSignIn = () => {
             password: '',
         },
         onSubmit: async (values) => {
+            console.log(values)
             try {
-                const url = import.meta.env.VITE_API_HOST + import.meta.env.VITE_SERVER_PORT + import.meta.env.VITE_API_L_BRAND;
-
                 /*return: response will have a jwt string*/
-
                 // we need to convert jwt and find the role
-                const response = await axios.post(url, values);
+                const response = await apiClient.post(endpoints.auth.brandLogin, values)
                 if (response) {
-                    sessionStorage.setItem("userToken", response.data);
+                    setAccessToken(response.data.access)
                     toast.success('Sign in successfully.', {autoClose: 2000});
                     // console.log(response.data);
                     setTimeout(() => {
@@ -40,7 +40,7 @@ const VendorSignIn = () => {
             } catch (err) {
                 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                 // @ts-expect-error
-                toast.error(err.response.data.message);
+                toast.error(err);
                 console.log(err)
             }
         },
@@ -135,10 +135,15 @@ const VendorSignIn = () => {
 
                         <div className={'flex flex-col justify-center items-center'}>
                             <div className={'flex justify-center item-center flex-row'}>
-                                <button className={'rounded-full border-2 border-[var(--bg-color-btn-2)] px-2 py-3 m-2.5 text-[var(--text-color)]'} type={'submit'}>Submit</button>
-                                <button className={'rounded-full border-2 border-[var(--bg-color-btn-2)] px-2 py-3 m-2.5 text-[var(--text-color)]'} onClick={() => {
-                                    navigate(-1)
-                                }}>Cancel
+                                <button
+                                    className={'rounded-full border-2 border-[var(--bg-color-btn-2)] px-2 py-3 m-2.5 text-[var(--text-color)]'}
+                                    type={'submit'}>Submit
+                                </button>
+                                <button
+                                    className={'rounded-full border-2 border-[var(--bg-color-btn-2)] px-2 py-3 m-2.5 text-[var(--text-color)]'}
+                                    onClick={() => {
+                                        navigate(-1)
+                                    }}>Cancel
                                 </button>
                             </div>
                             <Link to={'/register-new-vendor'}>You are new? Register here</Link>

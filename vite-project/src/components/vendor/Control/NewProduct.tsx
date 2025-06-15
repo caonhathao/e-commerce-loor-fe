@@ -2,10 +2,11 @@ import {useFormik} from "formik";
 import * as Yup from "yup";
 import {toast, ToastContainer} from "react-toastify";
 import {useNavigate} from "react-router-dom";
-import axios from "axios";
 import {useEffect, useState} from "react";
 import * as Bs from 'react-icons/bs'
 import Loading from "../../loading/Loading.tsx";
+import apiClient from "../../../services/apiClient.tsx";
+import endpoints from "../../../services/endpoints.tsx";
 
 interface img {
     file: File,
@@ -50,20 +51,15 @@ const NewProduct = () => {
                 dataSend.append('status', values.status.toString())
                 dataSend.append('description', values.description)
                 dataSend.append('stock', values.stock.toString())
-                dataSend.append('promotion', values.promotion)
+                dataSend.append('promotion', values.promotion.toString())
                 dataSend.append('tags', values.tags)
 
                 values.images.forEach(image => {
                     dataSend.append('images', image["file"])
                 })
 
-                const url = import.meta.env.VITE_API_HOST + import.meta.env.VITE_SERVER_PORT + import.meta.env.VITE_API_C_PRODUCT;
-                const response = await axios.post(url, dataSend, {
-                    headers: {
-                        Authorization: `Bearer ${sessionStorage.getItem("userToken")}`,
-                        "Content-Type": "multipart/form-data",
-                    },
-                });
+                const response = await apiClient.post(endpoints.brand.createProduct, dataSend)
+
                 if (response) {
                     setIsFetching(false);
                     toast.success('Sản phẩm đã dược tạo thành công!', {autoClose: 1000});
@@ -110,8 +106,7 @@ const NewProduct = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const url = import.meta.env.VITE_API_HOST + import.meta.env.VITE_SERVER_PORT + import.meta.env.VITE_API_G_CATEGORY;
-                const response = await axios.get(url);
+                const response = await apiClient.get(endpoints.public.getCategory);
                 if (response) setCategory(response.data);
                 else toast.error('Failed to get categories!');
             } catch (err) {
@@ -122,14 +117,13 @@ const NewProduct = () => {
         fetchData()
     }, []);
 
-    //get all sub categories from any category
+    //get all subcategories from any category
     useEffect(() => {
         if (formData.values.category_id !== '') {
             const fetchData = async () => {
                 try {
                     const id = formData.values.category_id;
-                    const url = import.meta.env.VITE_API_HOST + import.meta.env.VITE_SERVER_PORT + import.meta.env.VITE_API_G_SUBCATEGORY + id;
-                    const response = await axios.get(url);
+                    const response = await apiClient(endpoints.public.getSubCategory(id));
                     if (response) setSubCategory(response.data);
                     else toast.error('Failed to get sub categories!');
                 } catch (err) {

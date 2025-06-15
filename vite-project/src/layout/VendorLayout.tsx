@@ -1,11 +1,12 @@
 import avatar from '../assets/img/loli.png'
-import {Link, useNavigate} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import {useEffect, useRef, useState} from "react";
 import * as Bs from 'react-icons/bs'
 import {AnimatePresence, motion, MotionConfig} from 'motion/react'
 import {toast} from "react-toastify";
 import JWTDecode from "../security/JWTDecode.tsx";
 import {animate, press} from "motion";
+import {getAccessToken, removeAccessToken} from "../services/tokenStore.tsx";
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-expect-error
@@ -35,7 +36,7 @@ const VendorLayout = ({child}) => {
     }
 
     const signOut = () => {
-        sessionStorage.removeItem("userToken");
+        removeAccessToken();
         toast.success('Đăng xuất thành công', {autoClose: 2000});
         setTimeout(() => {
             window.location.href = '/';
@@ -145,7 +146,7 @@ const VendorLayout = ({child}) => {
                         <div className={'w-9/12 text-center text-lg text-yellow-300 font-bold'}>Xin chào <br/> {
                             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                             // @ts-expect-error
-                            decodeURIComponent(JWTDecode(sessionStorage.getItem('userToken')).name)
+                            JWTDecode(getAccessToken()).name||'Bạn'
                         }
                         </div>
                     </div>

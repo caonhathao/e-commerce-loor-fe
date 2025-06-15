@@ -1,13 +1,14 @@
 import {useFormik} from "formik";
 import * as Yup from "yup";
-import JWTDecode from "../../security/JWTDecode.tsx";
 import {toast} from "react-toastify";
-import axios from "axios";
 import {useProduct} from "../../context/ProductContext.tsx";
+import apiClient from "../../services/apiClient.tsx";
+import endpoints from "../../services/endpoints.tsx";
+import React from "react";
 
 const AuthenticateBox = ({setIsDelete, setIsAllow, message}: {
-    setIsDelete: any,
-    setIsAllow: any,
+    setIsDelete: React.Dispatch<React.SetStateAction<boolean>>,
+    setIsAllow: React.Dispatch<React.SetStateAction<boolean>>,
     message: string
 }) => {
     const {setProduct} = useProduct();
@@ -23,13 +24,7 @@ const AuthenticateBox = ({setIsDelete, setIsAllow, message}: {
             },
             onSubmit: async (values) => {
                 try {
-                    const id = JWTDecode(sessionStorage.getItem('userToken')).id;
-                    const url = import.meta.env.VITE_API_HOST + import.meta.env.VITE_SERVER_PORT + import.meta.env.VITE_API_V_BRAND + id;
-                    const response = await axios.post(url, values, {
-                        headers: {
-                            Authorization: `Bearer ${sessionStorage.getItem('userToken')}`
-                        }
-                    });
+                    const response = await apiClient.post(endpoints.auth.authBrand, values)
                     if (response) {
                         toast.success('Xác thực thành công', {autoClose: 1000});
                         //try to delete the product

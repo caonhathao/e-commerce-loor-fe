@@ -2,10 +2,11 @@ import {Formik} from "formik";
 import * as Yup from "yup";
 import {toast, ToastContainer} from "react-toastify";
 import {useNavigate, useParams} from "react-router-dom";
-import axios from "axios";
 import React, {useEffect, useState} from "react";
 import Loading from "../../loading/Loading.tsx";
 import * as Bs from "react-icons/bs";
+import apiClient from "../../../services/apiClient.tsx";
+import endpoints from "../../../services/endpoints.tsx";
 
 interface img {
     file: File,
@@ -73,31 +74,30 @@ const UpdateProduct = () => {
     const handleResetForm = (setValues) => {
         console.log('reset form');
         setValues({
-            id: data ? data["id"] :"",
-            category_id: data ? data['category_id'] :'',
-            subCategory_id: data ? data['subcategory_id'] :'',
-            name: data ? data['name'] :'',
-            origin: data ? data['origin'] :'',
-            status: data ? data['status'] :'',
-            description: data ? data['description'] :'',
-            stock: data ? data['stock'] :0,
-            promotion: data ? data['promotion'] :'',
-            tags: data ? data['tags'] :'',
+            id: data ? data["id"] : "",
+            category_id: data ? data['category_id'] : '',
+            subcategory_id: data ? data['subcategory_id'] : '',
+            name: data ? data['name'] : '',
+            origin: data ? data['origin'] : '',
+            status: data ? data['status'] : 0,
+            description: data ? data['description'] : '',
+            stock: data ? data['stock'] : 0,
+            promotion: data ? data['promotion'] : 0,
+            tags: data ? data['tags'] : '',
             images: [],
             deletedImages: []
         })
-        setImageData(data ? data['image_products'] :[])
+        setImageData(data ? data['image_products'] : [])
         setDelImage([]);
     }
 
-    //fetch data of current product
+    //fetch data of the current product
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const id = params.id;
-                const url = import.meta.env.VITE_API_HOST + import.meta.env.VITE_SERVER_PORT + import.meta.env.VITE_API_G_O_PRODUCT + id;
-                const response = await axios.get(url);
-                if (response) setData(response.data);
+                const response = await apiClient.get(endpoints.public.getProductDetail(id))
+                if (response.status === 200) setData(response.data);
                 else {
                     toast.error('Failed to get product!');
                 }
@@ -112,9 +112,7 @@ const UpdateProduct = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const url = import.meta.env.VITE_API_HOST + import.meta.env.VITE_SERVER_PORT + import.meta.env.VITE_API_G_CATEGORY;
-                const response = await axios.get(url);
-                console.log(response);
+                const response = await apiClient.get(endpoints.public.getCategory);
                 if (response) setCategory(response.data);
                 else toast.error('Failed to get categories!');
             } catch (err) {
@@ -131,8 +129,7 @@ const UpdateProduct = () => {
                 try {
                     if (data) {
                         const id = data['category_id'];
-                        const url = import.meta.env.VITE_API_HOST + import.meta.env.VITE_SERVER_PORT + import.meta.env.VITE_API_G_SUBCATEGORY + id;
-                        const response = await axios.get(url);
+                        const response = await apiClient(endpoints.public.getSubCategory(id));
                         if (response) setSubCategory(response.data);
                     }
                 } catch (err) {
@@ -172,16 +169,16 @@ const UpdateProduct = () => {
         <div className={'w-auto h-full m-2 p-2 my-2 flex flex-col justify-start items-center'}>
             <Formik
                 initialValues={{
-                    id: data ? data["id"] :'',
-                    category_id: data ? data['category_id'] :'',
-                    subCategory_id: data ? data['subcategory_id'] :'',
-                    name: data ? data['name'] :'',
-                    origin: data ? data['origin'] :'',
-                    status: data ? data['status'] :'',
-                    description: data ? data['description'] :'',
-                    promotion: data ? data['promotion'] :'',
-                    tags: data ? data['tags'] :'',
-                    images: data ? data['image_products'] :[],         // new image to upload
+                    id: data ? data["id"] : '',
+                    category_id: data ? data['category_id'] : '',
+                    subCategory_id: data ? data['subcategory_id'] : '',
+                    name: data ? data['name'] : '',
+                    origin: data ? data['origin'] : '',
+                    status: data ? data['status'] : '',
+                    description: data ? data['description'] : '',
+                    promotion: data ? data['promotion'] : '',
+                    tags: data ? data['tags'] : '',
+                    images: data ? data['image_products'] : [],         // new image to upload
                     deletedImages: []   // store image ids to delete
                 }}
                 enableReinitialize={true}
@@ -195,6 +192,7 @@ const UpdateProduct = () => {
                 })}
                 validateOnBlur={true}
                 onSubmit={async (values) => {
+                    console.log(values);
                     setIsSubmitted(true);
                     setIsResponse(false)
                     try {
@@ -217,12 +215,7 @@ const UpdateProduct = () => {
                             });
                         }
 
-                        const url = `${import.meta.env.VITE_API_HOST}${import.meta.env.VITE_SERVER_PORT}${import.meta.env.VITE_API_U_PRODUCT}${values.id}`;
-                        const response = await axios.put(url, data, {
-                            headers: {
-                                Authorization: `Bearer ${sessionStorage.getItem('userToken')}`
-                            }
-                        });
+                        const response = await apiClient.put(endpoints.brand.updateProduct(values.id), data);
 
                         if (response) {
                             setIsSubmitted(false);
@@ -282,7 +275,7 @@ const UpdateProduct = () => {
                                         <select name={'subCategory_id'}
                                                 className={'w-full'}
                                                 onChange={handleChange}
-                                                value={values.subCategory_id ? values.subCategory_id :data['subcategory_id']}
+                                                value={values.subCategory_id ? values.subCategory_id : data['subcategory_id']}
                                                 onBlur={handleBlur}>
                                             <option value={'0'}>none</option>
                                             {subCategory && subCategory.map((item, i) => (
@@ -445,7 +438,7 @@ const UpdateProduct = () => {
                                     <fieldset>
                                         <legend>Tổng tồn kho</legend>
                                         <input className={'w-full pl-2'} type={'number'} name={'stock'} disabled={true}
-                                               value={data ? data['stock'] :'0'}/>
+                                               value={data ? data['stock'] : '0'}/>
                                     </fieldset>
                                 </div>
                             </fieldset>

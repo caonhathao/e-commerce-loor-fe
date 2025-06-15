@@ -9,31 +9,31 @@ import VendorSignIn from "./pages/Brand/VendorSignIn.tsx";
 import Account from "./pages/Account/Account.tsx";
 import {useEffect, useState} from "react";
 import VendorLayout from "./layout/VendorLayout.tsx";
-import VendorHome from "./pages/Brand/Admin/VendorHome.tsx";
+import VendorHome from "./pages/Brand/Vendor/VendorHome.tsx";
 import JWTDecode from "./security/JWTDecode.tsx";
-import VendorManager from "./pages/Brand/Admin/VendorManager.tsx";
+import VendorManager from "./pages/Brand/Vendor/VendorManager.tsx";
 import NewProduct from "./components/vendor/Control/NewProduct.tsx";
 import {ToastContainer} from "react-toastify";
 import Loading from "./components/loading/Loading.tsx";
 import UpdateProduct from "./components/vendor/Control/UpdateProduct.tsx";
 import {ProductProvider} from "./context/ProductContext.tsx";
-import VendorProfile from "./pages/Brand/Admin/VendorProfile.tsx";
-import VendorOrders from "./pages/Brand/Admin/VendorOrders.tsx";
+import VendorProfile from "./pages/Brand/Vendor/VendorProfile.tsx";
+import VendorOrders from "./pages/Brand/Vendor/VendorOrders.tsx";
 import Home from "./pages/Home.tsx";
 import VendorVariant from "./pages/Brand/Product/VendorVariant.tsx";
 import UpdateVariant from "./components/vendor/Control/UpdateVariant.tsx";
+import {getAccessToken} from "./services/tokenStore.tsx";
+import NewVariant from "./components/vendor/Control/NewVariant.tsx";
 
 function App() {
     const [roleName, setRoleName] = useState<string>('');
 
 
     useEffect(() => {
-        if (sessionStorage.getItem('userToken') === null) setRoleName("ROLE_CUSTOMER");
-        else {
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-expect-error
-            setRoleName(JWTDecode(sessionStorage.getItem('userToken'))["role"]);
-        }
+        if (getAccessToken() !== '') {
+            const res = JWTDecode(getAccessToken())
+            setRoleName(res.role)
+        } else setRoleName('ROLE_CUSTOMER')
     }, []);
 
     if (roleName === '') return (
@@ -62,9 +62,14 @@ function App() {
                             <Route path={'/'} element={<VendorLayout child={<VendorHome/>}/>}/>
                             <Route path={'/manage'} element={<VendorLayout child={<VendorManager/>}/>}/>
                             <Route path={'/manager/create'} element={<VendorLayout child={<NewProduct/>}/>}/>
-                            <Route path={'/manager/show-variant/:id'} element={<VendorLayout child={<VendorVariant/>}/>}/>
-                            <Route path={'/manager/show-variant/update-main-description/:id'} element={<VendorLayout child={<UpdateProduct/>}/>}/>
-                            <Route path={'/manager/show-variant/update-variant-description/:id'} element={<VendorLayout child={<UpdateVariant/>}/>}/>
+                            <Route path={'/manager/show-variant/:id'}
+                                   element={<VendorLayout child={<VendorVariant/>}/>}/>
+                            <Route path={'/manager/show-variant/create-new-variant/:id'}
+                                   element={<VendorLayout child={<NewVariant/>}/>}/>
+                            <Route path={'/manager/show-variant/update-main-description/:id'}
+                                   element={<VendorLayout child={<UpdateProduct/>}/>}/>
+                            <Route path={'/manager/show-variant/update-variant-description/:id'}
+                                   element={<VendorLayout child={<UpdateVariant/>}/>}/>
                             <Route path={'/orders'} element={<VendorLayout child={<VendorOrders/>}/>}/>
                             <Route path={'/support'} element={<VendorLayout child={null}/>}/>
                             <Route path={'/shop-info'} element={<VendorLayout child={<VendorProfile/>}/>}/>

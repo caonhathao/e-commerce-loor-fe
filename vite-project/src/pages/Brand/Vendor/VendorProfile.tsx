@@ -1,10 +1,12 @@
 import {useEffect, useState} from "react";
 import JWTDecode from "../../../security/JWTDecode.tsx";
-import axios from "axios";
 import {toast} from "react-toastify";
 import Loading from "../../../components/loading/Loading.tsx";
 import {useFormik} from "formik";
 import * as Yup from "yup";
+import {getAccessToken} from "../../../services/tokenStore.tsx";
+import apiClient from "../../../services/apiClient.tsx";
+import endpoints from "../../../services/endpoints.tsx";
 
 interface vendorData {
     id?: string;
@@ -60,13 +62,8 @@ const VendorProfile = () => {
         onSubmit: async (values) => {
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-expect-error
-            const ID = JWTDecode(sessionStorage.getItem("userToken")).id;
-            const url = import.meta.env.VITE_API_HOST + import.meta.env.VITE_SERVER_PORT + import.meta.env.VITE_API_U_BRAND + ID;
-            const response = await axios.put(url, values, {
-                headers: {
-                    Authorization: `Bearer ${sessionStorage.getItem('userToken')}`
-                }
-            });
+            const ID = JWTDecode(getAccessToken()).id;
+            const response = await apiClient.put(endpoints.brand.updateBrandInfo(ID), JSON.stringify(values));
             if (response.status === 200) {
                 toast.success('Cập nhật thành công. Vui lòng đăng nhập lại để thấy sự thay đổi', {autoClose: 2000});
             } else toast.error('Update failed! Please try again');
@@ -84,14 +81,8 @@ const VendorProfile = () => {
             try {
                 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                 // @ts-expect-error
-                const id = JWTDecode(sessionStorage.getItem("userToken")).id;
-                const api = import.meta.env.VITE_API_HOST + import.meta.env.VITE_SERVER_PORT + import.meta.env.VITE_API_I_BRAND + id;
-
-                const response = await axios.get(api, {
-                    headers: {
-                        Authorization: `Bearer ${sessionStorage.getItem("userToken")}`,
-                    }
-                });
+                const id = JWTDecode(getAccessToken()).id;
+                const response = await apiClient.get(endpoints.public.getBrandDetail(id));
 
                 if (response) {
                     toast.success('Loading data successfully.', {autoClose: 1500, position: "bottom-right"});
@@ -99,8 +90,10 @@ const VendorProfile = () => {
                         setData(response.data);
                     }, 1600);
                 }
-            } catch (e: any) {
-                console.error(e.message);
+            } catch (err) {
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-expect-error
+                console.error(err.message);
             }
         }
         fetch()

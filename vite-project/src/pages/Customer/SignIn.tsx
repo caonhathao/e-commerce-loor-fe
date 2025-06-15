@@ -3,13 +3,14 @@ import '../../assets/css/pages/customer/SignUp.css'
 import {useEffect, useState} from "react";
 import {useFormik} from "formik";
 import * as Yup from "yup";
-import axios from "axios";
 import {Tooltip} from "@mui/material";
 import Typewriter from "typewriter-effect";
 import {ToastContainer, toast} from "react-toastify";
 import * as Bs from 'react-icons/bs'
 import {motion} from 'motion/react'
 import {animate, press} from "motion";
+import apiClient from "../../services/apiClient.tsx";
+import endpoints from "../../services/endpoints.tsx";
 
 function SignIn() {
     const navigate = useNavigate();
@@ -27,8 +28,7 @@ function SignIn() {
         onSubmit: async (values) => {
             setCount(count + 1);
             try {
-                const _url = import.meta.env.VITE_API_HOST + import.meta.env.VITE_SERVER_PORT + import.meta.env.VITE_API_LOGIN;
-                const response = await axios.post(_url, values);
+                const response = await apiClient.post(endpoints.auth.userLogin, {values})
 
                 toast.success('Sign in successfully');
 
@@ -153,7 +153,8 @@ function SignIn() {
                             <div className={'w-full flex flex-col justify-center items-center'}>
                                 <fieldset
                                     className={' w-full h-max mt-2 rounded-lg border-gray-600 border-1 p-0'}>
-                                    <legend className={'text-(--text-color) text-sm sm:max-lg:text-xl  lg:text-xl font-bold'}>
+                                    <legend
+                                        className={'text-(--text-color) text-sm sm:max-lg:text-xl  lg:text-xl font-bold'}>
                                         Your email
                                     </legend>
                                     <input

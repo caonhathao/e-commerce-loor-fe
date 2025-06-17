@@ -2,13 +2,14 @@ import {Link, useNavigate} from "react-router-dom";
 import {useParams} from "react-router-dom";
 import {useEffect, useState} from "react";
 import {toast} from "react-toastify";
-import {BsPlayCircle, BsPlusCircle} from "react-icons/bs";
+import {BsExclamationCircleFill, BsPlayCircle, BsPlusCircle, BsTicket} from "react-icons/bs";
 import apiClient from "../../../services/apiClient.tsx";
 import endpoints from "../../../services/endpoints.tsx";
 
 interface data {
     id: string;
     sku: string;
+    hasAttribute: boolean;
 }
 
 const VendorVariant = () => {
@@ -20,7 +21,10 @@ const VendorVariant = () => {
         const fetchData = async () => {
             try {
                 const id = params.id;
-                const response = await apiClient.get(endpoints.public.getAllVariant(id));
+                let response;
+                if (id != null) {
+                    response = await apiClient.get(endpoints.public.getAllVariant(id));
+                }
                 if (response) setData(response.data);
                 else {
                     toast.error('Failed to get product!');
@@ -61,26 +65,34 @@ const VendorVariant = () => {
                     </div>
                     <div className={'w-[20%]'}>
                         <div className={'w-full flex flex-row justify-center items-center'}>
-                            <Link to={'/manager/show-variant/update-main-description/' + params['id']}><BsPlayCircle
-                                size={30} color={'var(--text-color)'}/></Link>
-
+                            <Link to={'/manager/show-variant/update-main-description/' + params['id']}>
+                                <BsPlayCircle size={30} color={'var(--text-color)'}/></Link>
                         </div>
                     </div>
                 </li>
                 {data && data.map((item: data, i) => (
                     <li key={i}
-                        className={'w-full border-2 border-[var(--bg-color-btn-2)] p-2 rounded-lg my-2 flex flex-row justify-between items-center'}>
-                        <div className={'w-[80%] border-r-2 border-[var(--text-color)]'}>
-                            <strong
-                                className={'text-lg border-b-2 border-[var(--text-color)]'}>Thông tin
-                                phiên bản</strong>
-                            <p><small>Mã sku: {item.sku}</small></p>
-                        </div>
-                        <div className={'w-[20%]'}>
-                            <div className={'w-full flex flex-row justify-center items-center'}>
-                                <Link to={'/manager/show-variant/update-variant-description/' + item.id}><BsPlayCircle
-                                    size={30} color={'var(--text-color)'}/></Link>
+                        className={'w-full border-2 border-[var(--bg-color-btn-2)] p-2 rounded-lg my-2 flex flex-col justify-between items-center'}>
+                        <div className={'w-full flex flex-row justify-between items-center'}>
+                            <div className={'w-[80%] border-r-2 border-[var(--text-color)]'}>
+                                <strong
+                                    className={'text-lg border-b-2 border-[var(--text-color)]'}>Thông tin
+                                    phiên bản</strong>
+                                <p><small>Mã sku: {item.sku}</small></p>
                             </div>
+                            <div className={'w-[20%]'}>
+                                <div className={'w-full flex flex-row justify-center items-center'}>
+                                    <Link to={'/manager/show-variant/update-variant-description/' + item.id}>
+                                        <BsPlayCircle size={30} color={'var(--text-color)'}/>
+                                    </Link>
+                                </div>
+                            </div>
+                        </div>
+                        <div className={'w-full flex flex-row justify-between items-center text-xs'}>
+                            {item.hasAttribute ? (<div><BsTicket/></div>) : (
+                                <div className={'w-full flex flex-row justify-start items-center gap-4 text-gray-600'}>
+                                    <BsExclamationCircleFill size={15} color={'gray'}/><p>Sản phảm chưa có các thuộc tính</p></div>
+                            )}
                         </div>
                     </li>
                 ))}

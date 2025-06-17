@@ -48,6 +48,9 @@ interface ImportMetaEnv {
     readonly VITE_API_C_VARIANT: string;
     readonly VITE_API_U_VARIANT: string;
 
+    readonly VITE_API_G_ATTRIBUTE: string;
+    readonly VITE_API_U_ATTRIBUTE: string;
+
     readonly VITE_API_G_A_CATEGORY: string;
     readonly VITE_API_C_CATEGORY: string;
     readonly VITE_API_U_CATEGORY: string;

@@ -2,7 +2,7 @@ import {buildUrlWithParams} from "../utils/utils.js.tsx";
 
 const endpoints = {
     system: {
-        socketConnection:import.meta.env.VITE_API_HOST + import.meta.env.VITE_SERVER_PORT,
+        socketConnection: import.meta.env.VITE_API_HOST + import.meta.env.VITE_SERVER_PORT,
     },
     auth: {
         userLogin: import.meta.env.VITE_API_L_USER,
@@ -32,19 +32,20 @@ const endpoints = {
         }),
         deleteProduct: (id: string) => buildUrlWithParams(import.meta.env.VITE_API_D_PRODUCT, {id}),
 
-        createVariant: (id: string | undefined) => buildUrlWithParams(import.meta.env.VITE_API_C_VARIANT, {id}),
-        updateVariant: (id: string | number) => buildUrlWithParams(import.meta.env.VITE_API_U_VARIANT, {id}),
-    },
-    user: {
+        createVariant: (id: string) => buildUrlWithParams(import.meta.env.VITE_API_C_VARIANT, {id}),
+        updateVariant: (id: string) => buildUrlWithParams(import.meta.env.VITE_API_U_VARIANT, {id}),
 
+        getAttribute: (id: string) => buildUrlWithParams(import.meta.env.VITE_API_G_ATTRIBUTE, {id}),
+        updateAttribute: (id: string) => buildUrlWithParams(import.meta.env.VITE_API_U_ATTRIBUTE, {id}),
     },
+    user: {},
     public: {
         getAllProducts: (id: string) => buildUrlWithParams(import.meta.env.VITE_API_G_A_PRODUCT, {id}),
         getProductDetail: (id: string) => buildUrlWithParams(import.meta.env.VITE_API_I_PRODUCT, {id}),
         getProductByKeyword: (keyword: string) => buildUrlWithParams(import.meta.env.VITE_API_S_PRODUCT, {keyword}),
 
-        getVariantDetail: (id: string | number) => buildUrlWithParams(import.meta.env.VITE_API_I_VARIANT, {id}),
-        getAllVariant: (id: string | undefined) => buildUrlWithParams(import.meta.env.VITE_API_G_A_VARIANT, {id}),
+        getVariantDetail: (id: string) => buildUrlWithParams(import.meta.env.VITE_API_I_VARIANT, {id}),
+        getAllVariant: (id: string) => buildUrlWithParams(import.meta.env.VITE_API_G_A_VARIANT, {id}),
 
         getBrandDetail: (id: string) => buildUrlWithParams(import.meta.env.VITE_API_I_BRAND, {id}),
 

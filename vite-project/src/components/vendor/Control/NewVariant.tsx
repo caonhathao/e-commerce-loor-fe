@@ -5,12 +5,14 @@ import endpoints from "../../../services/endpoints.tsx";
 import {toast, ToastContainer} from "react-toastify";
 import {useNavigate, useParams} from "react-router-dom";
 import {useProduct} from "../../../context/ProductContext.tsx";
-import {useEffect} from "react";
+import {useEffect, useState} from "react";
+import {BsPlusCircle} from "react-icons/bs";
 
 const NewVariant = () => {
     const navigator = useNavigate();
     const params = useParams();
     const {product} = useProduct();
+    const [attrs, setAttrs] = useState<{ [key: string]: string }>({})
 
     useEffect(() => {
         console.log('product:', product);
@@ -142,6 +144,30 @@ const NewVariant = () => {
                                     <small className={'text-red-600 italic'}>{errors.status}</small>
                                 </p>
                             )}
+                        </div>
+                        {attrs && Object.entries(attrs).map(([key, value]) => (
+                            <div key={key}>
+                                Key: {key}, Value: {value}
+                            </div>
+                        ))}
+                        <div className={'w-full flex flex-row justify-between items-center gap-4'}>
+                            <fieldset
+                                className={'w-full p-2 border border-gray-700 rounded-lg my-2 flex flex-row items-center justify-between'}>
+                                <legend>Thuộc tính</legend>
+                                <select>
+                                    <option>Màu sắc</option>
+                                    <option>Kích thước</option>
+                                    <option>Cân nặng</option>
+                                    <option>Chất liệu</option>
+                                </select>
+                            </fieldset>
+
+                            <fieldset
+                                className={'w-full p-2 border border-gray-700 rounded-lg my-2 flex flex-row items-center justify-between'}>
+                                <legend>Mô tả</legend>
+                                <input type={'text'} className={'w-full'}/>
+                            </fieldset>
+                            <div className={'w-fit'}><BsPlusCircle size={20}/></div>
                         </div>
                         <div className={'w-full flex flex-row justify-center items-center gap-4 mt-3'}>
                             <button type={'button'}

@@ -5,9 +5,10 @@ import {toast, ToastContainer} from "react-toastify";
 import {useNavigate, useParams} from "react-router-dom";
 import {useEffect, useState} from "react";
 import Loading from "../../loading/Loading.tsx";
-import * as Bs from "react-icons/bs";
 import endpoints from "../../../services/endpoints.tsx";
 import apiClient from "../../../services/apiClient.tsx";
+import {BsGearWideConnected} from "react-icons/bs";
+import UpdateAttribute from "./UpdateAttribute.tsx";
 
 interface data {
     id: string,
@@ -26,7 +27,10 @@ const UpdateProduct = () => {
     const [data, setData] = useState<data>();
     const [isResponse, setIsResponse] = useState(false);
     const [isSubmitted, setIsSubmitted] = useState(false);
+    const [openUpdateAttribute, setOpenUpdateAttribute] = useState(false);
 
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
     const handleResetForm = ({setValues}) => {
         console.log('reset form');
         setValues({
@@ -38,12 +42,21 @@ const UpdateProduct = () => {
         })
     }
 
-    //fetch data of current product
+    const handleUpdateAttribute = (id: string | undefined) => {
+        if (id !== undefined) {
+            setOpenUpdateAttribute(true);
+        } else console.log('id is undefined');
+    }
+
+    //fetch data of the current product
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const id = params.id;
-                const response = await apiClient.get(endpoints.public.getVariantDetail(id));
+                let response;
+                if (id !== undefined) {
+                    response = await apiClient.get(endpoints.public.getVariantDetail(id));
+                }
                 if (response) setData(response.data);
                 else {
                     toast.error('Failed to get product!');
@@ -68,7 +81,7 @@ const UpdateProduct = () => {
     }
 
     return (
-        <div className={'w-auto h-full m-2 p-2 my-2 flex flex-col justify-start items-center'}>
+        <div className={'w-screen h-full m-2 p-2 my-2 flex flex-col justify-start items-center relative'}>
             <Formik
                 initialValues={{
                     id: data ? data["id"] : '',
@@ -89,6 +102,8 @@ const UpdateProduct = () => {
                 validateOnBlur={true}
                 onSubmit={async (values, {setSubmitting}) => {
                     try {
+                        setIsSubmitted(true);
+                        setIsResponse(false);
                         const data = new FormData();
 
                         data.append('name', values.name);
@@ -97,14 +112,15 @@ const UpdateProduct = () => {
                         data.append('price', values.price.toString());
                         data.append('stock', values.stock.toString());
 
+                        let response;
+                        if (params.id !== undefined) {
+                            response = await apiClient.put(endpoints.brand.updateVariant(params.id))
+                        }
 
-                        const response = await apiClient.put(endpoints.brand.updateVariant(params.id))
-
-                        if (response.status === 200) {
+                        if (response && response.status === 200) {
                             toast.success('Sản phẩm đã được cập nhật thành công!', {autoClose: 1000});
-                            setTimeout(() => {
-                                navigate(-1);
-                            }, 1200);
+                            setIsSubmitted(false);
+                            setIsResponse(true);
                         } else {
                             console.log(response);
                             toast.error('Cập nhật thất bại! Vui lòng kiểm tra các trường nhập!');
@@ -131,7 +147,11 @@ const UpdateProduct = () => {
                         <form
                             className={'w-full h-fit flex flex-col items-center justify-center'}
                             onSubmit={handleSubmit}>
-                            <h3 className={'font-bold text-lg w-fit m-2 text-yellow-600'}>Tạo sản phẩm mới</h3>
+                            <div className={'flex flex-row justify-center items-center'}>
+                                <h3 className={'font-bold text-lg w-fit m-2 text-yellow-600'}>Tạo sản phẩm mới</h3>
+                                <BsGearWideConnected size={20} color={'var(--text-color)'}
+                                                     onClick={() => handleUpdateAttribute(params.id)}/>
+                            </div>
                             {/*Base information*/}
                             <fieldset
                                 className={'w-full p-0 leading-8 border border-gray-700 rounded-lg m-2 flex flex-row items-center justify-between'}>
@@ -237,9 +257,12 @@ const UpdateProduct = () => {
                             </div>
                         </form>
                     );
-                }}</Formik>
+                }}
+            </Formik>
+            {openUpdateAttribute ?<UpdateAttribute/> : null}
             <ToastContainer/>
         </div>
+
     )
 }
 export default UpdateProduct;

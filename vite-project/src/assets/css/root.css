@@ -1,10 +1,15 @@
-:root{
-    --bg-color-btn-1:#F5004F;
-    --bg-color-btn-2:#FFAF00;
-    --bg-color:#7C00FE;
-    --text-color: #FFAF00;
-    --text-color-btn:#FFFFFF;
-    --title-color-1:#F9E400;
-    --title-color-2:#B8001F;
-    --text-error:#F5004F;
+:root {
+    /* ==== Brand Colors ==== */
+    --main-color: #FFD600;
+    --secondary-color: #FFAB00;
+    --accent-color: #00B0FF;
+
+    /* ==== Text & Background ==== */
+    --text-color: #1F1F1F;
+    --primary-background: #FFFFFF;
+    --secondary-background:#cecece;
+    --border-color: #E0E0E0;
+
+    /* ==== Status Colors ==== */
+    --text-error: #F5004F;
 }

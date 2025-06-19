@@ -14,9 +14,7 @@
     flex-direction: column;
 }
 
-.header-container .header-content .header-content-banner img {
-    width: calc(100vw - 20px);
-}
+
 
 .header-container .header-content .header-content-navbar {
     width: 70%;

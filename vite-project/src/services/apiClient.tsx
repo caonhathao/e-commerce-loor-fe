@@ -15,7 +15,6 @@ apiClient.interceptors.request.use(
         return config
     },
     (error) => {
-        console.log(error)
         return Promise.reject(error)
     }
 )
@@ -31,7 +30,6 @@ apiClient.interceptors.response.use(
 
             try {
                 const url = import.meta.env.VITE_API_HOST + import.meta.env.VITE_SERVER_PORT + import.meta.env.VITE_API_TOKEN_REFRESH;
-                console.log(url)
                 const res = await axios.post(url, {},
                     {withCredentials: true})
 

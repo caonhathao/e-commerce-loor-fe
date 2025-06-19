@@ -31,8 +31,6 @@ function SignIn() {
                 const response = await apiClient.post(endpoints.auth.userLogin, {values})
 
                 toast.success('Sign in successfully');
-
-                console.log(response.data);
             } catch (err) {
                 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                 // @ts-expect-error

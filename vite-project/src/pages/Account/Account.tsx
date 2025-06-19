@@ -15,7 +15,7 @@ const Account = () => {
                 </div>
                 <div className={'w-[50%] md:w-[40%] p-3 rounded-lg text-center border-2 border-[var(--bg-color)]  flex flex-col justify-center items-center show-up-anim my-5'} style={{animationFillMode: 'forwards', animationDelay: '1s'}}>
                     <img style={{width:'30%'}} src={vendorImg} alt={'logo'}/>
-                    <h3 className={'text-[var(--text-color)] border-b-2 border-[(var(--bg-color)] font-bold'}> For brand's account</h3>
+                    <h3 className={'text-[var(--text-color)] border-b-2 border-[var(--bg-color)] font-bold'}> For brand's account</h3>
                     <div className={'text-[var(--text-color)]'}><Link to={'/sign-in-vendor'}>Sign in</Link></div>
                     <div className={'text-[var(--text-color)]'}><Link to={'/register-new-vendor'}>Create new account</Link></div>
                 </div>

@@ -178,10 +178,6 @@ const VendorManager = () => {
         }
     }, []);
 
-    // useEffect(() => {
-    //     console.log(product);
-    // }, [product]);
-
     if (data.length === 0) return <Loading/>
 
     return (

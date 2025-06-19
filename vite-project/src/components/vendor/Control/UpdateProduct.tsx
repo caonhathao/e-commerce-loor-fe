@@ -7,6 +7,7 @@ import Loading from "../../loading/Loading.tsx";
 import * as Bs from "react-icons/bs";
 import apiClient from "../../../services/apiClient.tsx";
 import endpoints from "../../../services/endpoints.tsx";
+import {BsBoxArrowInLeft, BsExclamationTriangle, BsPlayFill} from "react-icons/bs";
 
 interface img {
     file: File,
@@ -61,18 +62,15 @@ const UpdateProduct = () => {
     //1. Remove image from db or
     //2. Remove the image when it is added (while edit info)
     const handleRemoveImage = (obj: never, type: string) => {
-        console.log(type);
         if (type === 'db') {
             setImageData((prev) => prev.filter(item => item["image_id"] !== obj["image_id"]));
             setDelImage(prev => [...prev, obj]);
         } else if (type === 'upload') {
-            console.log(imgUpload);
             setImgUpload((prev) => prev.filter(item => item["file"] !== obj["file"]));
         }
     }
 
     const handleResetForm = (setValues) => {
-        console.log('reset form');
         setValues({
             id: data ? data["id"] : "",
             category_id: data ? data['category_id'] : '',
@@ -142,18 +140,10 @@ const UpdateProduct = () => {
     }, [category, data]);
 
     useEffect(() => {
-        console.log('data:', data);
-    }, [data]);
-
-    useEffect(() => {
         if (data) {
             setImageData(data.image_products ?? []);
         }
     }, [data]);
-
-    useEffect(() => {
-        console.log('deleted:', delImage);
-    }, [delImage]);
 
     if (category.length === 0 || subCategory.length === 0 || data === null) return (
         <>
@@ -167,6 +157,9 @@ const UpdateProduct = () => {
 
     return (
         <div className={'w-auto h-full m-2 p-2 my-2 flex flex-col justify-start items-center'}>
+            <div
+                className={'absolute top-5 left-5 bg-gradient-to-b from-indigo-500 from-20% via-purple-500 to-pink-500 p-2.5 rounded-lg shadow-lg shadow-gray-500'}
+                onClick={() => navigate(-1)}><BsBoxArrowInLeft size={20} color={'white'}/></div>
             <Formik
                 initialValues={{
                     id: data ? data["id"] : '',
@@ -192,7 +185,6 @@ const UpdateProduct = () => {
                 })}
                 validateOnBlur={true}
                 onSubmit={async (values) => {
-                    console.log(values);
                     setIsSubmitted(true);
                     setIsResponse(false)
                     try {
@@ -249,7 +241,8 @@ const UpdateProduct = () => {
                         <form
                             className={'w-full h-fit flex flex-col items-center justify-center'}
                             onSubmit={handleSubmit}>
-                            <h3 className={'font-bold text-lg w-fit m-2 text-yellow-600'}>Tạo sản phẩm mới</h3>
+                            <h3 className={'font-bold text-lg w-fit m-2 text-[var(--text-color)] border-b-2 border-[var(--text-color)] p-1'}>THÔNG
+                                TIN SẢN PHẨM</h3>
 
                             {/*selection for category and subcategory*/}
                             <fieldset
@@ -305,9 +298,9 @@ const UpdateProduct = () => {
                             <fieldset
                                 className={'w-full p-0 leading-8 border border-gray-700 rounded-lg m-2 flex flex-row items-center justify-between'}>
                                 <legend>ID</legend>
-                                <input className={'w-full pl-2'} type={'text'} name={'id'} placeholder={'ID sản phẩm'}
-                                       disabled
-                                       value={values.id}/>
+                                <textarea className={'w-full h-full pl-2'}
+                                          readOnly={true}
+                                          value={values.id}></textarea>
                             </fieldset>
                             {errors.id && touched.id && (
                                 <p className={'text-red-600'}>
@@ -318,11 +311,11 @@ const UpdateProduct = () => {
                             <fieldset
                                 className={'w-full p-0 leading-8 border border-gray-700 rounded-lg m-2 flex flex-row items-center justify-between'}>
                                 <legend>Tên</legend>
-                                <input className={'w-full pl-2'} type={'text'} name={'name'}
+                                <textarea className={'w-full pl-2'} name={'name'}
                                        placeholder={'Tên sản phẩm'}
                                        value={values.name}
                                        onChange={handleChange}
-                                       onBlur={handleBlur}/>
+                                       onBlur={handleBlur}></textarea>
                             </fieldset>
                             {errors.name && touched.name && (
                                 <p className={'text-red-600'}>

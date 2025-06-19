@@ -14,9 +14,6 @@ const NewVariant = () => {
     const {product} = useProduct();
     const [attrs, setAttrs] = useState<{ [key: string]: string }>({})
 
-    useEffect(() => {
-        console.log('product:', product);
-    }, [product]);
     return (
         <div className={'w-full h-full flex justify-center items-center m-2 p-2 my-2'}>
             <Formik

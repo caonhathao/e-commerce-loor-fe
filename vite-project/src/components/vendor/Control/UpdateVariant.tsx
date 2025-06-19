@@ -28,11 +28,11 @@ const UpdateProduct = () => {
     const [isResponse, setIsResponse] = useState(false);
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [openUpdateAttribute, setOpenUpdateAttribute] = useState(false);
+    const [attribute, setAttribute] = useState([])
 
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-expect-error
     const handleResetForm = ({setValues}) => {
-        console.log('reset form');
         setValues({
             name: data ? data['name'] : 'unknown',
             price: data ? data['price'] : 0,
@@ -69,10 +69,24 @@ const UpdateProduct = () => {
     }, [])
 
     useEffect(() => {
-        console.log('data:', data);
-        // console.log('subCategory_id:', subCategory);
-        // console.log('Image upload:', imgUpload);
-    }, [data]);
+        const fetchData = async () => {
+            try {
+                const id = params.id
+                let response;
+                if (id !== undefined) {
+                    response = await apiClient.get(endpoints.brand.getAttribute(id))
+                }
+
+                if (response && (response.status === 200 || response.status === 201)) {
+                    setAttribute(response.data)
+                } else toast.error('Failed to get attribute of product!')
+            } catch (e) {
+                toast.error('Failed to get attribute of product!');
+                console.error(e)
+            }
+        }
+        fetchData()
+    }, []);
 
     if (!data) return <Loading/>;
 
@@ -148,7 +162,7 @@ const UpdateProduct = () => {
                             className={'w-full h-fit flex flex-col items-center justify-center'}
                             onSubmit={handleSubmit}>
                             <div className={'flex flex-row justify-center items-center'}>
-                                <h3 className={'font-bold text-lg w-fit m-2 text-yellow-600'}>Tạo sản phẩm mới</h3>
+                                <h3 className={'font-bold text-lg w-fit m-2 text-yellow-600'}>Thông tin phiên bản</h3>
                                 <BsGearWideConnected size={20} color={'var(--text-color)'}
                                                      onClick={() => handleUpdateAttribute(params.id)}/>
                             </div>
@@ -238,6 +252,13 @@ const UpdateProduct = () => {
                                     </fieldset>
                                 </div>
                             </fieldset>
+                            <fieldset
+                                className={'w-full border border-gray-700 rounded-lg p-2 m-2 flex flex-row items-center justify-between flex-wrap text-sm text-gray-400'}>
+                                <legend>Thuộc tính sản phẩm</legend>
+                                {attribute.length > 0 ? attribute.map((key, index) => (
+                                    <p key={index}><strong>{key.nameAtt}:</strong> {key.valueAtt}</p>
+                                )) : <p>Sản phẩm chưa có thuộc tính đính kèm</p>}
+                            </fieldset>
                             <div className={'flex flex-row justify-around items-center'}>
                                 <button type={'button'}
                                         className={'bg-purple-500 p-2 rounded-4xl text-white font-bold flex justify-center items-center'}
@@ -259,7 +280,7 @@ const UpdateProduct = () => {
                     );
                 }}
             </Formik>
-            {openUpdateAttribute ?<UpdateAttribute/> : null}
+            {openUpdateAttribute ? <UpdateAttribute setOpen={setOpenUpdateAttribute}/> : null}
             <ToastContainer/>
         </div>
 

@@ -34,11 +34,8 @@ function SignUp() {
                 toast.success('Sign in successfully', {autoClose: 1200});
 
                 setTimeout(() => {
-
                     navigate('/')
                 }, 1400);
-
-                console.log(response.data);
             } catch (err) {
                 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                 // @ts-expect-error

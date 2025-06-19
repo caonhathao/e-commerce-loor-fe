@@ -23,7 +23,6 @@ const VendorSignIn = () => {
             password: '',
         },
         onSubmit: async (values) => {
-            console.log(values)
             try {
                 /*return: response will have a jwt string*/
                 // we need to convert jwt and find the role
@@ -31,7 +30,6 @@ const VendorSignIn = () => {
                 if (response) {
                     setAccessToken(response.data.access)
                     toast.success('Sign in successfully.', {autoClose: 2000});
-                    // console.log(response.data);
                     setTimeout(() => {
                         navigate('/vendor');
                         window.location.reload();

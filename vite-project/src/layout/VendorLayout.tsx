@@ -8,8 +8,6 @@ import JWTDecode from "../security/JWTDecode.tsx";
 import {animate, press} from "motion";
 import {getAccessToken, removeAccessToken} from "../services/tokenStore.tsx";
 
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-expect-error
 const VendorLayout = () => {
     const [activeTab, setActiveTab] = useState([false, false, false, false, false, false]);
     const [currentTab, setCurrentTab] = useState(-1);

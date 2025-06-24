@@ -1,17 +1,17 @@
-import React, { createContext, useContext, useState } from "react";
+import {createContext, ReactNode, useContext, useState} from "react";
 
 interface ProductContextType {
-    product: any;
-    setProduct: (value: any) => void;
+    product: object | null | undefined;
+    setProduct: (value: object | null) => void;
 }
 
 const ProductContext = createContext<ProductContextType | undefined>(undefined);
 
-export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    const [product, setProduct] = useState(null);
+export const ProductProvider = ({children}: { children: ReactNode }) => {
+    const [product, setProduct] = useState<object | null>();
 
     return (
-        <ProductContext.Provider value={{ product, setProduct }}>
+        <ProductContext.Provider value={{product, setProduct}}>
             {children}
         </ProductContext.Provider>
     );

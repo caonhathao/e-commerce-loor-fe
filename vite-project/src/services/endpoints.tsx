@@ -40,7 +40,8 @@ const endpoints = {
     },
     user: {},
     public: {
-        getAllProducts: (id: string) => buildUrlWithParams(import.meta.env.VITE_API_G_A_PRODUCT, {id}),
+        getAllProductsFromBrand: (id: string) => buildUrlWithParams(import.meta.env.VITE_API_G_A_PRODUCT_FROM_BRAND, {id}),
+        getAllProducts: import.meta.env.VITE_API_G_A_PRODUCT,
         getProductDetail: (id: string) => buildUrlWithParams(import.meta.env.VITE_API_I_PRODUCT, {id}),
         getProductByKeyword: (keyword: string) => buildUrlWithParams(import.meta.env.VITE_API_S_PRODUCT, {keyword}),
 

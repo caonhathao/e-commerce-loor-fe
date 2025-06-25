@@ -27,6 +27,7 @@ interface ImportMetaEnv {
     readonly VITE_API_L_USER: string;
     readonly VITE_API_R_USER: string;
     readonly VITE_API_G_A_USER: string;
+    readonly VITE_API_I_USER:string;
 
     readonly VITE_API_L_BRAND: string;
     readonly VITE_API_R_BRAND: string;
@@ -37,6 +38,7 @@ interface ImportMetaEnv {
 
     readonly VITE_API_C_PRODUCT: string;
     readonly VITE_API_I_PRODUCT: string;
+    readonly VITE_API_G_A_PRODUCT_FROM_BRAND: string;
     readonly VITE_API_G_A_PRODUCT: string;
     readonly VITE_API_U_PRODUCT: string;
     readonly VITE_API_H_PRODUCT: string;

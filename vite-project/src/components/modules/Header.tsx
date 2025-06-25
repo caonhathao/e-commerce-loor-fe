@@ -1,4 +1,3 @@
-import banner from '../../assets/img/11-1712.png'
 import logo from '../../assets/img/loli.png'
 import '../../assets/css/components/Header.css'
 import {Link} from "react-router-dom";

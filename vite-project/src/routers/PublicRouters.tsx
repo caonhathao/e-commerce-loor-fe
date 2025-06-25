@@ -1,6 +1,6 @@
 import {Route} from "react-router-dom";
 import Layout from "../layout/Layout.tsx";
-import Home from "../pages/Home.tsx";
+import Home from "../pages/Global/Home.tsx";
 import VendorOffer from "../pages/Brand/VendorOffer.tsx";
 import SignUp from "../pages/Customer/SignUp.tsx";
 import SignIn from "../pages/Customer/SignIn.tsx";

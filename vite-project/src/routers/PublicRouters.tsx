@@ -4,7 +4,7 @@ import Home from "../pages/Global/Home.tsx";
 import VendorOffer from "../pages/Brand/VendorOffer.tsx";
 import SignUp from "../pages/Customer/SignUp.tsx";
 import SignIn from "../pages/Customer/SignIn.tsx";
-import Account from "../pages/Account/Account.tsx";
+import Account from "../pages/Global/Account.tsx";
 import VendorSignUp from "../pages/Brand/VendorSignUp.tsx";
 import VendorSignIn from "../pages/Brand/VendorSignIn.tsx";
 import NotFound from "../pages/Global/NotFound.tsx";

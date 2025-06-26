@@ -37,7 +37,7 @@ const VendorVariant = () => {
     }, [])
 
     const handleCreateVariant = () => {
-        navigator('/manager/show-variant/create-new-variant/' + params.id);
+        navigator('/vendor/manage/show-variant/create-new-variant/' + params.id);
     }
 
     return (
@@ -65,7 +65,7 @@ const VendorVariant = () => {
                     </div>
                     <div className={'w-[20%]'}>
                         <div className={'w-full flex flex-row justify-center items-center'}>
-                            <Link to={'/manager/show-variant/update-main-description/' + params['id']}>
+                            <Link to={'/vendor/manage/show-variant/update-main-description/' + params['id']}>
                                 <BsPlayCircle size={30} color={'var(--text-color)'}/></Link>
                         </div>
                     </div>
@@ -82,7 +82,7 @@ const VendorVariant = () => {
                             </div>
                             <div className={'w-[20%]'}>
                                 <div className={'w-full flex flex-row justify-center items-center'}>
-                                    <Link to={'/manager/show-variant/update-variant-description/' + item.id}>
+                                    <Link to={'/vendor/manage/show-variant/update-variant-description/' + item.id}>
                                         <BsPlayCircle size={30} color={'var(--text-color)'}/>
                                     </Link>
                                 </div>

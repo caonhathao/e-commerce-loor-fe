@@ -1,4 +1,4 @@
-import {Formik} from "formik";
+import {Formik, FormikValues} from "formik";
 import * as Yup from "yup";
 import {toast, ToastContainer} from "react-toastify";
 import {useNavigate, useParams} from "react-router-dom";
@@ -7,11 +7,17 @@ import Loading from "../../loading/Loading.tsx";
 import * as Bs from "react-icons/bs";
 import apiClient from "../../../services/apiClient.tsx";
 import endpoints from "../../../services/endpoints.tsx";
-import {BsBoxArrowInLeft, BsExclamationTriangle, BsPlayFill} from "react-icons/bs";
+import {BsBoxArrowInLeft} from "react-icons/bs";
 
 interface img {
     file: File,
     url: string,
+}
+
+interface imgStored {
+    id: string,
+    image_id: string,
+    image_link: string,
 }
 
 interface data {
@@ -21,11 +27,27 @@ interface data {
     name: string,
     origin: string,
     status: number,
+    averagePrice: number,
     description: string,
     promotion: number,
     tags: string,
     stock: number,
-    image_products: [],
+    image_products: imgStored[],
+}
+
+interface FormValues {
+    id: string;
+    category_id: string;
+    subCategory_id: string;
+    name: string;
+    origin: string;
+    status: number | string;
+    description: string;
+    averagePrice: number;
+    promotion: number | string;
+    tags: string;
+    images: img[]; // chính là cái bạn cần
+    deletedImages: string[];
 }
 
 const UpdateProduct = () => {
@@ -37,19 +59,19 @@ const UpdateProduct = () => {
     const [data, setData] = useState<data>();
     const [isResponse, setIsResponse] = useState(false);
     const [isSubmitted, setIsSubmitted] = useState(false);
-    const [imageData, setImageData] = useState([]);//store image in previous
-    const [delImage, setDelImage] = useState([]); //store image's id that will be deleted
+    const [imageData, setImageData] = useState<imgStored[]>([]);//store image in previous
+    const [delImage, setDelImage] = useState<string[]>([]); //store image's id that will be deleted
     const [imgUpload, setImgUpload] = useState<img[]>([]);//store image to upload
 
 
     const handleGetImage = ({e, setFieldValue, values}: {
         e: React.ChangeEvent<HTMLInputElement>;
         setFieldValue: (field: string, value: any, shouldValidate?: boolean) => void;
-        values: never;
+        values: FormValues;
     }) => {
 
         e.preventDefault();
-        const files = Array.from(e.target.files);
+        const files = Array.from(e.target.files ?? []);
         const images = files.map((item) => ({
             file: item,
             url: URL.createObjectURL(item as File)
@@ -58,19 +80,19 @@ const UpdateProduct = () => {
         setFieldValue('images', [...values.images, ...images]);
     }
 
-    //remove image:
+    //Remove image:
     //1. Remove image from db or
-    //2. Remove the image when it is added (while edit info)
-    const handleRemoveImage = (obj: never, type: string) => {
+    //2. Remove the image when it is added (while editing info)
+    const handleRemoveImage = (obj: imgStored | img, type: string) => {
         if (type === 'db') {
             setImageData((prev) => prev.filter(item => item["image_id"] !== obj["image_id"]));
-            setDelImage(prev => [...prev, obj]);
+            setDelImage(prev => [...prev, obj["image_id"]]);
         } else if (type === 'upload') {
             setImgUpload((prev) => prev.filter(item => item["file"] !== obj["file"]));
         }
     }
 
-    const handleResetForm = (setValues) => {
+    const handleResetForm = (setValues: FormikValues) => {
         setValues({
             id: data ? data["id"] : "",
             category_id: data ? data['category_id'] : '',
@@ -80,6 +102,7 @@ const UpdateProduct = () => {
             status: data ? data['status'] : 0,
             description: data ? data['description'] : '',
             stock: data ? data['stock'] : 0,
+            averagePrice: data ? data['averagePrice'] : 0,
             promotion: data ? data['promotion'] : 0,
             tags: data ? data['tags'] : '',
             images: [],
@@ -95,8 +118,10 @@ const UpdateProduct = () => {
             try {
                 const id = params.id;
                 const response = await apiClient.get(endpoints.public.getProductDetail(id))
-                if (response.status === 200) setData(response.data);
-                else {
+                if (response.status === 200) {
+                    console.log(response.data);
+                    setData(response.data);
+                } else {
                     toast.error('Failed to get product!');
                 }
             } catch (e) {
@@ -145,6 +170,10 @@ const UpdateProduct = () => {
         }
     }, [data]);
 
+    useEffect(() => {
+        console.log(delImage);
+    }, [delImage]);
+
     if (category.length === 0 || subCategory.length === 0 || data === null) return (
         <>
             <Loading/>
@@ -168,10 +197,11 @@ const UpdateProduct = () => {
                     name: data ? data['name'] : '',
                     origin: data ? data['origin'] : '',
                     status: data ? data['status'] : '',
+                    averagePrice: data ? data['averagePrice'] : 0,
                     description: data ? data['description'] : '',
                     promotion: data ? data['promotion'] : '',
                     tags: data ? data['tags'] : '',
-                    images: data ? data['image_products'] : [],         // new image to upload
+                    images: [],         // new image to upload
                     deletedImages: []   // store image ids to delete
                 }}
                 enableReinitialize={true}
@@ -182,6 +212,7 @@ const UpdateProduct = () => {
                     origin: Yup.string().required('Please enter origin'),
                     status: Yup.number().required('Please enter status'),
                     description: Yup.string().required('Please enter description'),
+                    averagePrice: Yup.number().required('Please enter price'),
                 })}
                 validateOnBlur={true}
                 onSubmit={async (values) => {
@@ -202,7 +233,7 @@ const UpdateProduct = () => {
                         data.append('deletedImages', JSON.stringify(delImage));
 
                         if (values.images.length > 0) {
-                            values.images.forEach(image => {
+                            values.images.forEach((image: { file: string | Blob; }) => {
                                 data.append('images', image.file);
                             });
                         }
@@ -214,9 +245,6 @@ const UpdateProduct = () => {
                             setIsResponse(true);
                             if (response.status === 200) {
                                 toast.success('Sản phẩm đã được cập nhật thành công!', {autoClose: 1000});
-                                setTimeout(() => {
-                                    window.location.reload();
-                                }, 1200);
                             } else {
                                 toast.error('Cập nhật thất bại! Vui lòng kiểm tra các trường nhập!');
                             }
@@ -268,7 +296,7 @@ const UpdateProduct = () => {
                                         <select name={'subCategory_id'}
                                                 className={'w-full'}
                                                 onChange={handleChange}
-                                                value={values.subCategory_id ? values.subCategory_id : data['subcategory_id']}
+                                                value={values.subCategory_id ? values.subCategory_id : data?.subcategory_id}
                                                 onBlur={handleBlur}>
                                             <option value={'0'}>none</option>
                                             {subCategory && subCategory.map((item, i) => (
@@ -312,10 +340,10 @@ const UpdateProduct = () => {
                                 className={'w-full p-0 leading-8 border border-gray-700 rounded-lg m-2 flex flex-row items-center justify-between'}>
                                 <legend>Tên</legend>
                                 <textarea className={'w-full pl-2'} name={'name'}
-                                       placeholder={'Tên sản phẩm'}
-                                       value={values.name}
-                                       onChange={handleChange}
-                                       onBlur={handleBlur}></textarea>
+                                          placeholder={'Tên sản phẩm'}
+                                          value={values.name}
+                                          onChange={handleChange}
+                                          onBlur={handleBlur}></textarea>
                             </fieldset>
                             {errors.name && touched.name && (
                                 <p className={'text-red-600'}>
@@ -398,7 +426,7 @@ const UpdateProduct = () => {
                                         <Bs.BsPlusSquare className={'w-20 h-20'} color={'gray'}/>
                                     </button>
                                 </div>
-                                {errors.images && touched.images && (
+                                {typeof errors.images === 'string' && touched.images && (
                                     <p className={'text-red-600'}>
                                         <small className={'text-red-600 italic'}>{errors.images}</small>
                                     </p>
@@ -435,6 +463,20 @@ const UpdateProduct = () => {
                                     </fieldset>
                                 </div>
                             </fieldset>
+
+                            <fieldset
+                                className={'w-full border border-gray-700 rounded-lg leading-8 m-2 flex flex-row items-center justify-between'}>
+                                <legend>Giá chung</legend>
+                                <input className={'w-full pl-2'} type={'text'} name={'price'}
+                                       onChange={handleChange}
+                                       onBlur={handleBlur}
+                                       value={values.averagePrice}/>
+                            </fieldset>
+                            {errors.averagePrice && touched.averagePrice && (
+                                <p className={'text-red-600'}>
+                                    <small className={'text-red-600 italic'}>{errors.averagePrice}</small>
+                                </p>
+                            )}
 
                             <fieldset
                                 className={'w-full border border-gray-700 rounded-lg leading-8 m-2 flex flex-row items-center justify-between'}>

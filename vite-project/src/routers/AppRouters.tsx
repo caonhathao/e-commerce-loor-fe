@@ -9,9 +9,7 @@ const AppRouters = () => {
         <Suspense fallback={<Loading/>}>
             <Routes>
                 {PublicRouters()}
-
                 {VendorRouters()}
-
             </Routes>
         </Suspense>
     )

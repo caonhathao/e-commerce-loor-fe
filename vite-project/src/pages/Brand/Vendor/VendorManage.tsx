@@ -19,7 +19,7 @@ const socket = io(endpoints.system.socketConnection, {
     transports: ['websocket', 'polling'],
 });
 
-const VendorManager = () => {
+const VendorManage = () => {
     const navigate = useNavigate();
     const [data, setData] = useState([]);
     const {product, setProduct} = useProduct();
@@ -66,7 +66,7 @@ const VendorManager = () => {
         if (obj) {
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-expect-error
-            navigate('/manager/show-variant/' + obj.id);
+            navigate('/vendor/manage/show-variant/' + obj.id);
         } else toast.error("Failed to get data!");
     }
 
@@ -122,7 +122,7 @@ const VendorManager = () => {
                 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                 // @ts-expect-error
                 const id = JWTDecode(getAccessToken()).id;
-                const response = await apiClient.get(endpoints.public.getAllProducts(id))
+                const response = await apiClient.get(endpoints.public.getAllProductsFromBrand(id))
 
                 if (response) {
                     toast.success('Load data successfully.', {
@@ -185,7 +185,7 @@ const VendorManager = () => {
             <div className={'w-fit h-fit grid grid-cols-2 grid-rows-2 gap-4 text-black mb-2'}>
 
                 <div className={'border border-gray-600 rounded-4xl flex items-center justify-center p-1'}
-                     onClick={() => createNewBtn('/manager/create')}>Tạo mới
+                     onClick={() => createNewBtn('/vendor/manager/create')}>Tạo mới
                 </div>
                 <div
                     className={`border border-gray-600 rounded-4xl flex items-center justify-center p-1 ${isDelete ? `text-white bg-indigo-500 border-indigo-500 focus:outline-2 focus:outline-offset-2 focus:outline-indigo-500` : ``}`}
@@ -259,4 +259,4 @@ const VendorManager = () => {
         </div>
     )
 }
-export default VendorManager
+export default VendorManage

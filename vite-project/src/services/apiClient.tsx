@@ -1,5 +1,6 @@
 import axios from 'axios'
 import {getAccessToken, setAccessToken, removeAccessToken} from "./tokenStore.tsx";
+import {toast} from "react-toastify";
 
 const apiClient = axios.create({
     baseURL: import.meta.env.VITE_API_HOST + import.meta.env.VITE_SERVER_PORT,
@@ -22,10 +23,11 @@ apiClient.interceptors.request.use(
 apiClient.interceptors.response.use(
     (res) => res,
     async (error) => {
-        console.log("Interceptor error:", error);
+        toast.warning(error.response.data.message);
+        console.log("Interceptor error:", error.response.data.message);
         const originalRequest = error.config;
 
-        if (error.response.status === 404 || error.response.status === 403 && !originalRequest._retry) {
+        if (error.response.status === 401 && !originalRequest._retry) {
             originalRequest._retry = true;
 
             try {

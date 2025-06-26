@@ -1,6 +1,6 @@
 import {Route} from "react-router-dom";
 import VendorHome from "../pages/Brand/Vendor/VendorHome.tsx";
-import VendorManager from "../pages/Brand/Vendor/VendorManager.tsx";
+import VendorManage from "../pages/Brand/Vendor/VendorManage.tsx";
 import NewProduct from "../components/vendor/Control/NewProduct.tsx";
 import VendorVariant from "../pages/Brand/Product/VendorVariant.tsx";
 import NewVariant from "../components/vendor/Control/NewVariant.tsx";
@@ -15,7 +15,7 @@ import VendorLayout from "../layout/VendorLayout.tsx";
 const VendorRouters = () => {
     return (
         <>
-            <Route
+            <Route path={'/vendor'}
                 element={
                     <ProtectedRouter
                         requiredRoles={['ROLE_VENDOR']}
@@ -27,13 +27,13 @@ const VendorRouters = () => {
                 </ProductProvider>}>
 
                     <Route index element={<VendorHome/>}/>
-                    <Route path="manage" element={<VendorManager/>}/>
-                    <Route path="manager/create" element={<NewProduct/>}/>
-                    <Route path="manager/show-variant/:id" element={<VendorVariant/>}/>
-                    <Route path="manager/show-variant/create-new-variant/:id" element={<NewVariant/>}/>
-                    <Route path="manager/show-variant/update-main-description/:id"
+                    <Route path="manage" element={<VendorManage/>}/>
+                    <Route path="manage/create" element={<NewProduct/>}/>
+                    <Route path="manage/show-variant/:id" element={<VendorVariant/>}/>
+                    <Route path="manage/show-variant/create-new-variant/:id" element={<NewVariant/>}/>
+                    <Route path="manage/show-variant/update-main-description/:id"
                            element={<UpdateProduct/>}/>
-                    <Route path="manager/show-variant/update-variant-description/:id"
+                    <Route path="manage/show-variant/update-variant-description/:id"
                            element={<UpdateVariant/>}/>
                     <Route path="orders" element={<VendorOrders/>}/>
                     <Route path="support" element={<div>Support Coming Soon</div>}/>

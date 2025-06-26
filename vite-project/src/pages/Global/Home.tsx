@@ -27,7 +27,6 @@ const Home = () => {
                 const response = await apiClient.get(endpoints.public.getAllProducts);
                 if (response.status === 200) {
                     setData(response.data)
-                    toast.success('Get products successfully')
                 } else
                     toast.error('Failed to get products')
             } catch (e) {

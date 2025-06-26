@@ -6,7 +6,8 @@ import {AnimatePresence, motion, MotionConfig} from 'motion/react'
 import {toast} from "react-toastify";
 import JWTDecode from "../security/JWTDecode.tsx";
 import {animate, press} from "motion";
-import {getAccessToken, removeAccessToken} from "../services/tokenStore.tsx";
+import {getAccessToken} from "../services/tokenStore.tsx";
+import {useAuth} from "../context/AuthContext.tsx";
 
 const VendorLayout = () => {
     const [activeTab, setActiveTab] = useState([false, false, false, false, false, false]);
@@ -19,6 +20,8 @@ const VendorLayout = () => {
     const navRef = useRef<HTMLDivElement>(null);
     const constraintsRef = useRef<HTMLDivElement | null>(null)
 
+    const {logout} = useAuth();
+
     const activeCurrTab = (index: number, url: string) => {
         setActiveTab((prevState) => {
             const newContent = [...prevState];
@@ -30,11 +33,11 @@ const VendorLayout = () => {
             return newContent;
         })
         setMinimizeMenu(!minimizeMenu);
-        navigate(url);
+        navigate(`/vendor${url === '/' ? '' : url}`);
     }
 
     const signOut = () => {
-        removeAccessToken();
+        logout();
         toast.success('Đăng xuất thành công', {autoClose: 2000});
         setTimeout(() => {
             window.location.href = '/';
@@ -74,13 +77,6 @@ const VendorLayout = () => {
             },
         }
     };
-
-    press('#navBtn', (target => {
-        animate(target, {scale: 0.8})
-        return () => {
-            animate(target, {scale: 1})
-        }
-    }))
 
     useEffect(() => {
         const anchor = document.querySelector("#anchorPoint");
@@ -144,7 +140,7 @@ const VendorLayout = () => {
                         <div className={'w-9/12 text-center text-lg text-yellow-300 font-bold'}>Xin chào <br/> {
                             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                             // @ts-expect-error
-                            JWTDecode(getAccessToken()).name || 'Bạn'
+                            JWTDecode(getAccessToken()) ? JWTDecode(getAccessToken()).name : 'Bạn'
                         }
                         </div>
                     </div>

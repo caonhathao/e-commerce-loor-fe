@@ -1,18 +1,31 @@
 import {createContext, ReactNode, useContext, useEffect, useState} from "react";
-import {getAccessToken} from "../services/tokenStore.tsx";
+import {getAccessToken, setAccessToken} from "../services/tokenStore.tsx";
 import JWTDecode from "../security/JWTDecode.tsx";
+import apiClient from "../services/apiClient.tsx";
+import endpoints from "../services/endpoints.tsx";
 
 type User = {
     id: string;
     role: string;
     locked: boolean;
+    name: string;
 }
+
+type payload = {
+    id: string;
+    role: string;
+    locked: boolean;
+    name: string;
+    iat: number;
+    exp: number;
+};
+
 type AuthContextType = {
     user: User | null;
     isLoading: boolean;
     isAuthenticated: boolean;
-    // login: (token: string, userData: User) => void;
     logout: () => void;
+    login: (token: string, userData: User) => void;
     hasRole: (role: string) => boolean;
 }
 
@@ -24,22 +37,55 @@ export const AuthProvider = ({children}: { children: ReactNode }) => {
     const isAuthenticated = !!user
 
     useEffect(() => {
-        console.log('here')
+
+        const refreshToken = async () => {
+            try {
+                const response = await apiClient.get(endpoints.auth.refresh);
+                if (response.status === 200) {
+                    login(response.data.access, response.data.data);
+                }
+            } catch (e) {
+                console.log(e);
+                logout();
+            } finally {
+                setIsLoading(false)
+            }
+        }
+
         if (getAccessToken()) {
             try {
-                const decode: { exp: number } = JWTDecode(getAccessToken());
-                const isTokenExpired = decode.exp < Date.now();
+                const decode = JWTDecode(getAccessToken());
+                if (decode) {
+                    const res: payload = decode as payload;
+                    const exp = res.exp
 
-                if (!isTokenExpired) {
-                    setUser(JWTDecode(getAccessToken()));
-                } else logout();
+                    console.log('decode:',decode)
+                    const isTokenExpired = exp * 1000 < Date.now() + 60 * 1000;
+
+                    if (!isTokenExpired) {
+                        setUser({
+                            id: res.id,
+                            role: res.role,
+                            name: res.name,
+                            locked: res.locked
+                        });
+                    } else {
+                        refreshToken();
+                    }
+                }
             } catch (e) {
-                console.log(e)
-                logout();
+                console.log(e);
+                alert('error')
+                //logout();
             }
         }
         setIsLoading(false);
     }, []);
+
+    const login = (token: string, userData: User) => {
+        setAccessToken(token);
+        setUser(userData);
+    }
 
     const logout = () => {
         localStorage.removeItem('access_token');
@@ -49,15 +95,9 @@ export const AuthProvider = ({children}: { children: ReactNode }) => {
         return user?.role === role;
     }
 
-    useEffect(() => {
-        console.log('user:', user)
-        console.log('isLoaded:', isLoading)
-        console.log('isAuthenticated:', isAuthenticated)
-    }, [user, isLoading, isAuthenticated]);
-
     return (
         <AuthContext.Provider
-            value={{user, isAuthenticated, isLoading, logout, hasRole}}
+            value={{user, isAuthenticated, isLoading, login, logout, hasRole}}
         >
             {children}
         </AuthContext.Provider>

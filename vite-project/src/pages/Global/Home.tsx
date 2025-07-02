@@ -3,6 +3,7 @@ import {toast} from "react-toastify";
 import {useEffect, useState} from "react";
 import apiClient from "../../services/apiClient.tsx";
 import endpoints from "../../services/endpoints.tsx";
+import {formatedNumber} from "../../utils/functions.utils.tsx";
 
 interface dataType {
     brand_id: string,
@@ -12,7 +13,7 @@ interface dataType {
     image_products: {
         image_link: string,
     }[],
-    averagePrice: string,
+    average_price: string,
     status: string,
     origin: string,
 }
@@ -52,10 +53,10 @@ const Home = () => {
                         <div className={'h-3/5 flex flex-col justify-center items-center'}>
                             <img src={item.image_products[0].image_link} alt="picture"/>
                         </div>
-                        <div key={i} className={'h-2/5'}>
-                            <div className={'text-base p-1 overflow-hidden'}>{item.name}</div>
-                            <div className={'flex flex-row justify-between items-center w-full'}>
-                                <div className={'text-sm p-1'}>{item.averagePrice}</div>
+                        <div key={i} className={'h-2/5 flex flex-col justify-between items-center'}>
+                            <div className={'max-h-2/3 text-base p-1 overflow-hidden'}>{item.name}</div>
+                            <div className={'max-h-1/3 flex flex-row justify-between items-center w-full'}>
+                                <div className={'text-sm p-1'}>{formatedNumber(Number(item.average_price??0))}đ</div>
                                 <div className={'text-xs flex flex-row justify-start items-center p-1'}>
                                     <div><Bs.BsStarFill color={'yellow'}/></div>
                                     <div>5.0</div>

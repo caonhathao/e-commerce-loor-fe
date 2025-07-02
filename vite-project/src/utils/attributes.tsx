@@ -1,4 +1,4 @@
-const attJSON = {
+export const attJSON = {
     fashion: {
         name: 'Thời trang',
         attributes: {
@@ -24,6 +24,17 @@ const attJSON = {
             wifi: 'Wifi',
             IP68: 'IP68',
             origin: 'Xuât xứ',
+            warranty: 'Bảo hành',
+        }
+    },
+    accessories: {
+        name: 'Phụ kiện',
+        attributes: {
+            size: 'Kích thước',
+            material: 'Chất liệu',
+            charging_capacity: 'Công suất sạc',
+            color: 'Màu sắc',
+            origin: 'Xuất xứ',
             warranty: 'Bảo hành',
         }
     },
@@ -79,4 +90,14 @@ const attJSON = {
     }
 }
 
-export default attJSON
+export const orderStatusOptions = {
+    PENDING: 'Đang chờ',
+    CONFIRMED: 'Đã xác nhận',
+    PREPARING: 'Đang chuẩn bị',
+    DELIVERING: 'Đang vận chuyển',
+    CANCELED: 'Hủy bỏ',
+    ABORTED: 'Từ chối',
+    POSTPONED: 'Hoãn lại',
+    REFUNDED: 'Hoàn trả',
+    COMPLETE: 'Hoàn thành',
+};

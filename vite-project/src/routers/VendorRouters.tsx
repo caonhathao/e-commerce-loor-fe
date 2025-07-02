@@ -11,16 +11,18 @@ import VendorProfile from "../pages/Brand/Vendor/VendorProfile.tsx";
 import ProtectedRouter from "./ProtectedRouter.tsx";
 import {ProductProvider} from "../context/ProductContext.tsx";
 import VendorLayout from "../layout/VendorLayout.tsx";
+import VendorOrderDetail from "../pages/Brand/Vendor/VendorOrderDetail.tsx";
+import NotFound from "../pages/Global/NotFound.tsx";
 
 const VendorRouters = () => {
     return (
         <>
             <Route path={'/vendor'}
-                element={
-                    <ProtectedRouter
-                        requiredRoles={['ROLE_VENDOR']}
-                    />
-                }
+                   element={
+                       <ProtectedRouter
+                           requiredRoles={['ROLE_VENDOR']}
+                       />
+                   }
             >
                 <Route element={<ProductProvider>
                     <VendorLayout/>
@@ -36,8 +38,10 @@ const VendorRouters = () => {
                     <Route path="manage/show-variant/update-variant-description/:id"
                            element={<UpdateVariant/>}/>
                     <Route path="orders" element={<VendorOrders/>}/>
+                    <Route path="orders/order-detail/:id" element={<VendorOrderDetail/>}/>
                     <Route path="support" element={<div>Support Coming Soon</div>}/>
                     <Route path="shop-info" element={<VendorProfile/>}/>
+                    <Route path={'*'} element={<NotFound/>}/>
                 </Route>
             </Route>
         </>

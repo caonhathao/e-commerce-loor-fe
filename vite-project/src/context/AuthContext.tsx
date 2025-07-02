@@ -58,8 +58,6 @@ export const AuthProvider = ({children}: { children: ReactNode }) => {
                 if (decode) {
                     const res: payload = decode as payload;
                     const exp = res.exp
-
-                    console.log('decode:',decode)
                     const isTokenExpired = exp * 1000 < Date.now() + 60 * 1000;
 
                     if (!isTokenExpired) {

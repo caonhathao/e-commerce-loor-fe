@@ -5,14 +5,19 @@ import endpoints from "../../../services/endpoints.tsx";
 import {toast, ToastContainer} from "react-toastify";
 import {useNavigate, useParams} from "react-router-dom";
 import {useProduct} from "../../../context/ProductContext.tsx";
-import {useEffect, useState} from "react";
+import {useState} from "react";
 import {BsPlusCircle} from "react-icons/bs";
+import Loading from "../../loading/Loading.tsx";
 
 const NewVariant = () => {
     const navigator = useNavigate();
     const params = useParams();
     const {product} = useProduct();
     const [attrs, setAttrs] = useState<{ [key: string]: string }>({})
+
+    if (!product) {
+        return <Loading/>
+    }
 
     return (
         <div className={'w-full h-full flex justify-center items-center m-2 p-2 my-2'}>
@@ -33,6 +38,7 @@ const NewVariant = () => {
                 })}
                 validateOnBlur={true}
                 onSubmit={async (values) => {
+                    console.log(values)
                     try {
                         const data = new FormData();
                         data.append('sku', values.sku);
@@ -40,7 +46,7 @@ const NewVariant = () => {
                         data.append('stock', values.stock.toString());
                         data.append('name', values.name);
                         data.append('status', values.status.toString());
-                        const response = await apiClient.post(endpoints.brand.createVariant(params.id))
+                        const response = await apiClient.post(endpoints.brand.createVariant(params.id),data)
                         if (response.status === 200) {
                             toast.success('Tạo phiên bản mới thành công');
                         } else {
@@ -65,8 +71,8 @@ const NewVariant = () => {
                         <h3 className={'font-bold text-xl p-1 w-[70%] text-center m-2 text-yellow-600 border-b-2 border-[var(--bg-color)]'}>Tạo
                             phiên bản mới</h3>
                         <div className={'border-[1px] border-[var(--bg-color)] p-2 rounded-lg text-xs italic'}>
-                            <p><strong>Mã sản phẩm:</strong> {product.id}</p>
-                            <p><strong>Tên sản phẩm:</strong> {product.name}</p>
+                            <p><strong>Mã sản phẩm:</strong> {product?.id}</p>
+                            <p><strong>Tên sản phẩm:</strong> {product?.name}</p>
                         </div>
                         <fieldset
                             className={'w-full p-0 leading-8 border border-gray-700 rounded-lg m-2 flex flex-row items-center justify-between'}>
@@ -132,8 +138,9 @@ const NewVariant = () => {
                                         onChange={handleChange}
                                         value={values.status}
                                         onBlur={handleBlur}>
-                                    <option value={0}>Mở bán</option>
-                                    <option value={1}>Ngừng bán</option>
+                                    <option value={'IN_STOCK'}>Mở bán</option>
+                                    <option value={'PRE_ORDER'}>Đặt trước</option>
+                                    <option value={'OUT_OF_STOCK'}>Ngừng bán</option>
                                 </select>
                             </fieldset>
                             {errors.status && touched.status && (
@@ -147,33 +154,14 @@ const NewVariant = () => {
                                 Key: {key}, Value: {value}
                             </div>
                         ))}
-                        <div className={'w-full flex flex-row justify-between items-center gap-4'}>
-                            <fieldset
-                                className={'w-full p-2 border border-gray-700 rounded-lg my-2 flex flex-row items-center justify-between'}>
-                                <legend>Thuộc tính</legend>
-                                <select>
-                                    <option>Màu sắc</option>
-                                    <option>Kích thước</option>
-                                    <option>Cân nặng</option>
-                                    <option>Chất liệu</option>
-                                </select>
-                            </fieldset>
-
-                            <fieldset
-                                className={'w-full p-2 border border-gray-700 rounded-lg my-2 flex flex-row items-center justify-between'}>
-                                <legend>Mô tả</legend>
-                                <input type={'text'} className={'w-full'}/>
-                            </fieldset>
-                            <div className={'w-fit'}><BsPlusCircle size={20}/></div>
-                        </div>
                         <div className={'w-full flex flex-row justify-center items-center gap-4 mt-3'}>
                             <button type={'button'}
-                                    className={'border-2 border-[var(--bg-color)] p-2 rounded-4xl text-[var(--bg-color)] flex justify-center items-center'}
+                                    className={'border-2 border-[var(--border-color)] p-2 rounded-4xl text-[var(--bg-color)] flex justify-center items-center'}
                                     onClick={() => navigator(-1)}>
                                 Cancel
                             </button>
                             <button type={'submit'}
-                                    className={'bg-purple-500 p-2 rounded-4xl text-white font-bold flex justify-center items-center'}>
+                                    className={'bg-[var(--btn-primary-bg)] p-2 rounded-4xl  font-bold flex justify-center items-center'}>
                                 Submit
                             </button>
                         </div>

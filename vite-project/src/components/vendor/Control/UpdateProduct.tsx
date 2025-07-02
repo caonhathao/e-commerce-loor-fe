@@ -27,7 +27,7 @@ interface data {
     name: string,
     origin: string,
     status: number,
-    averagePrice: number,
+    average_price: number,
     description: string,
     promotion: number,
     tags: string,
@@ -43,7 +43,7 @@ interface FormValues {
     origin: string;
     status: number | string;
     description: string;
-    averagePrice: number;
+    average_price: number;
     promotion: number | string;
     tags: string;
     images: img[]; // chính là cái bạn cần
@@ -102,7 +102,7 @@ const UpdateProduct = () => {
             status: data ? data['status'] : 0,
             description: data ? data['description'] : '',
             stock: data ? data['stock'] : 0,
-            averagePrice: data ? data['averagePrice'] : 0,
+            average_price: data ? data['average_price'] : 0,
             promotion: data ? data['promotion'] : 0,
             tags: data ? data['tags'] : '',
             images: [],
@@ -112,12 +112,26 @@ const UpdateProduct = () => {
         setDelImage([]);
     }
 
+    const handleGetSubCategory = async (id: string) => {
+        try {
+            if (id !== '0') {
+                const response = await apiClient.get(endpoints.public.getAllSubCategories(id))
+                if (response.status === 200) {
+                    setSubCategory(response.data);
+                } else toast.error('Failed to get sub category!');
+            } else setSubCategory([]);
+        } catch (err) {
+            console.log(err);
+            toast.error('Failed to get sub category!');
+        }
+    }
+
     //fetch data of the current product
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const id = params.id;
-                const response = await apiClient.get(endpoints.public.getProductDetail(id))
+                const response = await apiClient.get(endpoints.brand.getProductByIdFromBrand(id))
                 if (response.status === 200) {
                     console.log(response.data);
                     setData(response.data);
@@ -135,9 +149,10 @@ const UpdateProduct = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await apiClient.get(endpoints.public.getCategory);
-                if (response) setCategory(response.data);
-                else toast.error('Failed to get categories!');
+                const response = await apiClient.get(endpoints.public.getAllCategories);
+                if (response) {
+                    setCategory(response.data);
+                } else toast.error('Failed to get categories!');
             } catch (err) {
                 console.log(err);
                 toast.error('Failed to fetch data!');
@@ -152,7 +167,7 @@ const UpdateProduct = () => {
                 try {
                     if (data) {
                         const id = data['category_id'];
-                        const response = await apiClient(endpoints.public.getSubCategory(id));
+                        const response = await apiClient(endpoints.public.getAllSubCategories(id));
                         if (response) setSubCategory(response.data);
                     }
                 } catch (err) {
@@ -185,10 +200,11 @@ const UpdateProduct = () => {
     }
 
     return (
-        <div className={'w-auto h-full m-2 p-2 my-2 flex flex-col justify-start items-center'}>
+        <div className={'min-w-full max-w-full h-full m-2 p-2 my-2 flex flex-col justify-start items-center'}>
             <div
                 className={'absolute top-5 left-5 bg-gradient-to-b from-indigo-500 from-20% via-purple-500 to-pink-500 p-2.5 rounded-lg shadow-lg shadow-gray-500'}
-                onClick={() => navigate(-1)}><BsBoxArrowInLeft size={20} color={'white'}/></div>
+                onClick={() => navigate(-1)}><BsBoxArrowInLeft size={20} color={'white'}/>
+            </div>
             <Formik
                 initialValues={{
                     id: data ? data["id"] : '',
@@ -197,7 +213,7 @@ const UpdateProduct = () => {
                     name: data ? data['name'] : '',
                     origin: data ? data['origin'] : '',
                     status: data ? data['status'] : '',
-                    averagePrice: data ? data['averagePrice'] : 0,
+                    average_price: data ? data['average_price'] : 0,
                     description: data ? data['description'] : '',
                     promotion: data ? data['promotion'] : '',
                     tags: data ? data['tags'] : '',
@@ -210,9 +226,8 @@ const UpdateProduct = () => {
                     subCategory_id: Yup.string().required('Please choose a sub category'),
                     name: Yup.string().required('Please enter a name'),
                     origin: Yup.string().required('Please enter origin'),
-                    status: Yup.number().required('Please enter status'),
                     description: Yup.string().required('Please enter description'),
-                    averagePrice: Yup.number().required('Please enter price'),
+                    average_price: Yup.number().required('Please enter price'),
                 })}
                 validateOnBlur={true}
                 onSubmit={async (values) => {
@@ -281,12 +296,16 @@ const UpdateProduct = () => {
                                         <legend>Nhóm 1</legend>
                                         <select name={'category_id'}
                                                 className={'w-full'}
-                                                onChange={handleChange}
+                                                onChange={(e)=>{
+                                                    handleChange(e);
+                                                    handleGetSubCategory(e.target.value)
+                                                }}
                                                 value={values.category_id}
                                                 onBlur={handleBlur}>
-                                            <option value={'0'}>none</option>
+                                            <option value={'0'}>None</option>
                                             {category && category.map((item, i) => (
-                                                <option key={i} value={item["id"]}>{item["name"]}</option>
+                                                <option key={i} value={item["id"]}
+                                                >{item["name"]}</option>
                                             ))}
                                         </select>
                                     </fieldset>
@@ -298,9 +317,10 @@ const UpdateProduct = () => {
                                                 onChange={handleChange}
                                                 value={values.subCategory_id ? values.subCategory_id : data?.subcategory_id}
                                                 onBlur={handleBlur}>
-                                            <option value={'0'}>none</option>
+                                            <option value={'0'}>None</option>
                                             {subCategory && subCategory.map((item, i) => (
-                                                <option key={i} value={item["id"]}>{item["name"]}</option>
+                                                <option key={i} value={item["id"]}
+                                                >{item["name"]}</option>
                                             ))}
                                         </select>
                                     </fieldset>
@@ -436,7 +456,7 @@ const UpdateProduct = () => {
                             {/*The status of data*/}
                             <fieldset
                                 className={'w-full border border-gray-700 rounded-lg p-2 m-2 flex flex-row items-center justify-between'}>
-                                <legend>Tình trang hàng hóa</legend>
+                                <legend>Tình trạng hàng hóa</legend>
                                 <div className={'w-1/2'}>
                                     <fieldset>
                                         <legend>Tình trạng</legend>
@@ -445,8 +465,8 @@ const UpdateProduct = () => {
                                                 onChange={handleChange}
                                                 onBlur={handleBlur}
                                                 value={values.status}>
-                                            <option value={0}>Tạm ngưng</option>
-                                            <option value={1}>Mở bán</option>
+                                            <option value={'CLOSED'}>Tạm ngưng</option>
+                                            <option value={'OPENED'}>Mở bán</option>
                                         </select>
                                     </fieldset>
                                     {errors.status && touched.status && (
@@ -467,14 +487,14 @@ const UpdateProduct = () => {
                             <fieldset
                                 className={'w-full border border-gray-700 rounded-lg leading-8 m-2 flex flex-row items-center justify-between'}>
                                 <legend>Giá chung</legend>
-                                <input className={'w-full pl-2'} type={'text'} name={'price'}
+                                <input className={'w-full pl-2'} type={'text'} name={'average_price'}
                                        onChange={handleChange}
                                        onBlur={handleBlur}
-                                       value={values.averagePrice}/>
+                                       value={values.average_price}/>
                             </fieldset>
-                            {errors.averagePrice && touched.averagePrice && (
+                            {errors.average_price && touched.average_price && (
                                 <p className={'text-red-600'}>
-                                    <small className={'text-red-600 italic'}>{errors.averagePrice}</small>
+                                    <small className={'text-red-600 italic'}>{errors.average_price}</small>
                                 </p>
                             )}
 

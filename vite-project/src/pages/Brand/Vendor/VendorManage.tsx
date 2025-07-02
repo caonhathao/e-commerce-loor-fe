@@ -147,11 +147,15 @@ const VendorManage = () => {
         if (isAllow) {
             const fetch = async () => {
                 try {
+                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                    // @ts-expect-error
                     const response = await apiClient.post(endpoints.brand.deleteProduct(product.id))
 
                     if (response) {
                         toast.success('Xóa sản phẩm thanh công', {autoClose: 1000});
                         setTimeout(() => {
+                            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                            // @ts-expect-error
                             setData((prev) => prev.filter(item => item["id"] !== product["id"]));
                             setProduct(null)
                         }, 1500)
@@ -230,10 +234,12 @@ const VendorManage = () => {
                                     onClick={() => handleItem(item)}
                                 >
                                     <td className={'h-full flex-col items-center justify-center border-1 border-b-white border-x-white p-1'}>{item["id"]}</td>
-                                    <td className={'break-words border-1 border-y-white border-x-white p-1'}>{item["name"]}</td>
+                                    <td className={'break-words border-1 border-y-white border-x-white p-1'}>
+                                        <p className={'text-left min-h-40 max-h-40 overflow-hidden'}>{item["name"]}</p>
+                                    </td>
                                     <td className={'h-full border-1 border-b-white border-x-white p-1'}>
                                         <div className={'flex flex-row justify-center items-center'}>
-                                            {item["status"] === '0' ?
+                                            {item["status"] === 'OPENED' ?
                                                 <Bs.BsBanFill
                                                     className={'shadow shadow-gray-600 rounded-4xl drop-shadow-xl'}
                                                     color={'red'} size={25}/> : (item['stock'] === 0 ?

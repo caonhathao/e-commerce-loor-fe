@@ -2,14 +2,14 @@ import {Link, useNavigate} from "react-router-dom";
 import {useParams} from "react-router-dom";
 import {useEffect, useState} from "react";
 import {toast} from "react-toastify";
-import {BsExclamationCircleFill, BsPlayCircle, BsPlusCircle, BsTicket} from "react-icons/bs";
+import {BsBoxArrowInLeft, BsExclamationCircleFill, BsPlayCircle, BsPlusCircle, BsTicket} from "react-icons/bs";
 import apiClient from "../../../services/apiClient.tsx";
 import endpoints from "../../../services/endpoints.tsx";
 
 interface data {
     id: string;
     sku: string;
-    hasAttribute: boolean;
+    has_attribute: boolean;
 }
 
 const VendorVariant = () => {
@@ -22,8 +22,8 @@ const VendorVariant = () => {
             try {
                 const id = params.id;
                 let response;
-                if (id != null) {
-                    response = await apiClient.get(endpoints.public.getAllVariant(id));
+                if (id !== undefined) {
+                    response = await apiClient.get(endpoints.public.getAllVariants(id));
                 }
                 if (response) setData(response.data);
                 else {
@@ -42,6 +42,10 @@ const VendorVariant = () => {
 
     return (
         <div className={'w-full h-full flex flex-col justify-center items-center'}>
+            <div
+                className={'absolute top-5 left-5 bg-gradient-to-b from-indigo-500 from-20% via-purple-500 to-pink-500 p-2.5 rounded-lg shadow-lg shadow-gray-500'}
+                onClick={() => navigator(-1)}><BsBoxArrowInLeft size={20} color={'white'}/>
+            </div>
             {/*show button to access update main description of product*/}
             {/*others to access update variant's description of product*/}
             <div className={'w-[80%]  p-2 my-2 text-2xl text-center font-bold border-b-2 border-gray-400'}>
@@ -89,9 +93,12 @@ const VendorVariant = () => {
                             </div>
                         </div>
                         <div className={'w-full flex flex-row justify-between items-center text-xs'}>
-                            {item.hasAttribute ? (<div><BsTicket/></div>) : (
+                            {item.has_attribute ? (
+                                <div className={'flex justify-center items-center gap-2'}><BsTicket/>Đã có thuộc tính
+                                    sản phẩm</div>) : (
                                 <div className={'w-full flex flex-row justify-start items-center gap-4 text-gray-600'}>
-                                    <BsExclamationCircleFill size={15} color={'gray'}/><p>Sản phảm chưa có các thuộc tính</p></div>
+                                    <BsExclamationCircleFill size={15} color={'gray'}/><p>Sản phảm chưa có các thuộc
+                                    tính</p></div>
                             )}
                         </div>
                     </li>

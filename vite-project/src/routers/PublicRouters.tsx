@@ -8,6 +8,7 @@ import Account from "../pages/Global/Account.tsx";
 import VendorSignUp from "../pages/Brand/VendorSignUp.tsx";
 import VendorSignIn from "../pages/Brand/VendorSignIn.tsx";
 import NotFound from "../pages/Global/NotFound.tsx";
+import ProductDetail from "../pages/Global/ProductDetail.tsx";
 
 const PublicRouters = () => {
     return (
@@ -18,8 +19,8 @@ const PublicRouters = () => {
                 <Route path="sign-up" element={<SignUp/>}/>
                 <Route path="sign-in" element={<SignIn/>}/>
                 <Route path="account" element={<Account/>}/>
+                <Route path={'product-detail/:id'} element={<ProductDetail/>}/>
                 <Route path={'*'} element={<NotFound/>}/>
-
             </Route>
             <Route path="/register-new-vendor" element={<VendorSignUp/>}/>
             <Route path="/sign-in-vendor" element={<VendorSignIn/>}/>

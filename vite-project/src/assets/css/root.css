@@ -1,51 +1,51 @@
 :root {
     /* ==== Brand Colors ==== */
-    --main-color: #FFD600;
-    --secondary-color: #FFAB00;
-    --accent-color: #00B0FF;
+    --main-color: 255 214 0;
+    --secondary-color: 255 171 0;
+    --accent-color: 0 176 255;
 
     /* ==== Text & Background ==== */
-    --text-color: #1F1F1F;
-    --primary-background: #FFFFFF;
-    --secondary-background: #f5f5f5;
-    --border-color: #E0E0E0;
+    --text-color: 31 31 31;
+    --primary-background: 255 255 255;
+    --secondary-background: 245 245 245;
+    --border-color: 224 224 224;
 
     /* ==== Status Colors ==== */
-    --text-error: #F5004F;
-    --success-color: #4CAF50;
-    --warning-color: #FF9800;
-    --info-color: #2196F3;
-    --disabled-color: #BDBDBD;
+    --text-error: 245 0 79;
+    --success-color: 76 175 80;
+    --warning-color: 255 152 0;
+    --info-color: 33 150 243;
+    --disabled-color: 189 189 189;
 
     /* ==== Button Colors ==== */
     --btn-primary-bg: var(--main-color);
-    --btn-primary-text: #000000;
-    --btn-primary-hover: #e6c200;
+    --btn-primary-text: 0 0 0;
+    --btn-primary-hover: 230 194 0;
 
     --btn-secondary-bg: var(--secondary-color);
-    --btn-secondary-text: #000000;
-    --btn-secondary-hover: #e69a00;
+    --btn-secondary-text: 0 0 0;
+    --btn-secondary-hover: 230 154 0;
 
     --btn-accent-bg: var(--accent-color);
-    --btn-accent-text: #FFFFFF;
-    --btn-accent-hover: #0095d5;
+    --btn-accent-text: 255 255 255;
+    --btn-accent-hover: 0 149 213;
 
     --btn-disabled-bg: var(--disabled-color);
-    --btn-disabled-text: #757575;
+    --btn-disabled-text: 117 117 117;
 
     /* ==== Link Colors ==== */
     --link-color: var(--accent-color);
-    --link-hover: #007bbd;
-    --link-visited: #5e35b1;
+    --link-hover: 0 123 189;
+    --link-visited: 94 53 177;
 
     /* ==== Heading Colors ==== */
-    --heading-color: #121212;
-    --subheading-color: #3c3c3c;
+    --heading-color: 18 18 18;
+    --subheading-color: 60 60 60;
 
     /* ==== Interaction Effects ==== */
-    --hover-background: #f5f5f5;
-    --active-background: #eeeeee;
-    --focus-outline: #0091ea;
+    --hover-background: 245 245 245;
+    --active-background: 238 238 238;
+    --focus-outline: 0 145 234;
 
     /* ==== Shadows ==== */
     --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);

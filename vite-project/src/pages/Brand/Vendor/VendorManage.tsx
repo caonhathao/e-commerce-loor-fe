@@ -13,19 +13,43 @@ import {useFormik} from "formik";
 import endpoints from "../../../services/endpoints.tsx";
 import apiClient from "../../../services/apiClient.tsx";
 import {getAccessToken} from "../../../services/tokenStore.tsx";
+import {Pagination, Stack} from "@mui/material";
 
 const socket = io(endpoints.system.socketConnection, {
     withCredentials: true,
     transports: ['websocket', 'polling'],
 });
 
+interface productType {
+    id: string,
+    brand_id: string,
+    category_id: string,
+    subcategory_id: string,
+    name: string,
+    image_products: {
+        image_link: string,
+    }[],
+    average_price: string,
+    status: string,
+    origin: string,
+    stock: number,
+}
+
+interface dataType {
+    current_page: number,
+    total_pages: number,
+    current_items: number,
+    total_items: number,
+    data: productType[]
+}
+
 const VendorManage = () => {
     const navigate = useNavigate();
-    const [data, setData] = useState([]);
+    const [data, setData] = useState<dataType>();
     const {product, setProduct} = useProduct();
 
     const [isDelete, setIsDelete] = useState(false); //open delete function
-    const [isAllow, setIsAllow] = useState<boolean>(false); //allow to delete item
+    const [isAllow, setIsAllow] = useState<boolean>(false); //allow deleting item
     const [sortStatus, setSortStatus] = useState<boolean>(false); //sort:follow status open or close
 
     //search product
@@ -78,68 +102,72 @@ const VendorManage = () => {
         //if sort follows status open
         if (sortStatus) {
             setSortStatus(false);
-            setData((prev) => {
-                const temp = [...prev]
-                return temp.sort((a, b) => {
-                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                    // @ts-expect-error
+            setData(prev => {
+                if (!prev) return prev;
+
+                const temp = [...prev.data];
+                const sorted = temp.sort((a, b) => {
                     if (a.stock > 0 && b.stock > 0) {
-                        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                        // @ts-expect-error
-                        return b.status - a.status
+                        return b.status > a.status;
                     } else {
-                        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                        // @ts-expect-error
-                        return b.stock - a.stock
+                        return b.stock - a.stock;
                     }
-                })
-            })
+                });
+
+                return {...prev, data: sorted};
+            });
+
         } else {
             setSortStatus(true);
-            setData((prev) => {
-                const temp = [...prev]
-                return temp.sort((a, b) => {
-                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                    // @ts-expect-error
+            setData(prev => {
+                if (!prev) return prev;
+
+                const temp = [...prev.data];
+                const sorted = temp.sort((a, b) => {
                     if (a.stock > 0 && b.stock > 0) {
-                        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                        // @ts-expect-error
-                        return a.status - b.status
+                        return a.status > b.status;
                     } else {
-                        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                        // @ts-expect-error
-                        return a.stock - b.stock
+                        return a.stock - b.stock;
                     }
-                })
+                });
+
+                return {...prev, data: sorted};
+            });
+        }
+    }
+
+    const fetchData = async (page: number, limit: number | 10) => {
+        try {
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-expect-error
+            const id = JWTDecode(getAccessToken()).id;
+            const response = await apiClient.get(endpoints.public.getAllProductsFromBrand(id), {
+                params: {
+                    page: page,
+                    limit: limit
+                }
             })
+
+            if (response && response.status === 200) {
+                console.log(response.data)
+                toast.success('Load data successfully.', {
+                    toastId: 'loadDataToast',
+                    position: "bottom-right",
+                    autoClose: 1400
+                });
+                setTimeout(() => {
+                    setData(response.data)
+
+                }, 1500)
+            } else console.log(response)
+        } catch (error) {
+            console.log(error)
         }
     }
 
     //get all products
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-expect-error
-                const id = JWTDecode(getAccessToken()).id;
-                const response = await apiClient.get(endpoints.public.getAllProductsFromBrand(id))
-
-                if (response) {
-                    toast.success('Load data successfully.', {
-                        toastId: 'loadDataToast',
-                        position: "bottom-right",
-                        autoClose: 1400
-                    });
-                    setTimeout(() => {
-                        setData(response.data)
-
-                    }, 1500)
-                } else console.log(response)
-            } catch (error) {
-                console.log(error)
-            }
-        }
-        fetchData();
+        fetchData(1, 10);
     }, []);
 
     //delete (remove) product permanent
@@ -171,7 +199,7 @@ const VendorManage = () => {
 
     useEffect(() => {
         socket.on('delete-product', ({id}) => {
-            setData((prev) => prev.filter(item => item["id"] !== id));
+            setData(prev => prev ? {...prev, data: prev.data.filter(item => item.id !== id)} : prev);
         })
         socket.on('search-product', ({results}) => {
             setData(results)
@@ -182,7 +210,7 @@ const VendorManage = () => {
         }
     }, []);
 
-    if (data.length === 0) return <Loading/>
+    if (data === undefined) return <Loading/>
 
     return (
         <div className={'w-80 h-screen flex flex-col justify-start items-center'}>
@@ -229,7 +257,7 @@ const VendorManage = () => {
                             </tr>
                             </thead>
                             <tbody>
-                            {data && data.map((item, i) => (
+                            {data && data.data.map((item, i) => (
                                 <tr key={i} className={`h-full ${i % 2 === 0 ? `bg-indigo-200` : `bg-indigo-300`}`}
                                     onClick={() => handleItem(item)}
                                 >
@@ -258,6 +286,13 @@ const VendorManage = () => {
                 </div>
                 {/*add button list here*/}
             </div>
+            {data !== null && data !== undefined ? (
+                <Stack spacing={2} alignItems={'center'}>
+                    <Pagination count={data?.total_pages}
+                                page={data?.current_page}
+                                onChange={(_e, value) => fetchData(value, 10)}/>
+                </Stack>
+            ) : null}
             {isDelete && product !== null ?
                 <AuthenticateBox setIsDelete={setIsDelete} setIsAllow={setIsAllow}
                                  message={'Bạn thật sự muốn xóa bỏ sản phẩm này ?'}/> : null}

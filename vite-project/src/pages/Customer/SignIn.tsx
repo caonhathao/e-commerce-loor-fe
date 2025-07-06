@@ -11,6 +11,7 @@ import {motion} from 'motion/react'
 import {animate, press} from "motion";
 import apiClient from "../../services/apiClient.tsx";
 import endpoints from "../../services/endpoints.tsx";
+import {useAuth} from "../../context/AuthContext";
 
 function SignIn() {
     const navigate = useNavigate();
@@ -19,6 +20,7 @@ function SignIn() {
     const [typeInput, setTypeInput] = useState<string>('password');
 
     const [count, setCount] = useState(0);
+    const {login} = useAuth();
 
     const formData = useFormik({
         initialValues: {
@@ -26,11 +28,19 @@ function SignIn() {
             password: ''
         },
         onSubmit: async (values) => {
+            console.log(values)
             setCount(count + 1);
             try {
-                const response = await apiClient.post(endpoints.auth.userLogin, {values})
-
-                toast.success('Sign in successfully');
+                const response = await apiClient.post(endpoints.auth.userLogin, values)
+                if (response.status === 200) {
+                    const {access, data} = response.data;
+                    login(access, data);
+                    toast.success('Sign in successfully.', {autoClose: 2000});
+                    setTimeout(() => {
+                        navigate('/');
+                        // window.location.reload();
+                    }, 2500);
+                } else toast.warning('Sign in failed.');
             } catch (err) {
                 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                 // @ts-expect-error

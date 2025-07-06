@@ -13,6 +13,7 @@ import {
 import {formatedNumber} from "../../utils/functions.utils.tsx";
 import AmountInput from "../../components/modules/AmountInput.tsx";
 import SlideShowImg from "../../components/modules/SlideShowImg.tsx";
+import {getAccessToken} from "../../services/tokenStore.tsx";
 
 interface productVariantType {
     id: string,
@@ -34,6 +35,9 @@ interface dataType {
     image_products: {
         image_link: string,
     }[],
+    featured_product: {
+        product_wishlist: 0
+    }
     average_price: string,
     status: string,
     origin: string,
@@ -61,6 +65,40 @@ const ProductDetail = () => {
         const exist = listVariants.find(item => item.id === variant.id)
         if (!exist) {
             setListVariants(prevState => [...prevState, variant])
+        }
+    }
+
+    const handleAddToCart = async (variants: productVariantType[]) => {
+        try {
+            if (variants.length === 0) {
+                toast.warning('Bạn chưa chọn sản phẩm!')
+                return;
+            }
+            if (getAccessToken() === '' || getAccessToken() === undefined) {
+                toast.warning('Bạn cần đăng nhập!')
+                return;
+            }
+
+            let payload = {
+                list: []
+            };
+            for (let i = 0; i < variants.length; i++) {
+                const temp = {
+                    id: variants[i].id,
+                    amount: amount[i],
+                    image_link: data?.image_products[0].image_link,
+                }
+                payload.list.push(temp)
+            }
+
+            const response = await apiClient.post(endpoints.user.addToCart, payload);
+            if (response && response.status === 200) {
+                toast.success('Thêm vào giỏ hàng thành công')
+            } else toast.warning('Thêm sản phẩm thất bại!')
+
+        } catch (e) {
+            console.error(e)
+            toast.error('Thêm sản phẩm thất bại!')
         }
     }
 
@@ -103,9 +141,9 @@ const ProductDetail = () => {
         setTotal(total)
     }, [amount, listVariants]);
 
-    useEffect(()=>{
-        console.log(data)
-    },[data])
+    useEffect(() => {
+        console.log(listVariants)
+    }, [listVariants])
 
     return (
         <div className={'w-full h-full flex flex-col justify-start items-center mt-5 p-2'}>
@@ -133,7 +171,8 @@ const ProductDetail = () => {
                         </button>
                         <p className={'text-[rgb(var(--text-error))]'}>Thích</p>
                     </div>
-                    <p className={'text-[rgb(var(--text-error))]'}>(1.1k lượt thích)</p>
+                    <p className={'text-[rgb(var(--text-error))]'}>({data?.featured_product.product_wishlist} lượt
+                        thích)</p>
                 </div>
             </div>
             {/*rating on the left and review on the right*/}
@@ -229,7 +268,10 @@ const ProductDetail = () => {
             {/*buy button now and add to cart button*/}
             <div className={'w-[90%] h-fit flex flex-row justify-between items-center my-2'}>
                 <button type={'button'}
-                        className={'w-fit h-fit text-(rgb(var(--text-color))] text-lg rounded-lg p-2 flex flex-row jus-center items-center gap-2 border-2 border-[rgb(var(--main-color))]'}>
+                        className={'w-fit h-fit text-(rgb(var(--text-color))] text-lg rounded-lg p-2 flex flex-row jus-center items-center gap-2 border-2 border-[rgb(var(--main-color))]'}
+                        onClick={() => {
+                            handleAddToCart(listVariants)
+                        }}>
                     <BsCart size={20}/>
                     Vào giỏ
                 </button>

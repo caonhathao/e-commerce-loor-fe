@@ -38,7 +38,7 @@ interface data {
 interface FormValues {
     id: string;
     category_id: string;
-    subCategory_id: string;
+    subcategory_id: string;
     name: string;
     origin: string;
     status: number | string;
@@ -130,20 +130,21 @@ const UpdateProduct = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const id = params.id;
-                const response = await apiClient.get(endpoints.brand.getProductByIdFromBrand(id))
-                if (response.status === 200) {
-                    console.log(response.data);
-                    setData(response.data);
-                } else {
-                    toast.error('Failed to get product!');
+                if(params.id!==undefined){
+                    const id = params.id;
+                    const response = await apiClient.get(endpoints.brand.getProductByIdFromBrand(id))
+                    if (response.status === 200) {
+                        setData(response.data);
+                    } else {
+                        toast.error('Failed to get product!');
+                    }
                 }
             } catch (e) {
                 console.log(e);
             }
         }
         fetchData()
-    }, [])
+    }, [params.id])
 
     //fetch data of categories
     useEffect(() => {
@@ -166,7 +167,7 @@ const UpdateProduct = () => {
             const fetchData = async () => {
                 try {
                     if (data) {
-                        const id = data['category_id'];
+                        const id = data.category_id
                         const response = await apiClient(endpoints.public.getAllSubCategories(id));
                         if (response) setSubCategory(response.data);
                     }
@@ -184,10 +185,6 @@ const UpdateProduct = () => {
             setImageData(data.image_products ?? []);
         }
     }, [data]);
-
-    useEffect(() => {
-        console.log(delImage);
-    }, [delImage]);
 
     if (category.length === 0 || subCategory.length === 0 || data === null) return (
         <>

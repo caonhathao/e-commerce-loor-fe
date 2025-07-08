@@ -1,8 +1,10 @@
 import {createContext, ReactNode, useContext, useEffect, useState} from "react";
-import {getAccessToken, setAccessToken} from "../services/tokenStore.tsx";
+import {getAccessToken, removeAccessToken, setAccessToken} from "../services/tokenStore.tsx";
 import JWTDecode from "../security/JWTDecode.tsx";
 import apiClient from "../services/apiClient.tsx";
 import endpoints from "../services/endpoints.tsx";
+import {useNavigate} from "react-router-dom";
+import {toast} from "react-toastify";
 
 type User = {
     id: string;
@@ -35,6 +37,7 @@ export const AuthProvider = ({children}: { children: ReactNode }) => {
     const [user, setUser] = useState<User | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const isAuthenticated = !!user
+    const navigate = useNavigate();
 
     useEffect(() => {
 
@@ -86,7 +89,9 @@ export const AuthProvider = ({children}: { children: ReactNode }) => {
     }
 
     const logout = () => {
-        localStorage.removeItem('access_token');
+        removeAccessToken();
+        toast.success('Đăng xuất thành công');
+        navigate('/')
     }
 
     const hasRole = (role: string) => {

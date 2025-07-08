@@ -1,5 +1,5 @@
 import {Link, useNavigate} from 'react-router-dom'
-import '../../assets/css/pages/customer/SignUp.css'
+import '../../../assets/css/pages/customer/SignUp.css'
 import {useEffect, useState} from "react";
 import {useFormik} from "formik";
 import * as Yup from "yup";
@@ -7,8 +7,8 @@ import {Tooltip} from "@mui/material";
 import Typewriter from 'typewriter-effect'
 import {toast} from "react-toastify";
 import {BsEye, BsEyeSlash, BsPerson} from "react-icons/bs";
-import apiClient from "../../services/apiClient.tsx";
-import endpoints from "../../services/endpoints.tsx";
+import apiClient from "../../../services/apiClient.tsx";
+import endpoints from "../../../services/endpoints.tsx";
 
 function SignUp() {
     const navigate = useNavigate();

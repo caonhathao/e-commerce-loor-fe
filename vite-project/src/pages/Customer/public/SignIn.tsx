@@ -1,5 +1,5 @@
 import {Link, useNavigate} from 'react-router-dom'
-import '../../assets/css/pages/customer/SignUp.css'
+import '../../../assets/css/pages/customer/SignUp.css'
 import {useEffect, useState} from "react";
 import {useFormik} from "formik";
 import * as Yup from "yup";
@@ -9,9 +9,9 @@ import {ToastContainer, toast} from "react-toastify";
 import * as Bs from 'react-icons/bs'
 import {motion} from 'motion/react'
 import {animate, press} from "motion";
-import apiClient from "../../services/apiClient.tsx";
-import endpoints from "../../services/endpoints.tsx";
-import {useAuth} from "../../context/AuthContext";
+import apiClient from "../../../services/apiClient.tsx";
+import endpoints from "../../../services/endpoints.tsx";
+import {useAuth} from "../../../context/AuthContext.tsx";
 
 function SignIn() {
     const navigate = useNavigate();

@@ -3,6 +3,7 @@ import Loading from "../components/loading/Loading.tsx";
 import PublicRouters from "./PublicRouters.tsx";
 import {Routes} from "react-router-dom";
 import VendorRouters from "./VendorRouters.tsx";
+import UserRouters from "./UserRouters.tsx";
 
 const AppRouters = () => {
     return (
@@ -10,6 +11,7 @@ const AppRouters = () => {
             <Routes>
                 {PublicRouters()}
                 {VendorRouters()}
+                {UserRouters()}
             </Routes>
         </Suspense>
     )

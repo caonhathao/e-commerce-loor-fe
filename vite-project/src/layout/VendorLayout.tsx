@@ -5,7 +5,6 @@ import * as Bs from 'react-icons/bs'
 import {AnimatePresence, motion, MotionConfig} from 'motion/react'
 import {toast} from "react-toastify";
 import JWTDecode from "../security/JWTDecode.tsx";
-import {animate, press} from "motion";
 import {getAccessToken} from "../services/tokenStore.tsx";
 import {useAuth} from "../context/AuthContext.tsx";
 

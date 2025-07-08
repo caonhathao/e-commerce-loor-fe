@@ -1,42 +1,42 @@
 :root {
     /* ==== Brand Colors ==== */
-    --main-color: 255 214 0;
-    --secondary-color: 255 171 0;
-    --accent-color: 0 176 255;
+    --main-color: 0 123 255; /* xanh dương đậm - nổi bật, dễ nhận diện */
+    --secondary-color: 32 201 151; /* xanh ngọc tươi mát */
+    --accent-color: 255 87 34; /* cam đất mạnh mẽ - để nhấn */
 
     /* ==== Text & Background ==== */
-    --text-color: 31 31 31;
+    --text-color: 33 33 33; /* gần đen, đọc tốt trên nền trắng */
     --primary-background: 255 255 255;
-    --secondary-background: 245 245 245;
-    --border-color: 224 224 224;
+    --secondary-background: 250 250 250;
+    --border-color: 220 220 220;
 
     /* ==== Status Colors ==== */
-    --text-error: 245 0 79;
-    --success-color: 76 175 80;
-    --warning-color: 255 152 0;
-    --info-color: 33 150 243;
-    --disabled-color: 189 189 189;
+    --text-error: 211 47 47; /* đỏ chuẩn Material */
+    --success-color: 56 142 60;
+    --warning-color: 255 143 0;
+    --info-color: 2 136 209;
+    --disabled-color: 158 158 158;
 
     /* ==== Button Colors ==== */
     --btn-primary-bg: var(--main-color);
-    --btn-primary-text: 0 0 0;
-    --btn-primary-hover: 230 194 0;
+    --btn-primary-text: 255 255 255;
+    --btn-primary-hover: 0 105 217;
 
     --btn-secondary-bg: var(--secondary-color);
-    --btn-secondary-text: 0 0 0;
-    --btn-secondary-hover: 230 154 0;
+    --btn-secondary-text: 255 255 255;
+    --btn-secondary-hover: 22 160 120;
 
     --btn-accent-bg: var(--accent-color);
     --btn-accent-text: 255 255 255;
-    --btn-accent-hover: 0 149 213;
+    --btn-accent-hover: 200 64 26;
 
     --btn-disabled-bg: var(--disabled-color);
-    --btn-disabled-text: 117 117 117;
+    --btn-disabled-text: 255 255 255;
 
     /* ==== Link Colors ==== */
-    --link-color: var(--accent-color);
-    --link-hover: 0 123 189;
-    --link-visited: 94 53 177;
+    --link-color: 25 118 210;
+    --link-hover: 21 101 192;
+    --link-visited: 123 31 162;
 
     /* ==== Heading Colors ==== */
     --heading-color: 18 18 18;

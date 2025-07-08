@@ -1,10 +1,13 @@
 import logo from '../../assets/img/loli.png'
 import '../../assets/css/components/Header.css'
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import {Tooltip} from "@mui/material";
-import {BsBasket, BsPerson, BsSearch} from "react-icons/bs";
+import {BsBasket, BsPerson} from "react-icons/bs";
+import SearchingBar from "./SearchingBar.tsx";
+import {getAccessToken} from "../../services/tokenStore.tsx";
 
 const Header = () => {
+    const navigate = useNavigate();
     return (
         <div className={'w-full h-full flex justify-start items-start'}>
             <div className={'w-full h-full flex justify-between flex-col items-start'}>
@@ -16,54 +19,49 @@ const Header = () => {
                         <li><Link to={'/sell-on-loli'}>SELL ON LOLI</Link></li>
                         <li><Link to={'/customer-care'}>CUSTOMER CARE</Link></li>
                         <li><Link to={'/track-my-order'}>TRACK MY ORDER</Link></li>
-                        <li><Link to={'/account'}>ACCOUNT</Link></li>
+                        <li>{
+                            getAccessToken() !== '' ?
+                                <Link to={'/user'}>ACCOUNT</Link>
+                                :
+                                <Link to={'/account'}>ACCOUNT</Link>
+                        }</li>
                         <li><Link to={'/get-voucher'}>GET MORE VOUCHERS</Link></li>
                     </ul>
                 </div>
 
                 {/* Logo và Tiêu đề */}
-                <div className={'w-full flex flex-col sm:flex-row justify-between items-center bg-[rgb(var(--bg-color))]'}>
+                <div
+                    className={'w-full flex flex-col sm:flex-row justify-between items-center bg-[rgb(var(--bg-color))]'}>
                     <div className={'flex flex-row justify-center items-center'}>
                         <div className='w-[30%] p-3 rounded-full'>
                             <img src={logo} alt='logo' className='w-[50%]'/>
                         </div>
                         <div className='w-[70%]'>
-                            <p className='text-center font-bold text-[rgb(var(--main-color))] text-xl tracking-wide'><Link
-                                to={'/'}>LOLI SHOPPING</Link></p>
+                            <p className='text-center font-bold text-[rgb(var(--main-color))] text-xl tracking-wide'>
+                                <Link
+                                    to={'/'}>LOLI SHOPPING</Link></p>
                         </div>
                     </div>
 
 
                     {/* Search & Icons */}
                     <div className={'flex flex-row justify-around items-center w-full p-2'}>
-                        <div className={'w-[10%] text-center'}>
+                        <div className={'w-[10%] text-center mr-2'}>
                             <Tooltip title={'Cart'}>
                                 <button
                                     type='button'
-                                    className='text-[rgb(var(--main-color))] border-2 border-[rgb(var(--border-color))] p-2 rounded-full'>
+                                    className='text-[rgb(var(--main-color))] border-2 border-[rgb(var(--border-color))] p-2 rounded-full'
+                                    onClick={() => {
+                                        navigate('/user/show-cart')
+                                    }}>
                                     <BsBasket size={25}/>
                                 </button>
                             </Tooltip>
                         </div>
 
-                        <div className={'max-w-[80%]'}>
-                            <form
-                                className='w-full flex justify-around items-center border-2 border-[rgb(var(--main-color))] rounded-full p-2 bg-[rgb(var(--background))]'>
-                                <fieldset className='w-[80%]'>
-                                    <input
-                                        className='outline-0 w-full text-[rgb(var(--text-color))] bg-transparent'
-                                        type='text'
-                                        name='keyword'
-                                        placeholder='Type anything'
-                                    />
-                                </fieldset>
-                                <button className='w-[10%]' type="submit">
-                                    <BsSearch size={20} color={'rgb(var(--main-color)'}/>
-                                </button>
-                            </form>
-                        </div>
+                        <SearchingBar/>
 
-                        <div className={'w-[10%] text-center'}>
+                        <div className={'w-[10%] text-center ml-2'}>
                             <button
                                 className='text-[rgb(var(--main-color))] border-2 border-[rgb(var(--border-color))] p-2 rounded-full'>
                                 <BsPerson size={25}/>

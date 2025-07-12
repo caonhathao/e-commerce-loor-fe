@@ -1,28 +1,16 @@
 import {Outlet, useLocation, useNavigate} from "react-router-dom";
 import {useEffect, useState} from "react";
-import apiClient from "../services/apiClient.tsx";
 import endpoints from "../services/endpoints.tsx";
-import {toast} from "react-toastify";
 import {useAuth} from "../context/AuthContext.tsx";
 import {BsBell, BsBoxArrowRight, BsCart, BsHouse, BsPerson, BsReceipt} from "react-icons/bs";
 import SearchingBar from "../components/modules/SearchingBar.tsx";
 import Loading from "../components/loading/Loading.tsx";
-
-interface dataType {
-    id: string,
-    account_name: string,
-    full_name: string,
-    birthday: string,
-    gender: string,
-    email: string,
-    phone: string,
-    address: string,
-    image_link: string,
-    role: string,
-}
+import {useUser} from "../context/UserContext.tsx";
+import {fetchData} from "../utils/functions.utils.tsx";
+import err404 from '../assets/img/404.png'
 
 export const UserLayout = () => {
-    const [data, setData] = useState<dataType | undefined>(undefined);
+    const {user, setUser} = useUser();
     const [activeTab, setActiveTab] = useState(new Array(5).fill(false));
     const [currentTab, setCurrentTab] = useState(0);
     const location = useLocation();
@@ -44,19 +32,7 @@ export const UserLayout = () => {
     }
 
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await apiClient.get(endpoints.user.getUserInfo)
-
-                if (response.status === 200) {
-                    setData(response.data)
-                } else toast.error('Có lỗi trong quá trình tải dữ liệu')
-            } catch (e) {
-                console.error(e)
-                toast.error('Có lỗi trong quá trình kết nối')
-            }
-        }
-        fetchData()
+        fetchData(endpoints.user.getUserInfo, true, setUser, 'Lấy dữ liệu thất bại!', 'Lấy dữ liệu thành công')
     }, []);
 
     useEffect(() => {
@@ -83,7 +59,7 @@ export const UserLayout = () => {
                     return newContent;
                 })
                 setCurrentTab(3)
-            }else{
+            } else {
                 setActiveTab(() => {
                     const newContent = new Array(5).fill(false);
                     newContent[0] = true;
@@ -94,16 +70,16 @@ export const UserLayout = () => {
         }
     }, []);
 
-    if (data === undefined) return <Loading/>
+    if (user === undefined) return <Loading/>
 
     return (
         <div className={'flex flex-col justify-center items-center'}>
             {/*avatar and some info*/}
             <div className={'w-full h-fit flex flex-row justify-between items-center bg-[rgb(var(--main-color))] p-2'}>
                 <div className={'w-16 h-16 rounded-full border-2 border-[rgb(var(--border-color))]'}>
-                    <img src={data?.image_link} alt={'logo'} className={'w-full h-full rounded-full'}/>
+                    <img src={user?.image_link ?? err404} alt={'logo'} className={'w-full h-full rounded-full'}/>
                 </div>
-                <p>Xin chào, {data?.full_name ?? data?.account_name}</p>
+                <p>Xin chào, {user?.full_name ?? user?.account_name}</p>
                 <button
                     className={'bg-[rgb(var(--btn-accent-bg))] text-white rounded-lg p-1 shadow-lg shadow-gray-300'}
                     onClick={() => navigate('/')}>

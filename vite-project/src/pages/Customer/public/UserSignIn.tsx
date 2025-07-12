@@ -3,7 +3,6 @@ import '../../../assets/css/pages/customer/SignUp.css'
 import {useEffect, useState} from "react";
 import {useFormik} from "formik";
 import * as Yup from "yup";
-import {Tooltip} from "@mui/material";
 import Typewriter from "typewriter-effect";
 import {ToastContainer, toast} from "react-toastify";
 import * as Bs from 'react-icons/bs'
@@ -13,7 +12,7 @@ import apiClient from "../../../services/apiClient.tsx";
 import endpoints from "../../../services/endpoints.tsx";
 import {useAuth} from "../../../context/AuthContext.tsx";
 
-function SignIn() {
+function UserSignIn() {
     const navigate = useNavigate();
     const [greeting, setGreeting] = useState('');
     const [currDate] = useState(new Date());
@@ -55,13 +54,13 @@ function SignIn() {
 
     useEffect(() => {
         if (currDate.getHours() >= 0 && currDate.getHours() <= 10) {
-            setGreeting('Good morning, sir. Ready to add somethings to your cart? Shopping now!')
+            setGreeting('Chào buổi sáng, bạn đã sẵn sàng để lấp đầy giỏ hàng của mình chưa? Hẫy mua sắm ngay thôi nào!')
         } else if (currDate.getHours() > 10 && currDate.getHours() <= 12) {
-            setGreeting('Time to lunch, sir')
+            setGreeting('Trưa nay bạn sẽ ăn gì á? Lướt thử ở đây xem nào...')
         } else if (currDate.getHours() > 12 && currDate.getHours() <= 17) {
-            setGreeting('Hey guy, this is the perfect time to get more attractive promotions. Are you ready to create new deals? Go go go!')
+            setGreeting('Giờ vàng săn vouchers nè bạn ơi, nhanh nhanh thôi nào...')
         } else {
-            setGreeting('Sometimes is different to get something strange...')
+            setGreeting('Thi thoảng thì nên làm gì đó mới lạ xem nào...')
         }
     }, []);
 
@@ -83,51 +82,24 @@ function SignIn() {
             className="w-screen min-h-screen bg-white flex flex-col sm:max-lg:flex-col justify-between items-center relative">
             {/*this is for header and navigate buttons*/}
             <div id={'header'}
-                 className={'bg-white sm:max-lg:bg-(--bg-color) w-full h-1/4 flex flex-col sm:max-lg:flex-row justify-between items-center'}>
+                 className={'bg-[rbg(var(--main-color))] w-full h-1/4 shadow-sm shadow-[rgb(var(--secondary-color))] z-20 rounded-b-xl'}>
                 <div
-                    className={'text-xl max-sm:text-2xl sm:max-lg:text-6xl lg:text-7xl font-[cursive]' +
-                        ' flex justify-center sm:max-lg:justify-start items-center' +
-                        ' h-full w-full bg-(--bg-color)' +
-                        ' p-2 sm:max-lg:pl-20 sm:max-lg:py-6 lg:py-7'}>
-                    <Link to={'/'} className={'text-(--title-color-1) font-bold'}> Welcome to <br/> Loli shopping</Link>
-                </div>
-                <div className={'w-full sm:max-lg:w-auto ' +
-                    'flex flex-row justify-center item-center ' +
-                    'sm:max-lg:grid sm:max-lg:grid-rows-2 sm:max-lg:grid-cols-2 sm:max-lg:gap-x-4 sm:max-lg:gap-y-1 sm:max-lg:justify-items-end ' +
-                    ' bg-white sm:max-lg:bg-(--bg-color)'}>
-                    <Tooltip title={'love list'}>
-                        <button id={'feaBtn'} type='button'
-                                className={'bg-(--bg-color-btn-2) lg:bg-(--bg-color-btn-1) h-fit rounded-lg border-0 p-2 sm:max-lg:p-3 m-2 sm:max-lg:mx-2 lg:m-5 flex justify-center items-center'}>
-                            <Bs.BsBagHeart className={'w-6 h-6 sm:max-lg:w-10 sm:max-lg:h-10 lg:w-13 lg:h-13'}
-                                           color={'white'}/>
-                        </button>
-                    </Tooltip>
-                    <Tooltip title={'shopping cart'}>
-                        <button id={'feaBtn'} type='button'
-                                className={'bg-(--bg-color-btn-2) lg:bg-(--bg-color-btn-1) h-fit rounded-lg border-0 p-2 sm:max-lg:p-3 m-2 sm:max-lg:mx-2 lg:m-5 flex justify-center items-center'}>
-                            <Bs.BsCart className={'w-6 h-6 sm:max-lg:w-10 sm:max-lg:h-10 lg:w-13 lg:h-13'}
-                                       color={'white'}/>
-                        </button>
-                    </Tooltip>
-                    <Tooltip title={'your Customer'}>
-                        <button id={'feaBtn'} type='button'
-                                className={'bg-(--bg-color-btn-2) lg:bg-(--bg-color-btn-1) h-fit rounded-lg border-0 p-2 sm:max-lg:p-3 m-2 sm:max-lg:mx-2 lg:m-5 flex justify-center items-center sm:max-lg:col-span-2'}>
-                            <Bs.BsPersonCircle className={'w-6 h-6 sm:max-lg:w-10 sm:max-lg:h-10 lg:w-13 lg:h-13'}
-                                               color={'white'}/>
-                        </button>
-                    </Tooltip>
+                    className={'bg-[rgb(var(--main-color))] w-full h-fit text-center text-2xl p-3 rounded-b-xl'}>
+                    <Link to={'/'} className={'text-white font-bold'}>
+                        Chào mừng bạn đến với <br/>Loli shopping
+                    </Link>
                 </div>
             </div>
 
             {/*start sign-in form*/}
-            <div id={'signInForm'} className={'bg-white w-[90%] h-3/4 flex grow justify-center items-center'}>
+            <div id={'signInForm'} className={'bg-white w-full h-full flex grow justify-center items-center'}>
                 {/*greeting*/}
                 <div
                     className={'rounded-lg sm:max-lg:rounded-2xl shadow-lg shadow-gray-500 ' +
                         'flex flex-row sm:max-lg:flex-col max-sm:flex-col justify-center sm:max-lg:justify-start max-sm:justify-center items-center ' +
                         'w-[80%] h-full lg:w-full lg:h-[500px]'}>
                     <div
-                        className={'text-white bg-(--bg-color) ' +
+                        className={'text-white bg-[rgb(var(--main-color))] ' +
                             'w-full lg:w-[40%] ' +
                             'min-h-40 sm:max-lg:min-h-55 lg:min-h-full p-2 ' +
                             'sm:max-lg:p-10 lg:p-5 ' +
@@ -249,18 +221,18 @@ function SignIn() {
                             <div className={'flex flex-col justify-center items-center'}>
                                 <div className={'flex justify-center item-center flex-row'}>
                                     <button id={'feaBtn'}
-                                            className={'bg-(--bg-color-btn-1) px-3 py-4 font-bold border -0 m-2 text-(--text-color-btn) rounded-lg'}
+                                            className={'px-3 py-4 font-bold border -0 m-2 text-(--text-color-btn) rounded-lg'}
                                             onClick={() => {
                                                 navigate(-1)
                                             }}>Cancel
                                     </button>
                                     <button id={'feaBtn'}
-                                            className={'bg-(--bg-color-btn-1) px-3 py-4 font-bold border -0 m-2 text-(--text-color-btn) rounded-lg'}
+                                            className={'bg-[rgb(var(--btn-primary-bg))] px-3 py-4 font-bold border-0 m-2 text-[rgb(var( --btn-primary-text))] rounded-lg text-white'}
                                             type={'submit'}>Submit
                                     </button>
                                 </div>
-                                <Link to={'/sign-up'} className={'text-sm sm:max-lg:text-xl'}>You are new? Sign up
-                                    here</Link>
+                                <Link to={'/user/sign-up'} className={'text-sm sm:max-lg:text-xl'}>You are new? <strong className={'text-[rgb(var(--secondary-color))]'}>
+                                    Sign up here</strong></Link>
                             </div>
                         </form>
                     </div>
@@ -272,4 +244,4 @@ function SignIn() {
     )
 }
 
-export default SignIn
+export default UserSignIn

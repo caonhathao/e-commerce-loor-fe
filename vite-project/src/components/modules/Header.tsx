@@ -32,11 +32,11 @@ const Header = () => {
                 {/* Logo và Tiêu đề */}
                 <div
                     className={'w-full flex flex-col sm:flex-row justify-between items-center bg-[rgb(var(--bg-color))]'}>
-                    <div className={'flex flex-row justify-center items-center'}>
+                    <div className={'flex flex-row justify-start items-center gap-2'}>
                         <div className='w-[30%] p-3 rounded-full'>
                             <img src={logo} alt='logo' className='w-[50%]'/>
                         </div>
-                        <div className='w-[70%]'>
+                        <div className='w-[40%]'>
                             <p className='text-center font-bold text-[rgb(var(--main-color))] text-xl tracking-wide'>
                                 <Link
                                     to={'/'}>LOLI SHOPPING</Link></p>

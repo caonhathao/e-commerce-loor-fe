@@ -1,8 +1,7 @@
 import {useEffect, useState} from "react";
 import {toast} from "react-toastify";
-import apiClient from "../../../services/apiClient.tsx";
 import endpoints from "../../../services/endpoints.tsx";
-import {formatedNumber} from "../../../utils/functions.utils.tsx";
+import {fetchData, formatedNumber} from "../../../utils/functions.utils.tsx";
 import {animate, press} from "motion"
 import errImg from '../../../assets/img/404.png'
 import UserCreateOrder from "./UserCreateOrder.tsx";
@@ -65,7 +64,7 @@ const UserCart = () => {
     const updateListVariants = (
         brands: cartType[],
         amount: amountType[]
-    ): listVariantsType => {
+    ): listVariantsType | undefined => {
         const list = brands
             .map(brand => {
                 const brandVariants = brand.items
@@ -97,10 +96,12 @@ const UserCart = () => {
             })
             .filter(Boolean); // loại bỏ null
 
-        return {
-            method: "default",
-            list: list as listVariantsType["list"]
-        };
+        if (list.length > 0)
+            return {
+                method: "default",
+                list: list as listVariantsType["list"]
+            };
+        else return undefined
     };
 
     const handleAddAllOfOne = (brand: cartType) => {
@@ -211,28 +212,17 @@ const UserCart = () => {
     }, [listVariants]);
 
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await apiClient.get(endpoints.user.getCart)
-                if (response && response.status === 200) {
-                    setData(response.data)
-                }
-            } catch (err) {
-                console.error(err)
-                toast.error('Kết nối thất bại')
-            }
-        }
-        fetchData()
+        fetchData(endpoints.user.getCart, true, setData, 'Lấy dữ liệu thất bại')
     }, [])
 
     // useEffect(() => {
     //     console.log('data: ', data)
     //     console.log('type of data: ', typeof data)
     // }, [data])
-    //
-    // useEffect(() => {
-    //     console.log('list variants: ', listVariants)
-    // }, [listVariants]);
+
+    useEffect(() => {
+        console.log('list variants: ', listVariants)
+    }, [listVariants]);
 
     return (
         <div className={'w-full h-full flex justify-center items-center flex-col'}>

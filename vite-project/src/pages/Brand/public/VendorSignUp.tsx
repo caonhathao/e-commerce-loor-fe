@@ -5,11 +5,11 @@ import * as Yup from "yup";
 import {Tooltip} from "@mui/material";
 import Typewriter from "typewriter-effect";
 import {Link, useNavigate} from "react-router-dom";
-import '../../assets/css/pages/customer/SignUp.css'
+import '../../../assets/css/pages/customer/SignUp.css'
 import {ToastContainer, toast} from "react-toastify";
 import {BsBagHeart, BsCart, BsPersonCircle} from "react-icons/bs";
-import apiClient from "../../services/apiClient.tsx";
-import endpoints from "../../services/endpoints.tsx";
+import apiClient from "../../../services/apiClient.tsx";
+import endpoints from "../../../services/endpoints.tsx";
 
 const VendorSignUp = () => {
     const navigate = useNavigate();

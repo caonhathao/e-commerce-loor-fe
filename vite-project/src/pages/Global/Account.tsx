@@ -16,10 +16,10 @@ const Account = () => {
                     <div className={'grid grid-cols-1 grid-rows-2 gap-2 mt-3'}>
                         <div
                             className={'text-[var(--text-color)] bg-[var(--btn-primary-bg)] p-2 border-2 border-[var(--border-color)] rounded-lg'}>
-                            <Link to={'/sign-in'}>Đăng nhập</Link></div>
+                            <Link to={'/user-sign-in'}>Đăng nhập</Link></div>
                         <div
                             className={'text-[var(--text-color)]  bg-[var(--secondary-background)] p-2 border-2 border-[var(--text-color)] rounded-lg'}>
-                            <Link to={'/sign-up'}>Đăng ký</Link></div>
+                            <Link to={'/user-sign-up'}>Đăng ký</Link></div>
                     </div>
                 </div>
                 <div

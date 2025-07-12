@@ -29,6 +29,10 @@ interface ImportMetaEnv {
     // Token
     readonly VITE_API_TOKEN_REFRESH: string;
 
+    //Administration
+    readonly VITE_API_G_A_PROVINCES:string;
+    readonly VITE_API_G_A_DISTRICTS:string;
+
     // Address
     readonly VITE_API_C_ADDRESS: string;
     readonly VITE_API_U_ADDRESS: string;

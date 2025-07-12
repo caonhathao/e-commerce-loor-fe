@@ -75,6 +75,9 @@ const endpoints = {
         deleteCart: import.meta.env.VITE_API_D_CART,
     },
     public: {
+        getAllProvinces: import.meta.env.VITE_API_G_A_PROVINCES,
+        getAllDistricts: (province_id: string) => buildUrlWithParams(import.meta.env.VITE_API_G_A_DISTRICTS, {province_id}),
+
         getAllProducts: import.meta.env.VITE_API_G_A_PRODUCT,
         getProductByIdFromUser: (id: string) => buildUrlWithParams(import.meta.env.VITE_API_I_PRODUCT_USER, {id}),
         getProductByKeyword: (key: string) => buildUrlWithParams(import.meta.env.VITE_API_G_S_PRODUCT, {key}),

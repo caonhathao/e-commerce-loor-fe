@@ -1,10 +1,10 @@
-import '../../assets/css/pages/vendor/VendorOffer.css'
+import '../../../assets/css/pages/vendor/VendorOffer.css'
 import {Link} from "react-router-dom";
 import {useEffect} from "react";
 
-import img1 from '../../assets/img/VendorOffer/img1.png'
-import img2 from '../../assets/img/VendorOffer/img2.png'
-import img3 from '../../assets/img/VendorOffer/img3.png'
+import img1 from '../../../assets/img/VendorOffer/img1.png'
+import img2 from '../../../assets/img/VendorOffer/img2.png'
+import img3 from '../../../assets/img/VendorOffer/img3.png'
 
 const VendorOffer = () => {
 

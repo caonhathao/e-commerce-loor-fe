@@ -6,11 +6,12 @@ import {getAccessToken} from "../../../services/tokenStore.tsx";
 import {io} from "socket.io-client";
 import Loading from "../../../components/loading/Loading.tsx";
 import {toast} from "react-toastify";
-import {addressType, listVariantsType} from "../../../utils/data-types.tsx";
+import {addressType, listVariantsType, orderType} from "../../../utils/data-types.tsx";
 import {BsCaretRightFill, BsHouse, BsX} from "react-icons/bs";
 import {fetchData, formatedNumber} from "../../../utils/functions.utils.tsx";
 import {useUser} from "../../../context/UserContext.tsx";
 import CreateAddress from "../../../components/forms/CreateAddress.tsx";
+import CreatePhone from "../../../components/forms/CreatePhone.tsx";
 
 const socket = io(endpoints.system.socketConnection, {
     withCredentials: true,
@@ -24,14 +25,30 @@ interface Props {
 
 const UserCreateOrder: React.FC<Props> = ({listVariant, setOpenCreate}) => {
     const [isSubmitted, setIsSubmitted] = useState<boolean>(false)
+    const [payload, setPayload] = useState<orderType>({
+        address: '',
+        list: listVariant,
+        method: ''
+    });
     const {user} = useUser();
 
     const [dataAddress, setDataAddress] = useState<addressType[]>([])
     const [addressSuccess, setAddressSuccess] = useState<boolean>(false)
+    const [phoneSuccess, setPhoneSuccess] = useState<boolean>(false)
 
     const [openUpdateAddress, setOpenUpdateAddress] = useState<boolean>(false)
+    const [openUpdatePhone, setOpenUpdatePhone] = useState<boolean>(false)
 
     const handleSubmit = async () => {
+        if (user?.numberphone === null) {
+            toast.error('Vui lòng thêm số điện thoại!');
+            return;
+        }
+        if (user?.shipping_address === null) {
+            toast.error('Vui lòng thêm địa chỉ giao hàng!');
+            return;
+        }
+
         try {
             setIsSubmitted(true)
             const response = await apiClient.post(endpoints.user.createOrder, listVariant);
@@ -80,9 +97,9 @@ const UserCreateOrder: React.FC<Props> = ({listVariant, setOpenCreate}) => {
         console.log("✅", data.message);
     });
 
-    useEffect(() => {
-        console.log(listVariant)
-    }, [listVariant]);
+    // useEffect(() => {
+    //     console.log(user)
+    // }, [user]);
 
     if (isSubmitted) {
         return <Loading/>
@@ -92,7 +109,7 @@ const UserCreateOrder: React.FC<Props> = ({listVariant, setOpenCreate}) => {
 
     return (
         <div
-            className={'w-screen h-screen absolute top-0 right-0 bg-[rgb(var(--secondary-background))] flex justify-center items-center'}>
+            className={'w-screen h-screen absolute top-0 right-0 bg-[rgb(var(--secondary-background))] flex flex-col justify-center items-center'}>
             <div className={'w-full h-full flex flex-col justify-start items-center gap-2'}>
                 <div className={'w-full h-fit grid grid-cols-7 grid-rows-1 gap-2 items-center p-2 bg-white'}>
                     <p className={'col-span-1 text-center'}>Tất cả (2)</p>
@@ -105,14 +122,18 @@ const UserCreateOrder: React.FC<Props> = ({listVariant, setOpenCreate}) => {
                 </div>
                 <div className={'w-full h-fit my-2 p-2 bg-white'}>
                     <div
-                        className={'border-2 border-[rgb(var(--border-color))] rounded-lg flex flex-col justify-center items-start'}>
+                        className={'border-2 border-[rgb(var(--border-color))] rounded-lg flex flex-col justify-center items-start mb-5'}>
                         <p className={'text-lg font-bold text-[rgb(var(--main-color))] px-2 py-1'}>Địa chỉ giao hàng</p>
                         <div className={'w-full h-fit flex flex-row justify-between items-center gap-2 p-2'}>
                             {user?.shipping_address.length !== 0 ? (
-                                <div className="w-full h-fit flex flex-row justify-between items-center gap-4 py-1">
-                                    <p className="text-lg">
-                                        {user?.shipping_address[0].address}, {user?.shipping_address[0].ward}, {user?.shipping_address[0].city} <strong className="text-[rgb(var(--secondary-color))]">Mặc định</strong>
-                                    </p>
+                                <div>
+                                    <div className="w-full h-fit flex flex-row justify-between items-center gap-4 py-1">
+                                        <p className="text-lg">
+                                            {user?.shipping_address[0].address}, {user?.shipping_address[0].ward}, {user?.shipping_address[0].city}
+                                            <strong className="text-[rgb(var(--secondary-color))]">(Mặc định)</strong>
+                                        </p>
+                                    </div>
+                                    <div className={'w-fit h-fit p-2 text-[rgb(var(--main-color))]'}>Đổi</div>
                                 </div>
                             ) : (
                                 dataAddress.length !== 0 ? (
@@ -125,13 +146,13 @@ const UserCreateOrder: React.FC<Props> = ({listVariant, setOpenCreate}) => {
                                 ) : (
                                     <div className="w-full h-fit flex flex-row justify-between items-center px-2 py-1">
                                         <p className="italic">Bạn chưa có địa chỉ giao hàng nào</p>
-                                        <p className="text-[rgb(var(--main-color))]" onClick={() => setOpenUpdateAddress(true)}>
+                                        <p className="text-[rgb(var(--main-color))]"
+                                           onClick={() => setOpenUpdateAddress(true)}>
                                             Thêm địa chỉ
                                         </p>
                                     </div>
                                 )
                             )}
-                            <div className={'w-fit h-fit p-2 text-[rgb(var(--main-color))]'}>Đổi</div>
                         </div>
                     </div>
                     <div
@@ -143,6 +164,7 @@ const UserCreateOrder: React.FC<Props> = ({listVariant, setOpenCreate}) => {
                             <div className={'w-full h-fit flex flex-row justify-between items-center px-2 py-1'}>
                                 <p className={'italic'}>Bạn chưa có số điện thoại</p>
                                 <p className={'text-[rgb(var(--main-color))]'}
+                                   onClick={() => setOpenUpdatePhone(true)}
                                 >
                                     Thêm số điện thoại
                                 </p>
@@ -174,7 +196,7 @@ const UserCreateOrder: React.FC<Props> = ({listVariant, setOpenCreate}) => {
                                                      className={'w-30 rounded-lg'}/>
                                                 <div
                                                     className={'w-full h-full flex flex-col justify-between items-start gap-2'}>
-                                                    <p>{variant.variant_name}</p>
+                                                    <p><strong>{variant.variant_name}</strong></p>
                                                     <div
                                                         className={'w-full h-fit flex flex-row justify-between items-center'}>
                                                         <p>{formatedNumber(variant.cost / variant.amount)} đ</p>
@@ -185,6 +207,13 @@ const UserCreateOrder: React.FC<Props> = ({listVariant, setOpenCreate}) => {
                                         </div>
                                     )
                                 })}
+                                <div className={'w-full h-fit flex flex-row justify-between items-center my-5 px-2'}>
+                                    <p>Tùy chọn thanh toán</p>
+                                    <div className={'w-fit h-fit flex flex-row justify-center items-center gap-2'}>
+                                        <p className={'text-[rgb(var(--secondary-color))]'}>Xem tất cả tùy chọn </p>
+                                        <BsCaretRightFill/>
+                                    </div>
+                                </div>
                                 <div className={'w-full h-fit flex flex-row justify-between items-center my-5 px-2'}>
                                     <p>Tùy chọn giao hàng</p>
                                     <div className={'w-fit h-fit flex flex-row justify-center items-center gap-2'}>
@@ -207,8 +236,28 @@ const UserCreateOrder: React.FC<Props> = ({listVariant, setOpenCreate}) => {
                     })}
                 </div>
             </div>
+            <div
+                className={'w-full h-fit absolute bottom-0 flex flex-col justify-center items-center bg-white p-2 rounded-t-lg border-t-2 border-[rgb(var(--main-color))]'}>
+                <p className={'text-sm italic text-[rgb(var(--text-error))]'}>{user?.numberphone === null ? 'Ban chưa có số điện thoại' : null}</p>
+                <p className={'text-sm italic text-[rgb(var(--text-error))]'}>{user?.shipping_address && user.shipping_address.length === 0 ? 'Bạn chưa có địa chỉ giao hàng' : null}</p>
+                <div className={'w-full h-fit flex flex-row justify-between items-center gap-2 p-2'}>
+                    <div>
+                        Tổng hóa đơn: <strong className={'text-[rgb(var(--main-color))]'}>{1}</strong>
+                    </div>
+                    <div>
+                        <button type={'button'}
+                                className={'border-none bg-[rgb(var(--main-color))] px-3 py-2 text-white  rounded-lg'}
+                                onClick={() => handleSubmit()}>
+                            Đặt hàng
+                        </button>
+                    </div>
+                </div>
+            </div>
             {openUpdateAddress ? (
                 <CreateAddress setOpen={setOpenUpdateAddress} setSuccess={setAddressSuccess}/>
+            ) : null}
+            {openUpdatePhone ? (
+                <CreatePhone setOpen={setOpenUpdatePhone} setSuccess={setPhoneSuccess}/>
             ) : null}
         </div>
     )

@@ -1,5 +1,5 @@
 import {userType} from "../utils/data-types.tsx";
-import {createContext, ReactNode, useContext, useEffect, useState} from "react";
+import {createContext, ReactNode, useContext, useState} from "react";
 
 interface UserContextType {
     user: userType | null | undefined;
@@ -10,9 +10,9 @@ const UserContext = createContext<UserContextType | undefined>(undefined);
 
 export const UserProvider = ({children}: { children: ReactNode }) => {
     const [user, setUser] = useState<userType | null | undefined>(null);
-    useEffect(() => {
-        console.log(user)
-    },[user])
+    // useEffect(() => {
+    //     console.log(user)
+    // },[user])
     return (
         <UserContext.Provider value={{user, setUser}}>
             {children}

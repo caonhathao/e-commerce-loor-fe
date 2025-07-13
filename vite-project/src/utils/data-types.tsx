@@ -33,7 +33,12 @@ export interface listVariantsType {
         cost: number,
         fee: number,
     }[],
+}
+
+export interface orderType {
+    list: listVariantsType | undefined,
     method: string,
+    address: string,
 }
 
 export interface addressType {
@@ -61,6 +66,6 @@ export interface listProvinceType {
 }
 
 export interface listDistrictType {
-    id:string;
+    id: string;
     name: string;
 }

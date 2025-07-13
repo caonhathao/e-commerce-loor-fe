@@ -6,6 +6,7 @@ import {animate, press} from "motion"
 import errImg from '../../../assets/img/404.png'
 import UserCreateOrder from "./UserCreateOrder.tsx";
 import {cartType, listVariantsType} from "../../../utils/data-types.tsx";
+import apiClient from "../../../services/apiClient.tsx";
 
 interface amountType {
     amount: number,
@@ -31,35 +32,102 @@ const UserCart = () => {
     const [data, setData] = useState<cartType[]>([])
     const [amount, setAmount] = useState<amountType[]>([])
     const [listVariants, setListVariants] = useState<listVariantsType>()
+    const [chooseList, setChooseList] = useState<string[]>([])
     const [openCreateOrder, setOpenCreateOrder] = useState<boolean>(false)
     const [total, setTotal] = useState<number>(0)
 
     const handleAdd = (id: string, a: number) => {
-        const newAmount = [...amount]
-        const index = newAmount.findIndex(item => item.variant_id === id)
+        const newAmount = [...amount];
+        const index = newAmount.findIndex(item => item.variant_id === id);
+
         if (index === -1) {
             newAmount.push({
                 amount: a,
                 variant_id: id,
                 checked: false
-            })
-            setAmount(newAmount)
+            });
         } else {
-            newAmount[index].amount = newAmount[index].amount + 1
-            setAmount(newAmount)
+            newAmount[index].amount += 1;
         }
-    }
+
+        setAmount(newAmount);
+
+        // Cập nhật nếu checked
+        if (newAmount[index]?.checked) {
+            const updated = updateListVariants(data, newAmount);
+            setListVariants(updated);
+        }
+    };
 
     const handleMinus = (id: string) => {
-        const newAmount = [...amount]
-        const index = newAmount.findIndex(item => item.variant_id === id)
-        if (newAmount[index].amount === 1) {
-            toast.warning('Số lượng không thể bằng 0')
-        } else {
-            newAmount[index].amount = newAmount[index].amount - 1
-            setAmount(newAmount)
+        const newAmount = [...amount];
+        const index = newAmount.findIndex(item => item.variant_id === id);
+
+        if (index !== -1) {
+            if (newAmount[index].amount === 1) {
+                toast.warning('Số lượng không thể bằng 0');
+                return;
+            }
+
+            newAmount[index].amount -= 1;
+            setAmount(newAmount);
+
+            // Cập nhật nếu checked
+            if (newAmount[index].checked) {
+                const updated = updateListVariants(data, newAmount);
+                setListVariants(updated);
+            }
         }
-    }
+    };
+
+    const getCheckedItemIds = (
+        data: cartType[],
+        amount: amountType[]
+    ): string[] => {
+        const checkedIds: string[] = [];
+
+        data.forEach(brand => {
+            brand.items.forEach(item => {
+                const found = amount.find(a => a.variant_id === item.variant_id);
+                if (found?.checked) {
+                    checkedIds.push(item.id);
+                }
+            });
+        });
+
+        return checkedIds;
+    };
+
+    const handleDelete = async () => {
+        if (listVariants === undefined) {
+            toast.warning('Không có sản phẩm để xóa');
+            return;
+        }
+
+        const idsToDelete = getCheckedItemIds(data, amount);
+
+        if (idsToDelete.length === 0) {
+            toast.warning('Bạn chưa chọn sản phẩm nào để xóa');
+            return;
+        }
+
+        // Ví dụ log ra payload cần gửi
+        console.log("Payload cần gửi:", idsToDelete);
+
+        try {
+            const response = await apiClient.delete(endpoints.user.deleteCart, {data: idsToDelete})
+            if (response && response.status === 200) {
+                fetchData(endpoints.user.getCart, true, setData, 'Lấy dữ liệu thất bại')
+                return;
+            } else {
+                toast.error('Thất bại')
+            }
+        } catch (e) {
+            console.error(e)
+            toast.error('Xóa sản phẩm thât bại!')
+        }
+    };
+
 
     const updateListVariants = (
         brands: cartType[],
@@ -98,7 +166,6 @@ const UserCart = () => {
 
         if (list.length > 0)
             return {
-                method: "default",
                 list: list as listVariantsType["list"]
             };
         else return undefined
@@ -112,18 +179,18 @@ const UserCart = () => {
         const updatedAmount = [...amount];
 
         brand.items.forEach(item => {
-            const idx = updatedAmount.findIndex(a => a.variant_id === item.variant_id);
+            const index = updatedAmount.findIndex(a => a.variant_id === item.variant_id);
 
             if (isAllChecked) {
-                if (idx !== -1) updatedAmount[idx].checked = false;
+                if (index !== -1) updatedAmount[index].checked = false;
             } else {
-                if (idx !== -1) {
-                    updatedAmount[idx].checked = true;
-                    updatedAmount[idx].amount = item.amount;
+                if (index !== -1) {
+                    updatedAmount[index].checked = true;
+                    updatedAmount[index].amount = item.amount !== updatedAmount[index].amount ? updatedAmount[index].amount : item.amount;
                 } else {
                     updatedAmount.push({
                         variant_id: item.variant_id,
-                        amount: item.amount,
+                        amount: item.amount !== updatedAmount[index].amount ? updatedAmount[index].amount : item.amount,
                         checked: true
                     });
                 }
@@ -145,11 +212,11 @@ const UserCart = () => {
             updatedAmount[index].checked = false;
         } else if (index !== -1) {
             updatedAmount[index].checked = true;
-            updatedAmount[index].amount = item.amount;
+            updatedAmount[index].amount = item.amount !== updatedAmount[index].amount ? updatedAmount[index].amount : item.amount;
         } else {
             updatedAmount.push({
                 variant_id: item.variant_id,
-                amount: item.amount,
+                amount: item.amount !== updatedAmount[index].amount ? updatedAmount[index].amount : item.amount,
                 checked: true
             });
         }
@@ -173,18 +240,18 @@ const UserCart = () => {
 
         brands.forEach(brand => {
             brand.items.forEach(item => {
-                const idx = updatedAmount.findIndex(a => a.variant_id === item.variant_id);
+                const index = updatedAmount.findIndex(a => a.variant_id === item.variant_id);
 
                 if (isAllChecked) {
-                    if (idx !== -1) updatedAmount[idx].checked = false;
+                    if (index !== -1) updatedAmount[index].checked = false;
                 } else {
-                    if (idx !== -1) {
-                        updatedAmount[idx].checked = true;
-                        updatedAmount[idx].amount = item.amount;
+                    if (index !== -1) {
+                        updatedAmount[index].checked = true;
+                        updatedAmount[index].amount = item.amount !== updatedAmount[index].amount ? updatedAmount[index].amount : item.amount;
                     } else {
                         updatedAmount.push({
                             variant_id: item.variant_id,
-                            amount: item.amount,
+                            amount: item.amount !== updatedAmount[index].amount ? updatedAmount[index].amount : item.amount,
                             checked: true
                         });
                     }
@@ -203,7 +270,7 @@ const UserCart = () => {
     }
 
     useEffect(() => {
-        if (!listVariants || listVariants.method !== 'default') {
+        if (!listVariants) {
             setTotal(0);
             return;
         }
@@ -215,14 +282,23 @@ const UserCart = () => {
         fetchData(endpoints.user.getCart, true, setData, 'Lấy dữ liệu thất bại')
     }, [])
 
-    // useEffect(() => {
-    //     console.log('data: ', data)
-    //     console.log('type of data: ', typeof data)
-    // }, [data])
-
     useEffect(() => {
-        console.log('list variants: ', listVariants)
-    }, [listVariants]);
+        if (data.length > 0) {
+            const newAmountList: amountType[] = [];
+
+            data.forEach(brand => {
+                brand.items.forEach(item => {
+                    newAmountList.push({
+                        amount: item.amount,
+                        variant_id: item.variant_id,
+                        checked: false
+                    });
+                });
+            });
+
+            setAmount(prev => [...prev, ...newAmountList]);
+        }
+    }, [data]);
 
     return (
         <div className={'w-full h-full flex justify-center items-center flex-col'}>
@@ -322,11 +398,17 @@ const UserCart = () => {
                         <p className={'text-sm'}>Phí vận chuyển: <strong
                             className={'text-[rgb(var(--main-color))]'}>{formatedNumber(total)}đ</strong></p>
                     </div>
-                    <button type={'button'}
-                            className={'w-fit h-fit p-2 border-2 border-[rgb(var(--main-color))] rounded-lg text-lg bg-[rgb(var(--main-color))] text-white'}
-                            onClick={handleCreateOrder}
-                    >Thanh toán
-                    </button>
+                    <div className={'w-fit h-fit flex flex-col justify-center items-center gap-2'}>
+                        <button type={'button'}
+                                className={'w-fit h-fit p-2 border-2 border-[rgb(var(--main-color))] rounded-lg text-lg bg-[rgb(var(--main-color))] text-white'}
+                                onClick={handleCreateOrder}
+                        >Thanh toán
+                        </button>
+                        <button className={'w-fit h-fit text-sm text-[rgb(var(--main-color))]'}
+                                onClick={() => handleDelete()}>
+                            Xóa
+                        </button>
+                    </div>
                 </div>
             </div>
             {openCreateOrder ?

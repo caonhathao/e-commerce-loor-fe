@@ -91,6 +91,7 @@ const ProductDetail = () => {
                 payload.list.push(temp)
             }
 
+             console.log(payload)
             const response = await apiClient.post(endpoints.user.addToCart, payload);
             if (response && response.status === 200) {
                 toast.success('Thêm vào giỏ hàng thành công')

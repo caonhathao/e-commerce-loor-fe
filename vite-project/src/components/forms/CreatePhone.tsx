@@ -4,6 +4,8 @@ import apiClient from "../../services/apiClient.tsx";
 import {toast} from "react-toastify";
 import {Formik, Form, Field} from "formik";
 import * as Yup from "yup";
+import {userType} from "../../utils/data-types.tsx";
+import {useUser} from "../../context/UserContext.tsx";
 
 interface CreateAddressProps {
     setOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -11,25 +13,42 @@ interface CreateAddressProps {
 }
 
 const CreatePhone: React.FC<CreateAddressProps> = ({setOpen, setSuccess}) => {
+    const [userData, setUserData] = useState<userType>();
+    const {setUser} = useUser()
 
+    useEffect(() => {
+        console.log(userData);
+    }, [userData])
 
     return (
         <div
             className="w-[80%] h-fit p-2 absolute rounded-lg shadow-lg shadow-gray-500 border-2 border-[rgb(var(--main-color))] bg-white">
             <Formik
                 initialValues={{
-                    numberphone:''
+                    numberphone: ''
                 }}
                 enableReinitialize={true}
                 validationSchema={Yup.object({
-                    numberphone: Yup.string().min(10,'Sai định dạng').max(10,'Sai định dạng').required('Không để trống số điện thoại'),
+                    numberphone: Yup.string()
+                        .required('Không để trống số điện thoại')
+                        .matches(/^[0-9]+$/, 'Chỉ được nhập số')
+                        .length(10, 'Số điện thoại phải đủ 10 chữ số')
                 })}
                 validateOnBlur={true}
                 onSubmit={async (values) => {
                     try {
-                        const response = await apiClient.post(endpoints.user.createAddress, values);
+                        const response = await apiClient.put(endpoints.user.updateUserInfo, userData);
                         if (response && response.status === 200) {
                             toast.success('Thêm số điện thoại thành công!');
+                            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                            // @ts-expect-error
+                            setUser(prev => {
+                                if (!prev) return prev;
+                                return {
+                                    ...prev,
+                                    numberphone: values.numberphone
+                                };
+                            });
                             setSuccess(true);
                             setOpen(false);
                         } else {
@@ -50,21 +69,24 @@ const CreatePhone: React.FC<CreateAddressProps> = ({setOpen, setSuccess}) => {
                     <Form className="w-full p-2" onSubmit={handleSubmit}>
                         <p className="text-xl font-bold mb-4 w-full border-b-2 border-gray-500">Thêm số liên lạc</p>
                         <div className="w-full flex flex-row items-center justify-center gap-2">
-                            <fieldset className="w-[20%] my-2 h-fit border-2 border-[rgb(var(--border-color))] rounded-lg">
-                                <Field as="select" name="city"
+                            <fieldset
+                                className="w-[20%] my-2 h-fit border-2 border-[rgb(var(--border-color))] rounded-lg">
+                                <Field name="country_code"
+                                       value={'+84'}
+                                       disabled={true}
                                        className="w-full h-fit rounded-lg p-2 focus:outline-2 focus:outline-[rgb(var(--secondary-color))]"
-                                       onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
-                                           handleChange(e)
-                                       }}>
-                                    <option value="">---</option>
-                                    <option value="84">+84</option>
-                                </Field>
+                                />
                             </fieldset>
                             <fieldset
                                 className="w-[80%] my-2 h-fit border-2 border-[rgb(var(--border-color))] rounded-lg">
-                                <Field name="address" type="text"
+                                <Field name="numberphone" type="text"
                                        className="w-full h-fit rounded-lg p-2"
-                                       placeholder={'Sô điện thoại'}/>
+                                       placeholder={'Sô điện thoại'}
+                                       onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
+                                           setUserData(({...userData, numberphone: e.target.value} as userType));
+                                           handleChange(e)
+                                       }}
+                                />
                             </fieldset>
                         </div>
                         <div className={'w-full flex flex-row items-center justify-center'}>

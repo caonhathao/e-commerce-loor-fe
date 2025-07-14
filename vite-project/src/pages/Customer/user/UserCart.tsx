@@ -7,6 +7,9 @@ import errImg from '../../../assets/img/404.png'
 import UserCreateOrder from "./UserCreateOrder.tsx";
 import {cartType, listVariantsType} from "../../../utils/data-types.tsx";
 import apiClient from "../../../services/apiClient.tsx";
+import {useUser} from "../../../context/UserContext.tsx";
+import {useNavigate} from "react-router-dom";
+import {getAccessToken} from "../../../services/tokenStore.tsx";
 
 interface amountType {
     amount: number,
@@ -32,9 +35,10 @@ const UserCart = () => {
     const [data, setData] = useState<cartType[]>([])
     const [amount, setAmount] = useState<amountType[]>([])
     const [listVariants, setListVariants] = useState<listVariantsType>()
-    const [chooseList, setChooseList] = useState<string[]>([])
     const [openCreateOrder, setOpenCreateOrder] = useState<boolean>(false)
     const [total, setTotal] = useState<number>(0)
+    const {user} = useUser()
+    const navigator = useNavigate()
 
     const handleAdd = (id: string, a: number) => {
         const newAmount = [...amount];
@@ -300,6 +304,10 @@ const UserCart = () => {
         }
     }, [data]);
 
+    if (getAccessToken() === null || getAccessToken() === '') {
+        navigator('/account')
+    }
+
     return (
         <div className={'w-full h-full flex justify-center items-center flex-col'}>
             <div className={'w-full h-full flex flex-col justify-center items-center p-2 my-2'}>
@@ -372,7 +380,7 @@ const UserCart = () => {
                                     </div>
                                 </div>
                                 <div className={'flex flex-col justify-center items-center'}>
-                                    <input type={'checkbox'} className={'w-5 h-5'}
+                                    <input type={'checkbox'} className={'w-5 h-5 text'}
                                            checked={amount.find(a => a.variant_id === item.variant_id)?.checked ?? false}
                                            onChange={() => handleAddOne(item)}
                                     />

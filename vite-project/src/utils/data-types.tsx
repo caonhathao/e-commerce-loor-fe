@@ -38,26 +38,27 @@ export interface listVariantsType {
 export interface orderType {
     list: listVariantsType | undefined,
     method: string,
+    shipping_type: string,
     address: string,
 }
 
 export interface addressType {
-    id: string,
-    address: string,
-    ward: string,
-    city: string,
-    default: boolean,
+    id: '',
+    address: '',
+    ward: '',
+    city: '',
+    is_default: false,
 }
 
 export interface userType {
-    account_name: string,
-    full_name: string,
-    birthday: string,
-    gender: string,
-    email: string,
-    numberphone: string,
+    account_name: '',
+    full_name: '',
+    birthday: '',
+    gender: '',
+    email: '',
+    numberphone: '',
     shipping_address: addressType[],
-    image_link: string,
+    image_link: '',
 }
 
 export interface listProvinceType {

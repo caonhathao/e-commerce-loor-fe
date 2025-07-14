@@ -6,6 +6,7 @@ import apiClient from "../../services/apiClient.tsx";
 import {toast} from "react-toastify";
 import {Formik, Form, Field} from "formik";
 import * as Yup from "yup";
+import {useUser} from "../../context/UserContext.tsx";
 
 interface CreateAddressProps {
     setOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -15,13 +16,13 @@ interface CreateAddressProps {
 const CreateAddress: React.FC<CreateAddressProps> = ({setOpen, setSuccess}) => {
     const [listProvince, setListProvince] = useState<listProvinceType[]>([]);
     const [listDistrict, setListDistrict] = useState<listDistrictType[]>([]);
+    const {setUser} = useUser()
 
     useEffect(() => {
         fetchData(endpoints.public.getAllProvinces, true, setListProvince, 'Có lỗi trong quá trình lấy dữ liệu');
     }, []);
 
     const handleGetDistricts = async (provinceId: string) => {
-        console.log(provinceId);
         if (!provinceId) return;
         try {
             const response = await apiClient.get(endpoints.public.getAllDistricts(provinceId));
@@ -38,7 +39,7 @@ const CreateAddress: React.FC<CreateAddressProps> = ({setOpen, setSuccess}) => {
 
     return (
         <div
-            className="w-[80%] h-fit p-2 absolute rounded-lg shadow-lg shadow-gray-500 border-2 border-[rgb(var(--main-color))] bg-white">
+            className="w-full h-full p-2 absolute rounded-lg  bg-white">
             <Formik
                 initialValues={{
                     is_default: false,
@@ -54,6 +55,7 @@ const CreateAddress: React.FC<CreateAddressProps> = ({setOpen, setSuccess}) => {
                 })}
                 validateOnBlur={true}
                 onSubmit={async (values) => {
+                    console.log(values);
                     try {
                         const response = await apiClient.post(endpoints.user.createAddress, values);
                         if (response && response.status === 200) {
@@ -76,8 +78,9 @@ const CreateAddress: React.FC<CreateAddressProps> = ({setOpen, setSuccess}) => {
                }) => {
                 return (
                     <Form className="w-full p-2" onSubmit={handleSubmit}>
-                        <p className="text-xl font-bold mb-4 w-full border-b-2 border-gray-500">Thêm địa chỉ giao
-                            hàng</p>
+                        <p className="w-full text-center text-xl text-[rgb(var(--main-color))] font-bold mb-4 w-full border-b-2 border-gray-500">
+                            Thêm địa chỉ giao hàng
+                        </p>
 
                         <fieldset
                             className="w-full my-2 h-fit border-2 border-[rgb(var(--border-color))] rounded-lg">

@@ -8,7 +8,6 @@ import endpoints from "../../services/endpoints.tsx";
 
 interface CreateAddressProps {
     setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-    setSuccess: React.Dispatch<React.SetStateAction<boolean>>;
     setCurrent: React.Dispatch<React.SetStateAction<{
         address: string,
         default: boolean
@@ -52,6 +51,8 @@ const ChangeAddress: React.FC<CreateAddressProps> = ({setOpen, setCurrent}) => {
 
                                 setCurrent({
                                     address: payload,
+                                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                                    // @ts-expect-error
                                     default: values.is_default === false ? user?.shipping_address[index].is_default : values.is_default
                                 })
                                 setOpen(false);

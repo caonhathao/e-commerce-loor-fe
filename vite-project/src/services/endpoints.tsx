@@ -64,7 +64,7 @@ const endpoints = {
 
         getAllNotifications: import.meta.env.VITE_API_G_A_CUSTOMER,
 
-        getOrders: import.meta.env.VITE_API_G_A_ORDERS,
+        getOrders: import.meta.env.VITE_API_G_A_ORDERS_CUSTOMER,
         createOrder: import.meta.env.VITE_API_C_ORDER,
         cancelOrder: (id: string) => buildUrlWithParams(import.meta.env.VITE_API_D_ORDER, {id}),
         getOrderDetail: (id: string) => buildUrlWithParams(import.meta.env.VITE_API_I_ORDER, {id}),

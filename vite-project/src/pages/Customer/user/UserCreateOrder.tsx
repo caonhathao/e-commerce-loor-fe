@@ -6,13 +6,14 @@ import {getAccessToken} from "../../../services/tokenStore.tsx";
 import {io} from "socket.io-client";
 import Loading from "../../../components/loading/Loading.tsx";
 import {toast, ToastContainer} from "react-toastify";
-import {addressType, listVariantsType, orderType} from "../../../utils/data-types.tsx";
+import {addressType, listVariantsType} from "../../../utils/data-types.tsx";
 import {BsCaretRightFill, BsHouse, BsX} from "react-icons/bs";
 import {fetchData, formatedNumber} from "../../../utils/functions.utils.tsx";
 import {useUser} from "../../../context/UserContext.tsx";
 import CreateAddress from "../../../components/forms/CreateAddress.tsx";
 import CreatePhone from "../../../components/forms/CreatePhone.tsx";
 import ChangeAddress from "../../../components/forms/ChangeAddress.tsx";
+import {delay} from "motion";
 
 const socket = io(endpoints.system.socketConnection, {
     withCredentials: true,
@@ -73,7 +74,10 @@ const UserCreateOrder: React.FC<Props> = ({listVariant, setOpenCreate}) => {
             const response = await apiClient.post(endpoints.user.createOrder, fullPayload);
             if (response && response.status === 200) {
                 setIsSubmitted(false)
-                toast.success(response.data.message)
+                toast.success(response.data.message, {
+                    autoClose: 1000,
+                    onClose: () => setOpenCreate(false)
+                });
             }
         } catch (err) {
             console.error(err)
@@ -81,45 +85,39 @@ const UserCreateOrder: React.FC<Props> = ({listVariant, setOpenCreate}) => {
         }
     }
 
+    //socket messages
     useEffect(() => {
-        const decoded = JWTDecode(getAccessToken())
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-expect-error
-        if (decoded && decoded.id !== null) {
-            socket.on('connect', () => {
-                console.log("Connected to server", socket.id);
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-expect-error
-                socket.emit('register_user', decoded.id)
-            })
+        const decoded = JWTDecode(getAccessToken());
+        if (decoded?.id) {
+            socket.emit('register_user', decoded.id);
         }
+
+        // Đăng ký 1 lần duy nhất
+        const handleCheck = (data: any) => console.log("🛒", data.message);
+        const handleCreate = (data: any) => console.log("📦", data.message);
+        const handleStore = (data: any) => console.log("💾", data.message);
+
+        socket.off('checking_order').on('checking_order', handleCheck);
+        socket.off('creating_new_order').on('creating_new_order', handleCreate);
+        socket.off('storing_order').on('storing_order', handleStore);
+
+        return () => {
+            socket.off('checking_order', handleCheck);
+            socket.off('creating_new_order', handleCreate);
+            socket.off('storing_order', handleStore);
+        };
     }, []);
 
+    //get address data on first load
     useEffect(() => {
-        if (addressSuccess)
-            fetchData(endpoints.user.getAllAddress, true, setDataAddress, 'Có lỗi xảy ra!', 'Lấy dữ liệu thành công');
-    }, [addressSuccess]);
-
-    socket.on("checking order", (data) => {
-        console.log("🛒", data.message);
-    });
-
-    socket.on("creating new order", (data) => {
-        console.log("📦", data.message);
-    });
-
-    socket.on("storing order", (data) => {
-        console.log("💾", data.message);
-    });
-
-    socket.on("order status", (data) => {
-        console.log("✅", data.message);
-    });
+        fetchData(endpoints.user.getAllAddress, true, setDataAddress, 'Có lỗi xảy ra!', 'Lấy dữ liệu thành công');
+    }, []);
 
     useEffect(() => {
         console.log(listVariant)
     }, [listVariant]);
 
+    //update address data
     useEffect(() => {
             if (addressSuccess) {
                 try {
@@ -173,7 +171,7 @@ const UserCreateOrder: React.FC<Props> = ({listVariant, setOpenCreate}) => {
                                             className="w-full h-fit flex flex-row justify-between items-center gap-4 py-1">
                                             <p className="text-lg">
                                                 {currentAddress.address === '' ? user?.shipping_address[0].address + ', ' + user?.shipping_address[0].ward + ' ,' + user?.shipping_address[0].city : currentAddress.address}
-                                                {currentAddress.default === true || (currentAddress.address === '' && user?.shipping_address[0].is_default) ?
+                                                {currentAddress.default || (currentAddress.address === '' && user?.shipping_address[0].is_default) ?
                                                     <strong className="text-[rgb(var(--secondary-color))]">
                                                         (Mặc định)
                                                     </strong> : null}
@@ -217,7 +215,7 @@ const UserCreateOrder: React.FC<Props> = ({listVariant, setOpenCreate}) => {
                                 <div
                                     className="w-full h-fit flex flex-row justify-between items-center px-2 py-1">
                                     <p className="text-lg">
-                                        {user.numberphone}
+                                        {user?.numberphone}
                                     </p>
                                     <p className="text-[rgb(var(--secondary-color))]">(Mặc định)</p>
                                 </div>
@@ -240,7 +238,7 @@ const UserCreateOrder: React.FC<Props> = ({listVariant, setOpenCreate}) => {
                                 <div key={index}
                                      className={'w-full h-fit bg-white flex flex-col justify-center items-center'}>
                                     <div
-                                        className={'w-full h-fit flex flex-row justify-start items-center items-center gap-2 my-5 px-2'}>
+                                        className={'w-full h-fit flex flex-row justify-start items-center gap-2 my-5 px-2'}>
                                         <p className={'col-span-1 text-center'}>
                                             <BsHouse size={20} className={'text-[rgb(var(--text-color))]'}/>
                                         </p>

@@ -70,3 +70,28 @@ export interface listDistrictType {
     id: string;
     name: string;
 }
+
+export interface jwtPayloadData {
+    id: string,
+    role: string,
+    locked: boolean,
+    iat: number,
+    exp: number,
+}
+
+export interface orderType{
+    id:string,
+    cost:number,
+    fee:number,
+    method:string,
+    shipping_type:string,
+    status:string,
+    createdAt:string,
+    updatedAt:string,
+    address:string,
+    brand_id:string,
+}
+
+export interface receiptData{
+
+}

@@ -3,7 +3,7 @@ import ProtectedRouter from "./ProtectedRouter.tsx";
 import {UserLayout} from "../layout/UserLayout.tsx";
 import UserCart from "../pages/Customer/user/UserCart.tsx";
 import {UserProvider} from "../context/UserContext.tsx";
-import UserReceipt from "../pages/Customer/user/UserReceipt.tsx";
+import UserOrders from "../pages/Customer/user/UserOrders.tsx";
 
 const UserRouters = () => {
     return (
@@ -16,7 +16,7 @@ const UserRouters = () => {
                 </UserProvider>}>
                     <Route index element={<div>Home</div>}/>
                     <Route path={'show-cart'} element={<UserCart/>}/>
-                    <Route path={'show-receipts'} element={<UserReceipt/>}/>
+                    <Route path={'show-receipts'} element={<UserOrders/>}/>
                 </Route>
             </Route>
         </>

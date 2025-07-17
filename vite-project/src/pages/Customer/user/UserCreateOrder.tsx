@@ -13,7 +13,6 @@ import {useUser} from "../../../context/UserContext.tsx";
 import CreateAddress from "../../../components/forms/CreateAddress.tsx";
 import CreatePhone from "../../../components/forms/CreatePhone.tsx";
 import ChangeAddress from "../../../components/forms/ChangeAddress.tsx";
-import {delay} from "motion";
 
 const socket = io(endpoints.system.socketConnection, {
     withCredentials: true,
@@ -76,7 +75,10 @@ const UserCreateOrder: React.FC<Props> = ({listVariant, setOpenCreate}) => {
                 setIsSubmitted(false)
                 toast.success(response.data.message, {
                     autoClose: 1000,
-                    onClose: () => setOpenCreate(false)
+                    onClose: () => {
+                        fetchData(endpoints.user.getUserInfo, true, setUser, 'Cập nhật thất bại')
+                        setOpenCreate(false)
+                    }
                 });
             }
         } catch (err) {
@@ -110,7 +112,7 @@ const UserCreateOrder: React.FC<Props> = ({listVariant, setOpenCreate}) => {
 
     //get address data on first load
     useEffect(() => {
-        fetchData(endpoints.user.getAllAddress, true, setDataAddress, 'Có lỗi xảy ra!', 'Lấy dữ liệu thành công');
+        fetchData(endpoints.user.getAllAddress, true, setDataAddress, 'Có lỗi xảy ra!');
     }, []);
 
     useEffect(() => {

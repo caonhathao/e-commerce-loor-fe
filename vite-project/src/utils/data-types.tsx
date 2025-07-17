@@ -35,13 +35,6 @@ export interface listVariantsType {
     }[],
 }
 
-export interface orderType {
-    list: listVariantsType | undefined,
-    method: string,
-    shipping_type: string,
-    address: string,
-}
-
 export interface addressType {
     id: '',
     address: '',
@@ -58,6 +51,7 @@ export interface userType {
     email: '',
     numberphone: '',
     shipping_address: addressType[],
+    notify_count: 0,
     image_link: '',
 }
 
@@ -79,19 +73,52 @@ export interface jwtPayloadData {
     exp: number,
 }
 
-export interface orderType{
-    id:string,
-    cost:number,
-    fee:number,
-    method:string,
-    shipping_type:string,
-    status:string,
-    createdAt:string,
-    updatedAt:string,
-    address:string,
-    brand_id:string,
+export interface orderType {
+    id: string,
+    cost: number,
+    fee: number,
+    status: string,
+    createdAt: string,
+    address: string,
 }
 
-export interface receiptData{
+export interface orderDataType {
+    current_page: number,
+    total_items: number,
+    current_items: number,
+    total_pages: number,
+    data: orderType[]
+}
 
+export const orderStatus = {
+    PENDING: 'Đang chờ',
+    CONFIRMED: 'Đã xác nhận',
+    PREPARING: 'Đang chuẩn bị',
+    DELIVERING: 'Đang vận chuyển',
+    CANCELED: 'Bị hủy',
+    ABORTED: ' Bị tư chối',
+    POSTPONED: 'Trì hoãn',
+    REFUNDED: 'Hoàn trả',
+    COMPLETE: 'Hoàn thành'
+}
+
+export interface orderDetailType {
+    cost: number,
+    createdAt: string,
+    fee: number,
+    status: string,
+    user_id: string,
+    address: string,
+    shipping_type:string,
+    brand_id: string,
+    OrderDetail: {
+        amount: number,
+        cost: number,
+        variant_id: string,
+        product_variants: {
+            name: string,
+            sku: string,
+            price: number
+        }
+    }[]
 }

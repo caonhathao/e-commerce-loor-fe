@@ -8,6 +8,7 @@ import Loading from "../components/loading/Loading.tsx";
 import {useUser} from "../context/UserContext.tsx";
 import {fetchData} from "../utils/functions.utils.tsx";
 import err404 from '../assets/img/404.png'
+import {ToastContainer} from "react-toastify";
 
 export const UserLayout = () => {
     const {user, setUser} = useUser();
@@ -32,8 +33,8 @@ export const UserLayout = () => {
     }
 
     useEffect(() => {
-        fetchData(endpoints.user.getUserInfo, true, setUser, 'Lấy dữ liệu thất bại!', 'Lấy dữ liệu thành công')
-    }, []);
+        if (!user) fetchData(endpoints.user.getUserInfo, true, setUser, 'Lấy dữ liệu thất bại!')
+    }, [user]);
 
     useEffect(() => {
         const path = location.pathname.split('/')
@@ -118,8 +119,11 @@ export const UserLayout = () => {
                         </div>
                         <p className={'text-center'}>Đơn hàng</p>
                     </li>
-                    <li className={`w-fit h-fit flex flex-col justify-center items-center`}
+                    <li className={`w-fit h-fit flex flex-col justify-center items-center relative`}
                         onClick={() => activeCurrTab(3, '/show-notifications')}>
+                        {user?.notify_count !== 0 ? (
+                            <div className={'absolute w-5 h-5 bg-red-500 rounded-full top-0 right-1'}></div>
+                        ) : null}
                         <div
                             className={` border-2 border-[rgb(var(--border-color))] ${activeTab[3] ? 'bg-[rgb(var(--accent-color))] text-white' : 'bg-white text-black'} rounded-full p-3 w-fit h-fit`}>
                             <BsBell size={25}/>
@@ -137,6 +141,7 @@ export const UserLayout = () => {
                 </ul>
             </div>
             <div className={'w-full h-full'}><Outlet/></div>
+            <ToastContainer/>
         </div>
 
     )

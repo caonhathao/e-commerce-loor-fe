@@ -1,10 +1,11 @@
 import {createContext, ReactNode, useContext, useEffect, useState} from "react";
-import {getAccessToken, removeAccessToken, setAccessToken} from "../services/tokenStore.tsx";
+import {getAccessToken, markLoggingOut, removeAccessToken, setAccessToken} from "../services/tokenStore.tsx";
 import JWTDecode from "../security/JWTDecode.tsx";
 import apiClient from "../services/apiClient.tsx";
 import endpoints from "../services/endpoints.tsx";
 import {useNavigate} from "react-router-dom";
 import {toast} from "react-toastify";
+import {postData} from "../utils/functions.utils.tsx";
 
 type User = {
     id: string;
@@ -88,11 +89,30 @@ export const AuthProvider = ({children}: { children: ReactNode }) => {
         setUser(userData);
     }
 
-    const logout = () => {
-        removeAccessToken();
-        toast.success('Đăng xuất thành công');
-        navigate('/')
-    }
+    const logout = async () => {
+        markLoggingOut(); // cờ chặn refresh
+
+        const token = getAccessToken();
+        if (token) {
+            try {
+                await postData(endpoints.user.logout); // chỉ gọi nếu có token
+            } catch (e) {
+                console.warn('Logout API failed, but proceeding to clear local data anyway');
+            }
+        }
+
+        removeAccessToken(); // luôn xóa cookie & localStorage
+        setUser(null);
+
+        toast.success('Đăng xuất thành công', {
+            autoClose: 1000,
+            onClose: () => navigate('/account')
+        });
+
+        setTimeout(() => {
+            navigate('/account');
+        }, 1200);
+    };
 
     const hasRole = (role: string) => {
         return user?.role === role;

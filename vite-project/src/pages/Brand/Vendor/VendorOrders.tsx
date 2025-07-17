@@ -4,7 +4,7 @@ import apiClient from "../../../services/apiClient.tsx";
 import endpoints from "../../../services/endpoints.tsx";
 import {useNavigate} from "react-router-dom";
 import {orderStatusOptions} from "../../../utils/attributes.tsx";
-import {formateDate} from "../../../utils/functions.utils.tsx";
+import {formatedDate} from "../../../utils/functions.utils.tsx";
 import Loading from "../../../components/loading/Loading.tsx";
 import {BsBookFill, BsBookmarkFill, BsCalendar2DayFill, BsCheckCircleFill, BsUpc} from "react-icons/bs";
 
@@ -137,7 +137,7 @@ const VendorOrders = () => {
                                 <BsCalendar2DayFill/>
                                 Thời gian:
                             </strong>
-                            {formateDate(value.createdAt)}
+                            {formatedDate(value.createdAt)}
                         </p>
                     </div>
                 )) : <p className={'text-center'}>Chưa có đơn hàng đang ở trạng thái này</p>}

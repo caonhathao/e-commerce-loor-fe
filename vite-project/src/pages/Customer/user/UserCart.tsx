@@ -8,8 +8,7 @@ import UserCreateOrder from "./UserCreateOrder.tsx";
 import {cartType, listVariantsType} from "../../../utils/data-types.tsx";
 import apiClient from "../../../services/apiClient.tsx";
 import {useUser} from "../../../context/UserContext.tsx";
-import {useNavigate} from "react-router-dom";
-import {getAccessToken} from "../../../services/tokenStore.tsx";
+import Loading from "../../../components/loading/Loading.tsx";
 
 interface amountType {
     amount: number,
@@ -38,7 +37,6 @@ const UserCart = () => {
     const [openCreateOrder, setOpenCreateOrder] = useState<boolean>(false)
     const [total, setTotal] = useState<number>(0)
     const {user} = useUser()
-    const navigator = useNavigate()
 
     const handleAdd = (id: string, a: number) => {
         const newAmount = [...amount];
@@ -282,10 +280,12 @@ const UserCart = () => {
         setTotal(totalCost);
     }, [listVariants]);
 
+    //get user's cart data
     useEffect(() => {
         fetchData(endpoints.user.getCart, true, setData, 'Lấy dữ liệu thất bại')
     }, [])
 
+    //set amount
     useEffect(() => {
         if (data.length > 0) {
             const newAmountList: amountType[] = [];
@@ -304,8 +304,12 @@ const UserCart = () => {
         }
     }, [data]);
 
-    if (getAccessToken() === null || getAccessToken() === '') {
-        navigator('/account')
+    // useEffect(() => {
+    //     console.log(user)
+    // }, [user])
+
+    if (!user) {
+        return <Loading/>
     }
 
     return (
@@ -335,17 +339,31 @@ const UserCart = () => {
                             {brand.items && brand.items.map(item => <div key={item.id}
                                                                          className={'w-full flex flex-row justify-center items-center gap-4 border-b-[1px] border-(rgb(var(--border-color))) p-2'}>
                                 <div>
-                                    <div className={'w-full flex flex-row justify-start items-center gap-2'}>
-                                        <div className={'w-[20%] flex flex-col justify-center items-center'}>
+                                    <div className={'w-full flex flex-row justify-start items-center gap-2 p-2'}>
+                                        <div className={'w-[30%] flex flex-col justify-center items-center'}>
                                             <img src={item.image_link} alt={'thumbnail'}/>
                                         </div>
-                                        <p className={'w-[80%]'}>{item.product_variants.name}</p>
+                                        <p className={'w-[70%] text-lg'}>{item.product_variants.name}</p>
                                     </div>
-                                    <div className={'w-full grid grid-cols-5 grid-rows-2 gap-2'}>
+                                    <div className={'w-full grid grid-cols-5 grid-rows-1 gap-2 p-2'}>
                                         <div className={'col-span-5 grid grid-cols-5 items-center'}>
-                                            <p className={'col-span-2'}>Số lượng:
-                                            </p>
-                                            <div className={'col-span-3'}>
+                                            <div className={'col-span-2'}>
+                                                <p className={'col-span-2 text-lg'}>
+                                                    Số lượng:<strong
+                                                    className={'text-[rgb(var(--main-color))]'}> {item.amount}</strong>
+                                                </p>
+                                                <p className="col-span-3 text-lg">
+                                                    Tổng: <strong className={'text-[rgb(var(--main-color))]'}>{
+                                                    formatedNumber(
+                                                        (amount.find(a => a.variant_id === item.variant_id)?.amount ?? item.amount)
+                                                        * item.product_variants.price
+                                                    )
+                                                }đ</strong>
+                                                </p>
+                                            </div>
+
+                                            <div
+                                                className={'col-span-3 flex flex-row justify-end items-center gap-4'}>
                                                 <div
                                                     className={'w-fit h-fit flex flex-row jus-center items-center gap-2'}>
                                                     <button type={'button'}
@@ -367,24 +385,17 @@ const UserCart = () => {
                                                         +
                                                     </button>
                                                 </div>
+                                                <div className={'flex flex-col justify-center items-center'}>
+                                                    <input type={'checkbox'} className={'w-5 h-5 text'}
+                                                           checked={amount.find(a => a.variant_id === item.variant_id)?.checked ?? false}
+                                                           onChange={() => handleAddOne(item)}
+                                                    />
+                                                </div>
                                             </div>
                                         </div>
-                                        <p className="col-span-3">
-                                            Tổng: {
-                                            formatedNumber(
-                                                (amount.find(a => a.variant_id === item.variant_id)?.amount ?? item.amount)
-                                                * item.product_variants.price
-                                            )
-                                        }đ
-                                        </p>
                                     </div>
                                 </div>
-                                <div className={'flex flex-col justify-center items-center'}>
-                                    <input type={'checkbox'} className={'w-5 h-5 text'}
-                                           checked={amount.find(a => a.variant_id === item.variant_id)?.checked ?? false}
-                                           onChange={() => handleAddOne(item)}
-                                    />
-                                </div>
+
                             </div>)}
                         </div>
                     </div>)

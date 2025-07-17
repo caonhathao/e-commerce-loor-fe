@@ -221,6 +221,7 @@ function UserSignIn() {
                             <div className={'flex flex-col justify-center items-center'}>
                                 <div className={'flex justify-center item-center flex-row'}>
                                     <button id={'feaBtn'}
+                                            type={'button'}
                                             className={'px-3 py-4 font-bold border -0 m-2 text-(--text-color-btn) rounded-lg'}
                                             onClick={() => {
                                                 navigate(-1)

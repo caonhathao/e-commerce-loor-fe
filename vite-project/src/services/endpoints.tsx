@@ -56,6 +56,7 @@ const endpoints = {
         getUserInfo: import.meta.env.VITE_API_I_USER,
         updateUserInfo: import.meta.env.VITE_API_U_USER,
         updatePassword: import.meta.env.VITE_API_U_USER_CHANGE_PASS,
+        logout: import.meta.env.VITE_API_LO_USER,
 
         createAddress: import.meta.env.VITE_API_C_ADDRESS,
         updateAddress: import.meta.env.VITE_API_U_ADDRESS,

@@ -70,6 +70,8 @@ const endpoints = {
         cancelOrder: (id: string) => buildUrlWithParams(import.meta.env.VITE_API_D_ORDER, {id}),
         getOrderDetail: (id: string) => buildUrlWithParams(import.meta.env.VITE_API_I_ORDER, {id}),
 
+        getReceiptByOrderId: (id: string) => buildUrlWithParams(import.meta.env.VITE_API_I_RECEIPT_BY_ORDER, {id}),
+
         addToCart: import.meta.env.VITE_API_C_CART,
         getCart: import.meta.env.VITE_API_G_CART,
         updateCart: import.meta.env.VITE_API_U_CART,

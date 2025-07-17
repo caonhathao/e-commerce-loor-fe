@@ -30,8 +30,8 @@ interface ImportMetaEnv {
     readonly VITE_API_TOKEN_REFRESH: string;
 
     //Administration
-    readonly VITE_API_G_A_PROVINCES:string;
-    readonly VITE_API_G_A_DISTRICTS:string;
+    readonly VITE_API_G_A_PROVINCES: string;
+    readonly VITE_API_G_A_DISTRICTS: string;
 
     // Address
     readonly VITE_API_C_ADDRESS: string;
@@ -73,6 +73,9 @@ interface ImportMetaEnv {
     readonly VITE_API_I_ORDER: string;
     readonly VITE_API_U_ORDER: string;
     readonly VITE_API_G_ORDERS_STATUS: string;
+
+    // Receipt
+    readonly VITE_API_I_RECEIPT_BY_ORDER: string;
 
     // Product
     readonly VITE_API_G_S_PRODUCT: string;

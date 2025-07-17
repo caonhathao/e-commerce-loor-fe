@@ -109,7 +109,7 @@ export interface orderDetailType {
     status: string,
     user_id: string,
     address: string,
-    shipping_type:string,
+    shipping_type: string,
     brand_id: string,
     OrderDetail: {
         amount: number,
@@ -121,4 +121,13 @@ export interface orderDetailType {
             price: number
         }
     }[]
+}
+
+export interface receiptData {
+    id: string,
+    order_id: string,
+    payment: string,
+    payment_status: string,
+    reason: string | null,
+    createdAt: string,
 }

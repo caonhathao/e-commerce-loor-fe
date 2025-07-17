@@ -19,7 +19,7 @@ export const formatedDate = (s: string | undefined) => {
 export const fetchData = async (
     url: string,
     isClient: boolean,
-    setData: React.Dispatch<SetStateAction<any>>,
+    setData?: React.Dispatch<SetStateAction<any>>,
     messageErr?: string,
     messageSuccess?: string
 ) => {

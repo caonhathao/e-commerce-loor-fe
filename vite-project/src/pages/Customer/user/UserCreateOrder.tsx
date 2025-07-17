@@ -148,9 +148,12 @@ const UserCreateOrder: React.FC<Props> = ({listVariant, setOpenCreate}) => {
     return (
         <>
             <div
-                className={'w-screen h-screen absolute top-0 right-0 bg-[rgb(var(--secondary-background))] flex flex-col justify-center items-center'}>
-                <div className={'w-full h-full flex flex-col justify-start items-center gap-2'}>
-                    <div className={'w-full h-fit grid grid-cols-7 grid-rows-1 gap-2 items-center p-2 bg-white'}>
+                className={'w-screen h-screen sticky top-0 right-0 z-[60] bg-[rgb(var(--secondary-background))] flex flex-col justify-center items-center'}>
+                {/*header*/}
+                <div
+                    className={'w-full h-fit flex flex-col justify-start items-center fixed top-0 right-0 z-20 border-b-2 border-[rgb(var(--main-color))] rounded-b-lg'}>
+                    <div
+                        className={'w-full h-fit grid grid-cols-7 grid-rows-1 gap-2 items-center p-2 bg-white'}>
                         <p className={'col-span-1 text-center'}>Tất cả (2)</p>
                         <p className={'col-span-5 text-center'}><strong className={'text-2xl'}>Thông tin đơn
                             hàng</strong>
@@ -160,7 +163,7 @@ const UserCreateOrder: React.FC<Props> = ({listVariant, setOpenCreate}) => {
                                 onClick={() => setOpenCreate(false)}><BsX size={40}/>
                         </button>
                     </div>
-                    <div className={'w-full h-fit my-2 p-2 bg-white'}>
+                    <div className={'w-full h-fit p-2 bg-white'}>
                         <div
                             className={'border-2 border-[rgb(var(--border-color))] rounded-lg flex flex-col justify-center items-start mb-5'}>
                             <p className={'text-lg font-bold text-[rgb(var(--main-color))] px-2 py-1'}>Địa chỉ giao
@@ -209,31 +212,36 @@ const UserCreateOrder: React.FC<Props> = ({listVariant, setOpenCreate}) => {
                                 )}
                             </div>
                         </div>
-                        <div
-                            className={'border-2 border-[rgb(var(--border-color))] rounded-lg flex flex-col justify-center items-start'}>
-                            <p className={'text-lg font-bold text-[rgb(var(--main-color))] px-2 py-1'}>Số liên
-                                lạc</p>
-                            {user?.numberphone !== '' && user?.numberphone !== null ? (
-                                <div
-                                    className="w-full h-fit flex flex-row justify-between items-center px-2 py-1">
-                                    <p className="text-lg">
-                                        {user?.numberphone}
-                                    </p>
-                                    <p className="text-[rgb(var(--secondary-color))]">(Mặc định)</p>
-                                </div>
-                            ) : (
-                                <div
-                                    className={'w-full h-fit flex flex-row justify-between items-center px-2 py-1'}>
-                                    <p className={'italic'}>Bạn chưa có số điện thoại</p>
-                                    <p className={'text-[rgb(var(--main-color))]'}
-                                       onClick={() => setOpenUpdatePhone(true)}
-                                    >
-                                        Thêm số điện thoại
-                                    </p>
-                                </div>
-                            )}
+                        <div className={'w-full h-full rounded-b-lg'}>
+                            <div
+                                className={'border-2 border-[rgb(var(--border-color))] rounded-lg flex flex-col justify-center items-start'}>
+                                <p className={'text-lg font-bold text-[rgb(var(--main-color))] px-2 py-1'}>Số liên
+                                    lạc</p>
+                                {user?.numberphone !== '' && user?.numberphone !== null ? (
+                                    <div
+                                        className="w-full h-fit flex flex-row justify-between items-center px-2 py-1">
+                                        <p className="text-lg">
+                                            {user?.numberphone}
+                                        </p>
+                                        <p className="text-[rgb(var(--secondary-color))]">(Mặc định)</p>
+                                    </div>
+                                ) : (
+                                    <div
+                                        className={'w-full h-fit flex flex-row justify-between items-center px-2 py-1'}>
+                                        <p className={'italic'}>Bạn chưa có số điện thoại</p>
+                                        <p className={'text-[rgb(var(--main-color))]'}
+                                           onClick={() => setOpenUpdatePhone(true)}
+                                        >
+                                            Thêm số điện thoại
+                                        </p>
+                                    </div>
+                                )}
+                            </div>
                         </div>
                     </div>
+                </div>
+                {/*main content*/}
+                <div className={'w-full h-full my-2 p-2 bg-white absolute top-75 z-10 overflow-y-auto'}>
                     <div className={'w-full h-full flex flex-col justify-start items-center my-2'}>
                         {listVariant.list.map((item, index) => {
                             return (
@@ -304,8 +312,9 @@ const UserCreateOrder: React.FC<Props> = ({listVariant, setOpenCreate}) => {
                         })}
                     </div>
                 </div>
+                {/*footer*/}
                 <div
-                    className={'w-full h-fit absolute bottom-0 flex flex-col justify-center items-center bg-white p-2 rounded-t-lg border-t-2 border-[rgb(var(--main-color))]'}>
+                    className={'w-full h-fit absolute bottom-0 flex flex-col justify-center items-center bg-white p-2 rounded-t-lg border-t-2 border-[rgb(var(--main-color))] fixed bottom-0 right-0 z-20'}>
                     <p className={'text-sm italic text-[rgb(var(--text-error))]'}>{user?.numberphone === null ? 'Ban chưa có số điện thoại' : null}</p>
                     <p className={'text-sm italic text-[rgb(var(--text-error))]'}>{user?.shipping_address && user.shipping_address.length === 0 ? 'Bạn chưa có địa chỉ giao hàng' : null}</p>
                     <div className={'w-full h-fit flex flex-row justify-between items-center gap-2 p-2'}>

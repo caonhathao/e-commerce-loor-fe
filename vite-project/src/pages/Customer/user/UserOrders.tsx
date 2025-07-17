@@ -56,35 +56,39 @@ const UserOrders = () => {
     }
 
     return (
-        <div className={'w-full h-full p-2'}>
-            {data !== null && data !== undefined ? (
-                <Stack spacing={2} alignItems={'center'}>
-                    <Pagination count={data?.total_pages}
-                                page={data?.current_page}
-                                onChange={(_e, value) => fetchDataWithQuery(endpoints.user.getOrders, setData, value, 10)}/>
-                </Stack>
-            ) : null}
-            <div className={'w-full h-full mt-5'}>
-                {data?.data ? (
-                    data?.data.map((item: orderType, i: number) => (
-                        <div key={i}
-                             className={'w-full h-full flex flex-col justify-center items-start border-2 border-[rgb(var(--main-color))] p-2 rounded-lg my-3 shadow-lg shadow-gray-500'}
-                             onClick={() => handleOpenDetail(item.id)} style={{cursor: 'pointer'}}>
-                            <div className={'w-full flex flex-row justify-between items-center'}>
-                                <p>Mã đơn: <strong className={'text-[rgb(var(--main-color))]'}>{item.id}</strong></p>
-                                {handleOrderStatusMean(item.status as keyof typeof orderStatus)}
+        <>
+            <div className={'w-full h-full p-2 fixed top-75'}>
+                {data !== null && data !== undefined ? (
+                    <Stack spacing={2} alignItems={'center'}>
+                        <Pagination count={data?.total_pages}
+                                    page={data?.current_page}
+                                    onChange={(_e, value) => fetchDataWithQuery(endpoints.user.getOrders, setData, value, 10)}/>
+                    </Stack>
+                ) : null}
+                <div className={'w-full h-full mt-5'}>
+                    {data?.data ? (
+                        data?.data.map((item: orderType, i: number) => (
+                            <div key={i}
+                                 className={'w-full h-fit flex flex-col justify-center items-start border-2 border-[rgb(var(--main-color))] p-2 rounded-lg my-3 shadow-lg shadow-gray-500'}
+                                 onClick={() => handleOpenDetail(item.id)} style={{cursor: 'pointer'}}>
+                                <div className={'w-full flex flex-row justify-between items-center'}>
+                                    <p>Mã đơn: <strong className={'text-[rgb(var(--main-color))]'}>{item.id}</strong>
+                                    </p>
+                                    {handleOrderStatusMean(item.status as keyof typeof orderStatus)}
+                                </div>
+                                <p>Ngày tạo <strong
+                                    className={'text-[rgb(var(--main-color))]'}>{formatedDate(item.createdAt)}</strong>
+                                </p>
+                                <div>Địa chỉ giao hàng: <strong
+                                    className={'text-[rgb(var(--main-color))]'}>{item.address}</strong></div>
                             </div>
-                            <p>Ngày tạo <strong
-                                className={'text-[rgb(var(--main-color))]'}>{formatedDate(item.createdAt)}</strong>
-                            </p>
-                            <div>Địa chỉ giao hàng: <strong
-                                className={'text-[rgb(var(--main-color))]'}>{item.address}</strong></div>
-                        </div>
-                    ))
-                ) : (<p>Bạn chưa có đơn hàng nào!</p>)}
+                        ))
+                    ) : (<p>Bạn chưa có đơn hàng nào!</p>)}
+                </div>
             </div>
             {openDetail ? (<UserOrderDetail order_id={choose} setOpen={setOpenDetail}/>) : null}
-        </div>
+
+        </>
     )
 }
 

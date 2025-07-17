@@ -313,126 +313,129 @@ const UserCart = () => {
     }
 
     return (
-        <div className={'w-full h-full flex justify-center items-center flex-col'}>
-            <div className={'w-full h-full flex flex-col justify-center items-center p-2 my-2'}>
-                {data.length > 0 ? (
-                    data.map(brand => <div key={brand.brand_id}
-                                           className={'w-full h-fit flex flex-col justify-between items-center'}>
-                        <div className={'w-full flex flex-row justify-start items-center gap-2'}>
-                            <img src={brand.brand_image || errImg}
-                                 alt="brand"
-                                 className={'w-12 h-12 border-2 broder-[rgb(var(--border-color))] rounded-full p-2'}/>
-                            <p className={'text-lg border-t-2 border-b-2 border-[rgb(var(--border-color))] rounded-b-lg rounded-t-lg px-2 font-bold'}>{brand.brand_name}</p>
-                            <div
-                                className={'w-full h-fit border-b-2 border-[rgb(var(--border-color))] rounded-b-lg'}>
+        <>
+            <div className={'w-full h-full flex justify-center items-center flex-col absolute top-35'}>
+                <div className={'w-full h-full flex flex-col justify-center items-center p-2 my-2'}>
+                    {data.length > 0 ? (
+                        data.map(brand => <div key={brand.brand_id}
+                                               className={'w-full h-fit flex flex-col justify-between items-center'}>
+                            <div className={'w-full flex flex-row justify-start items-center gap-2'}>
+                                <img src={brand.brand_image || errImg}
+                                     alt="brand"
+                                     className={'w-12 h-12 border-2 broder-[rgb(var(--border-color))] rounded-full p-2'}/>
+                                <p className={'text-lg border-t-2 border-b-2 border-[rgb(var(--border-color))] rounded-b-lg rounded-t-lg px-2 font-bold'}>{brand.brand_name}</p>
+                                <div
+                                    className={'w-full h-fit border-b-2 border-[rgb(var(--border-color))] rounded-b-lg'}>
+                                </div>
+                                <button type={'button'}
+                                        id={'add-list-btn'}
+                                        className={'w-full h-fit p-1 border-2 border-[rgb(var(--border-color))] rounded-full font-bold'}
+                                        onClick={() => {
+                                            handleAddAllOfOne(brand)
+                                        }}>
+                                    Tât cả
+                                </button>
                             </div>
+                            <div className={'w-full flex flex-col justify-start items-center gap-2 my-3'}>
+                                {brand.items && brand.items.map(item => <div key={item.id}
+                                                                             className={'w-full flex flex-row justify-center items-center gap-4 border-b-[1px] border-(rgb(var(--border-color))) p-2'}>
+                                    <div>
+                                        <div className={'w-full flex flex-row justify-start items-center gap-2 p-2'}>
+                                            <div className={'w-[30%] flex flex-col justify-center items-center'}>
+                                                <img src={item.image_link} alt={'thumbnail'}/>
+                                            </div>
+                                            <p className={'w-[70%] text-lg'}>{item.product_variants.name}</p>
+                                        </div>
+                                        <div className={'w-full grid grid-cols-5 grid-rows-1 gap-2 p-2'}>
+                                            <div className={'col-span-5 grid grid-cols-5 items-center'}>
+                                                <div className={'col-span-2'}>
+                                                    <p className={'col-span-2 text-lg'}>
+                                                        Số lượng:<strong
+                                                        className={'text-[rgb(var(--main-color))]'}> {item.amount}</strong>
+                                                    </p>
+                                                    <p className="col-span-3 text-lg">
+                                                        Tổng: <strong className={'text-[rgb(var(--main-color))]'}>{
+                                                        formatedNumber(
+                                                            (amount.find(a => a.variant_id === item.variant_id)?.amount ?? item.amount)
+                                                            * item.product_variants.price
+                                                        )
+                                                    }đ</strong>
+                                                    </p>
+                                                </div>
+
+                                                <div
+                                                    className={'col-span-3 flex flex-row justify-end items-center gap-4'}>
+                                                    <div
+                                                        className={'w-fit h-fit flex flex-row jus-center items-center gap-2'}>
+                                                        <button type={'button'}
+                                                                id={'minus-btn'}
+                                                                className={'w-10 h-10 border-2 border-[rgb(var(--main-color))] rounded-lg font-bold text-lg'}
+                                                                onClick={() => handleMinus(item.variant_id)}
+                                                        >
+                                                            -
+                                                        </button>
+                                                        <input type={'number'}
+                                                               className={'w-10 h-10 text-center border-2 border-[rgb(var(--border-color))] rounded-lg'}
+                                                               value={amount.find(a => a.variant_id === item.variant_id)?.amount ?? item.amount}
+                                                               readOnly={true}/>
+                                                        <button type={'button'}
+                                                                id={'add-btn'}
+                                                                className={'w-10 h-10 border-2 border-[rgb(var(--main-color))] rounded-lg font-bold text-lg'}
+                                                                onClick={() => handleAdd(item.variant_id, item.amount)}
+                                                        >
+                                                            +
+                                                        </button>
+                                                    </div>
+                                                    <div className={'flex flex-col justify-center items-center'}>
+                                                        <input type={'checkbox'} className={'w-5 h-5 text'}
+                                                               checked={amount.find(a => a.variant_id === item.variant_id)?.checked ?? false}
+                                                               onChange={() => handleAddOne(item)}
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>)}
+                            </div>
+                        </div>)
+                    ) : (
+                        <p>Bạn chưa chọn sản phẩm nào</p>
+                    )}
+                </div>
+                <div
+                    className={'w-full h-fit bottom-0 absolute border-t-2 border-[rgb(var(--main-color))] rounded-t-lg  bg-white flex flex-row justify-between items-center p-2 fixed z-10 bottom-0 right-0'}>
+                    <div className={'w-fit h-full flex flex-row justify-center items-center gap-2'}>
+                        <input type={'checkbox'} className={'w-7 h-7'}
+                               onChange={(e) => handleAddAll(data, e.target.checked)}/>
+                        <p className={'text-lg'}>Tất cả</p>
+                    </div>
+                    <div className={'w-fit h-full flex flex-row justify-center items-center gap-2'}>
+                        <div className={'w-fit h-fit flex flex-col justify-center items-end gap-2'}>
+                            <p className={'text-lg'}>Tổng cộng: <strong
+                                className={'text-[rgb(var(--main-color))]'}>{formatedNumber(total)}đ</strong></p>
+                            <p className={'text-sm'}>Phí vận chuyển: <strong
+                                className={'text-[rgb(var(--main-color))]'}>{formatedNumber(total)}đ</strong></p>
+                        </div>
+                        <div className={'w-fit h-fit flex flex-col justify-center items-center gap-2'}>
                             <button type={'button'}
-                                    id={'add-list-btn'}
-                                    className={'w-full h-fit p-1 border-2 border-[rgb(var(--border-color))] rounded-full font-bold'}
-                                    onClick={() => {
-                                        handleAddAllOfOne(brand)
-                                    }}>
-                                Tât cả
+                                    className={'w-fit h-fit p-2 border-2 border-[rgb(var(--main-color))] rounded-lg text-lg bg-[rgb(var(--main-color))] text-white'}
+                                    onClick={handleCreateOrder}
+                            >Thanh toán
+                            </button>
+                            <button className={'w-fit h-fit text-sm text-[rgb(var(--main-color))]'}
+                                    onClick={() => handleDelete()}>
+                                Xóa
                             </button>
                         </div>
-                        <div className={'w-full flex flex-col justify-start items-center gap-2 my-3'}>
-                            {brand.items && brand.items.map(item => <div key={item.id}
-                                                                         className={'w-full flex flex-row justify-center items-center gap-4 border-b-[1px] border-(rgb(var(--border-color))) p-2'}>
-                                <div>
-                                    <div className={'w-full flex flex-row justify-start items-center gap-2 p-2'}>
-                                        <div className={'w-[30%] flex flex-col justify-center items-center'}>
-                                            <img src={item.image_link} alt={'thumbnail'}/>
-                                        </div>
-                                        <p className={'w-[70%] text-lg'}>{item.product_variants.name}</p>
-                                    </div>
-                                    <div className={'w-full grid grid-cols-5 grid-rows-1 gap-2 p-2'}>
-                                        <div className={'col-span-5 grid grid-cols-5 items-center'}>
-                                            <div className={'col-span-2'}>
-                                                <p className={'col-span-2 text-lg'}>
-                                                    Số lượng:<strong
-                                                    className={'text-[rgb(var(--main-color))]'}> {item.amount}</strong>
-                                                </p>
-                                                <p className="col-span-3 text-lg">
-                                                    Tổng: <strong className={'text-[rgb(var(--main-color))]'}>{
-                                                    formatedNumber(
-                                                        (amount.find(a => a.variant_id === item.variant_id)?.amount ?? item.amount)
-                                                        * item.product_variants.price
-                                                    )
-                                                }đ</strong>
-                                                </p>
-                                            </div>
-
-                                            <div
-                                                className={'col-span-3 flex flex-row justify-end items-center gap-4'}>
-                                                <div
-                                                    className={'w-fit h-fit flex flex-row jus-center items-center gap-2'}>
-                                                    <button type={'button'}
-                                                            id={'minus-btn'}
-                                                            className={'w-10 h-10 border-2 border-[rgb(var(--main-color))] rounded-lg font-bold text-lg'}
-                                                            onClick={() => handleMinus(item.variant_id)}
-                                                    >
-                                                        -
-                                                    </button>
-                                                    <input type={'number'}
-                                                           className={'w-10 h-10 text-center border-2 border-[rgb(var(--border-color))] rounded-lg'}
-                                                           value={amount.find(a => a.variant_id === item.variant_id)?.amount ?? item.amount}
-                                                           readOnly={true}/>
-                                                    <button type={'button'}
-                                                            id={'add-btn'}
-                                                            className={'w-10 h-10 border-2 border-[rgb(var(--main-color))] rounded-lg font-bold text-lg'}
-                                                            onClick={() => handleAdd(item.variant_id, item.amount)}
-                                                    >
-                                                        +
-                                                    </button>
-                                                </div>
-                                                <div className={'flex flex-col justify-center items-center'}>
-                                                    <input type={'checkbox'} className={'w-5 h-5 text'}
-                                                           checked={amount.find(a => a.variant_id === item.variant_id)?.checked ?? false}
-                                                           onChange={() => handleAddOne(item)}
-                                                    />
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>)}
-                        </div>
-                    </div>)
-                ) : (
-                    <p>Bạn chưa chọn sản phẩm nào</p>
-                )}
-            </div>
-            <div
-                className={'w-full h-fit bottom-0 absolute border-t-2 border-[rgb(var(--main-color))] rounded-t-lg  bg-white flex flex-row justify-between items-center p-2'}>
-                <div className={'w-fit h-full flex flex-row justify-center items-center gap-2'}>
-                    <input type={'checkbox'} className={'w-7 h-7'}
-                           onChange={(e) => handleAddAll(data, e.target.checked)}/>
-                    <p className={'text-lg'}>Tất cả</p>
-                </div>
-                <div className={'w-fit h-full flex flex-row justify-center items-center gap-2'}>
-                    <div className={'w-fit h-fit flex flex-col justify-center items-end gap-2'}>
-                        <p className={'text-lg'}>Tổng cộng: <strong
-                            className={'text-[rgb(var(--main-color))]'}>{formatedNumber(total)}đ</strong></p>
-                        <p className={'text-sm'}>Phí vận chuyển: <strong
-                            className={'text-[rgb(var(--main-color))]'}>{formatedNumber(total)}đ</strong></p>
-                    </div>
-                    <div className={'w-fit h-fit flex flex-col justify-center items-center gap-2'}>
-                        <button type={'button'}
-                                className={'w-fit h-fit p-2 border-2 border-[rgb(var(--main-color))] rounded-lg text-lg bg-[rgb(var(--main-color))] text-white'}
-                                onClick={handleCreateOrder}
-                        >Thanh toán
-                        </button>
-                        <button className={'w-fit h-fit text-sm text-[rgb(var(--main-color))]'}
-                                onClick={() => handleDelete()}>
-                            Xóa
-                        </button>
                     </div>
                 </div>
+
             </div>
             {openCreateOrder ?
                 <UserCreateOrder listVariant={listVariants} setOpenCreate={setOpenCreateOrder}/> : null}
-        </div>
+        </>
     )
 }
 export default UserCart

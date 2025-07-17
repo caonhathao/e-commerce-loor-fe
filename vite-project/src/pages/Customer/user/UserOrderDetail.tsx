@@ -1,9 +1,11 @@
 import React, {SetStateAction, useEffect, useState} from "react";
 import {fetchData, formatedDate, formatedNumber} from "../../../utils/functions.utils.tsx";
 import endpoints from "../../../services/endpoints.tsx";
-import {orderDetailType} from "../../../utils/data-types.tsx";
+import {orderDetailType, receiptData} from "../../../utils/data-types.tsx";
 import Loading from "../../../components/loading/Loading.tsx";
 import {BsExclamationTriangleFill, BsXLg, BsXSquareFill} from "react-icons/bs";
+import {toast} from "react-toastify";
+import apiClient from "../../../services/apiClient.tsx";
 
 interface Props {
     order_id: string,
@@ -12,19 +14,34 @@ interface Props {
 
 const UserOrderDetail: React.FC<Props> = ({order_id, setOpen}) => {
     const [data, setData] = useState<orderDetailType | null>(null)
+    const [billData, setBillData] = useState<receiptData | null>(null)
+
+    const handleCancelOrder = async () => {
+        try {
+            const response = await apiClient.put(endpoints.user.cancelOrder(order_id))
+            if (response.status !== 200) toast.error('Lỗi')
+            else toast.success('Hủy thành công')
+        } catch (e) {
+            console.error(e)
+            toast.error('Hủy đơn thất bại')
+        }
+    }
 
     useEffect(() => {
         fetchData(endpoints.user.getOrderDetail(order_id), true, setData, 'Có lỗi xẩy ra')
+        fetchData(endpoints.user.getReceiptByOrderId(order_id), true, setBillData, 'Có lỗi xảy ra');
     }, [order_id])
 
     useEffect(() => {
-        console.log(data)
-    }, [data])
+        console.log("✅ ORDER ID:", order_id);
+        console.log("📦 Bill data:", billData);
+    }, [billData, order_id]);
 
-    if (data === null) return <Loading/>
+
+    if (data === null || billData === null) return <Loading/>
 
     return (
-        <div className={'w-full h-full absolute top-0 left-0 bg-white flex flex-col justify-start iem-center'}>
+        <div className={'w-full h-full fixed top-0 left-0 z-50 bg-white flex flex-col justify-start iem-center'}>
             <div
                 className={'w-full h-fit p-2 grid grid-cols-5 grid-rows-1 gap-3 items-center border-b-2 border-[rgb(var(--border-color))]'}>
                 <div className={'col-span-3 col-start-2 text-center'}>
@@ -81,6 +98,28 @@ const UserOrderDetail: React.FC<Props> = ({order_id, setOpen}) => {
                     <p>Địa chỉ giao hàng: <strong>{data.address}</strong></p>
                 </div>
             </div>
+            <div className={'p-2 w-full h-full'}>
+                <table className={"border-collapse border border-gray-400"}>
+                    <thead>
+                    <tr>
+                        <th className={'border border-gray-500 w-[10%]'}>Mã HD</th>
+                        <th className={'border border-gray-500 w-[10%]'}>Mã DH</th>
+                        <th className={'border border-gray-500 w-[20%]'}>PTTT</th>
+                        <th className={'border border-gray-500 w-[20%]'}>Tình trạng</th>
+                        <th className={'border border-gray-500 w-[40%]'}>Lí do (nếu có)</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td className={'border border-gray-500'}>{billData?.id}</td>
+                        <td className={'border border-gray-500'}>{billData?.order_id}</td>
+                        <td className={'border border-gray-500'}>{billData?.payment}</td>
+                        <td className={'border border-gray-500'}>{billData?.payment_status}</td>
+                        <td className={'border border-gray-500'}>{billData?.reason ?? 'Không có'}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
             <div className={'w-full grid grid-cols-2 grid-rows-1 gap-4 mb-10'}>
                 <div className={'col-span-1 flex justify-center items-center'}>
                     <button type={'button'}
@@ -90,9 +129,11 @@ const UserOrderDetail: React.FC<Props> = ({order_id, setOpen}) => {
                     </button>
                 </div>
                 <div className={'col-span-1 flex justify-center items-center'}>
-                    <button type={'button'}
-                            className={'w-fit h-fit p-2 flex flex-row justify-center items-center gap-2 border-2 border-[rgb(var(--border-color))] rounded-lg text-amber-400'}>
-                        <BsXSquareFill size={20}/>                        <p>Hủy đơn</p>
+                    <button type={'button'} disabled={data.status === 'CANCELED'}
+                            className={'w-fit h-fit p-2 flex flex-row justify-center items-center gap-2 border-2 border-[rgb(var(--border-color))] rounded-lg text-amber-400'}
+                            onClick={() => handleCancelOrder()}>
+                        <BsXSquareFill size={20}/>
+                        <p>Hủy đơn</p>
                     </button>
                 </div>
 

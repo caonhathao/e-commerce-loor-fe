@@ -75,70 +75,73 @@ export const UserLayout = () => {
 
     return (
         <div className={'flex flex-col justify-center items-center'}>
-            {/*avatar and some info*/}
-            <div className={'w-full h-fit flex flex-row justify-between items-center bg-[rgb(var(--main-color))] p-2'}>
-                <div className={'w-16 h-16 rounded-full border-2 border-[rgb(var(--border-color))]'}>
-                    <img src={user?.image_link ?? err404} alt={'logo'} className={'w-full h-full rounded-full'}/>
+            <div className={'w-full h-fit fixed top-0 left-0 z-20 bg-white'}>
+                {/*avatar and some info*/}
+                <div
+                    className={'w-full h-fit flex flex-row justify-between items-center bg-[rgb(var(--main-color))] p-2'}>
+                    <div className={'w-16 h-16 rounded-full border-2 border-[rgb(var(--border-color))]'}>
+                        <img src={user?.image_link ?? err404} alt={'logo'} className={'w-full h-full rounded-full'}/>
+                    </div>
+                    <p>Xin chào, {user?.full_name ?? user?.account_name}</p>
+                    <button
+                        className={'bg-[rgb(var(--btn-accent-bg))] text-white rounded-lg p-1 shadow-lg shadow-gray-300'}
+                        onClick={() => navigate('/')}>
+                        <BsHouse size={25}/>
+                    </button>
                 </div>
-                <p>Xin chào, {user?.full_name ?? user?.account_name}</p>
-                <button
-                    className={'bg-[rgb(var(--btn-accent-bg))] text-white rounded-lg p-1 shadow-lg shadow-gray-300'}
-                    onClick={() => navigate('/')}>
-                    <BsHouse size={25}/>
-                </button>
-            </div>
-            {/*searching bar here*/}
-            <div className={'w-full h-fit flex flex-row justify-center items-center p-2'}>
-                <SearchingBar placeholderText={"Tìm kiếm đơn hàng,.."}/>
-            </div>
-            {/*Navigate bar here (vertical)*/}
-            <div
-                className={'w-full h-fit my-5 border-b-2 border-[rgb(var(--main-color))] rounded-b-xl p-2 shadow-lg shadow-gray-300'}>
-                <ul className={'w-full flex flex-row justify-around items-center gap-4'}>
-                    <li className={`w-fit h-fit flex flex-col justify-center items-center`}
-                        onClick={() => activeCurrTab(0, '/')}>
-                        <div
-                            className={`w-fit h-fit border-2 border-[rgb(var(--border-color))] ${activeTab[0] ? 'bg-[rgb(var(--accent-color))] text-white' : 'bg-white text-black'}  rounded-full p-3`}>
-                            <BsPerson size={25}/>
-                        </div>
-                        <p className={'text-center'}>Tài khoản</p>
-                    </li>
-                    <li className={`w-fit h-fit flex flex-col justify-center items-center`}
-                        onClick={() => activeCurrTab(1, '/show-cart')}>
-                        <div
-                            className={`border-2 border-[rgb(var(--border-color))] ${activeTab[1] ? 'bg-[rgb(var(--accent-color))] text-white' : 'bg-white text-black'} rounded-full p-3 e-fit h-fit`}>
-                            <BsCart size={25}/>
-                        </div>
-                        <p className={'text-center'}>Giỏ hàng</p>
-                    </li>
-                    <li className={`w-fit h-fit flex flex-col justify-center items-center`}
-                        onClick={() => activeCurrTab(2, '/show-receipts')}>
-                        <div
-                            className={` border-2 border-[rgb(var(--border-color))] ${activeTab[2] ? 'bg-[rgb(var(--accent-color))] text-white' : 'bg-white text-black'} rounded-full p-3 w-fit h-fit`}>
-                            <BsReceipt size={25}/>
-                        </div>
-                        <p className={'text-center'}>Đơn hàng</p>
-                    </li>
-                    <li className={`w-fit h-fit flex flex-col justify-center items-center relative`}
-                        onClick={() => activeCurrTab(3, '/show-notifications')}>
-                        {user?.notify_count !== 0 ? (
-                            <div className={'absolute w-5 h-5 bg-red-500 rounded-full top-0 right-1'}></div>
-                        ) : null}
-                        <div
-                            className={` border-2 border-[rgb(var(--border-color))] ${activeTab[3] ? 'bg-[rgb(var(--accent-color))] text-white' : 'bg-white text-black'} rounded-full p-3 w-fit h-fit`}>
-                            <BsBell size={25}/>
-                        </div>
-                        <p className={'text-center'}>Thông báo</p>
-                    </li>
-                    <li className={`w-fit h-fit flex flex-col justify-center items-center`}
-                        onClick={() => logout()}>
-                        <div
-                            className={` border-2 border-[rgb(var(--border-color))] ${activeTab[4] ? 'bg-[rgb(var(--accent-color))] text-white' : 'bg-white text-black'} rounded-full p-3 w-fit h-fit`}>
-                            <BsBoxArrowRight size={25}/>
-                        </div>
-                        <p className={'text-center'}>Đăng xuất</p>
-                    </li>
-                </ul>
+                {/*searching bar here*/}
+                <div className={'w-full h-fit flex flex-row justify-center items-center p-2'}>
+                    <SearchingBar placeholderText={"Tìm kiếm đơn hàng,.."}/>
+                </div>
+                {/*Navigate bar here (vertical)*/}
+                <div
+                    className={'w-full h-fit my-5 border-b-2 border-[rgb(var(--main-color))] rounded-b-xl p-2 shadow-lg shadow-gray-300'}>
+                    <ul className={'w-full flex flex-row justify-around items-center gap-4'}>
+                        <li className={`w-fit h-fit flex flex-col justify-center items-center`}
+                            onClick={() => activeCurrTab(0, '/')}>
+                            <div
+                                className={`w-fit h-fit border-2 border-[rgb(var(--border-color))] ${activeTab[0] ? 'bg-[rgb(var(--accent-color))] text-white' : 'bg-white text-black'}  rounded-full p-3`}>
+                                <BsPerson size={25}/>
+                            </div>
+                            <p className={'text-center'}>Tài khoản</p>
+                        </li>
+                        <li className={`w-fit h-fit flex flex-col justify-center items-center`}
+                            onClick={() => activeCurrTab(1, '/show-cart')}>
+                            <div
+                                className={`border-2 border-[rgb(var(--border-color))] ${activeTab[1] ? 'bg-[rgb(var(--accent-color))] text-white' : 'bg-white text-black'} rounded-full p-3 e-fit h-fit`}>
+                                <BsCart size={25}/>
+                            </div>
+                            <p className={'text-center'}>Giỏ hàng</p>
+                        </li>
+                        <li className={`w-fit h-fit flex flex-col justify-center items-center`}
+                            onClick={() => activeCurrTab(2, '/show-receipts')}>
+                            <div
+                                className={` border-2 border-[rgb(var(--border-color))] ${activeTab[2] ? 'bg-[rgb(var(--accent-color))] text-white' : 'bg-white text-black'} rounded-full p-3 w-fit h-fit`}>
+                                <BsReceipt size={25}/>
+                            </div>
+                            <p className={'text-center'}>Đơn hàng</p>
+                        </li>
+                        <li className={`w-fit h-fit flex flex-col justify-center items-center relative`}
+                            onClick={() => activeCurrTab(3, '/show-notifications')}>
+                            {user?.notify_count !== 0 ? (
+                                <div className={'absolute w-5 h-5 bg-red-500 rounded-full top-0 right-1'}></div>
+                            ) : null}
+                            <div
+                                className={` border-2 border-[rgb(var(--border-color))] ${activeTab[3] ? 'bg-[rgb(var(--accent-color))] text-white' : 'bg-white text-black'} rounded-full p-3 w-fit h-fit`}>
+                                <BsBell size={25}/>
+                            </div>
+                            <p className={'text-center'}>Thông báo</p>
+                        </li>
+                        <li className={`w-fit h-fit flex flex-col justify-center items-center`}
+                            onClick={() => logout()}>
+                            <div
+                                className={` border-2 border-[rgb(var(--border-color))] ${activeTab[4] ? 'bg-[rgb(var(--accent-color))] text-white' : 'bg-white text-black'} rounded-full p-3 w-fit h-fit`}>
+                                <BsBoxArrowRight size={25}/>
+                            </div>
+                            <p className={'text-center'}>Đăng xuất</p>
+                        </li>
+                    </ul>
+                </div>
             </div>
             <div className={'w-full h-full'}><Outlet/></div>
             <ToastContainer/>

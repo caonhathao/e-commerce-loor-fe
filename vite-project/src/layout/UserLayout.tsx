@@ -74,8 +74,8 @@ export const UserLayout = () => {
     if (user === undefined) return <Loading/>
 
     return (
-        <div className={'flex flex-col justify-center items-center'}>
-            <div className={'w-full h-fit fixed top-0 left-0 z-20 bg-white'}>
+        <div className={'w-screen h-screen flex flex-col justify-start items-center'}>
+            <div className={'w-full h-fit bg-white fixed top-0 z-20'}>
                 {/*avatar and some info*/}
                 <div
                     className={'w-full h-fit flex flex-row justify-between items-center bg-[rgb(var(--main-color))] p-2'}>
@@ -143,7 +143,7 @@ export const UserLayout = () => {
                     </ul>
                 </div>
             </div>
-            <div className={'w-full h-full'}><Outlet/></div>
+            <div className={'w-full h-fit flex flex-col justify-center items-center bg-white'}><Outlet/></div>
             <ToastContainer/>
         </div>
 

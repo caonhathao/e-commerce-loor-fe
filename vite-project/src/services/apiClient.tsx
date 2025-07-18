@@ -1,6 +1,5 @@
 import axios from 'axios'
 import {getAccessToken, setAccessToken, removeAccessToken, isLoggingOut} from "./tokenStore.tsx";
-import {toast} from "react-toastify";
 
 const apiClient = axios.create({
     baseURL: import.meta.env.VITE_API_HOST + import.meta.env.VITE_SERVER_PORT,
@@ -24,7 +23,7 @@ apiClient.interceptors.response.use(
     (res) => res,
     async (error) => {
 
-        toast.warning(error.response.data.message);
+        // toast.warning(error.response.data.message);
         // console.log("Interceptor error:", error.response.data.message);
         const originalRequest = error.config;
 

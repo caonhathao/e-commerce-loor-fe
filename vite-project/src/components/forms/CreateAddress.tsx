@@ -39,7 +39,7 @@ const CreateAddress: React.FC<CreateAddressProps> = ({setOpen, setSuccess}) => {
 
     return (
         <div
-            className="w-full h-full p-2 absolute rounded-lg  bg-white">
+            className="w-full h-full p-2 absolute top-0 left-0 z-[60] rounded-lg  bg-white">
             <Formik
                 initialValues={{
                     is_default: false,

@@ -7,14 +7,23 @@ export const formatedNumber = (s: number | undefined) => {
     return s.toLocaleString('vi-VN');
 }
 
-export const formatedDate = (s: string | undefined) => {
+export const formatedDate = (s: string | undefined, showTime: boolean = false) => {
     if (!s) return '';
     return new Date(s).toLocaleString('vi-VN', {
-        timeZone: 'Asia/Ho_Chi_Minh', // Đảm bảo đúng múi giờ VN
-        hour12: false, // 24h format
+        timeZone: 'Asia/Ho_Chi_Minh',
+        hour12: false,
+        ...(showTime
+            ? {} // mặc định show cả ngày lẫn giờ
+            : {
+                hour: undefined,
+                minute: undefined,
+                second: undefined,
+            }),
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
     });
-}
-
+};
 
 export const fetchData = async (
     url: string,
@@ -28,20 +37,25 @@ export const fetchData = async (
         if (isClient) {
             response = await apiClient.get(url);
             if (response && response.status === 200) {
-                if (messageSuccess?.length !== 0) toast.success(messageSuccess)
+                // if (messageSuccess?.length !== 0) toast.success(messageSuccess)
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-expect-error
                 setData(response.data)
-            } else toast.error(messageErr ?? 'Error')
+            }
+            // else toast.error(messageErr ?? 'Error')
         } else {
             response = await fetch(url)
             if (response && response.status === 200) {
-                if (messageSuccess?.length !== 0) toast.success(messageSuccess)
+                // if (messageSuccess?.length !== 0) toast.success(messageSuccess)
                 const data = await response.json();
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-expect-error
                 setData(data)
-            } else toast.error(messageErr ?? 'Error')
+            }
+            // else toast.error(messageErr ?? 'Error')
         }
     } catch (e) {
         console.error(e)
-        toast.error(messageErr ?? 'Error')
     }
 }
 
@@ -61,12 +75,9 @@ export const fetchDataWithQuery = async (
             console.log(response.data)
             setData(response.data)
         } else
-            toast.error('Failed to get products')
+            console.error(response.data.message)
     } catch (e) {
         console.error(e)
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-expect-error
-        toast.error(e.message)
     }
 }
 

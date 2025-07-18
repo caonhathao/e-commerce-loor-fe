@@ -314,8 +314,9 @@ const UserCart = () => {
 
     return (
         <>
-            <div className={'w-full h-full flex justify-center items-center flex-col absolute top-35'}>
-                <div className={'w-full h-full flex flex-col justify-center items-center p-2 my-2'}>
+            <div className={'w-full h-full flex flex-col justify-center items-start flex-col'}>
+                <div className={'h-[400px]'}></div>
+                <div className={'w-full h-full flex flex-col justify-start items-center p-2 my-2'}>
                     {data.length > 0 ? (
                         data.map(brand => <div key={brand.brand_id}
                                                className={'w-full h-fit flex flex-col justify-between items-center'}>
@@ -431,7 +432,6 @@ const UserCart = () => {
                         </div>
                     </div>
                 </div>
-
             </div>
             {openCreateOrder ?
                 <UserCreateOrder listVariant={listVariants} setOpenCreate={setOpenCreateOrder}/> : null}

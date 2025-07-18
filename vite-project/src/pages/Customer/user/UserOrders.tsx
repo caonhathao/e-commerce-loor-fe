@@ -46,9 +46,9 @@ const UserOrders = () => {
         fetchData(endpoints.user.getOrders, true, setData, 'Lấy dữ liệu thất bại')
     }, [])
 
-    useEffect(() => {
-        console.log(data)
-    }, [data]);
+    // useEffect(() => {
+    //     console.log(data)
+    // }, [data]);
 
     const handleOpenDetail = (order_id: string) => {
         setChoose(order_id);
@@ -65,7 +65,7 @@ const UserOrders = () => {
                                     onChange={(_e, value) => fetchDataWithQuery(endpoints.user.getOrders, setData, value, 10)}/>
                     </Stack>
                 ) : null}
-                <div className={'w-full h-full mt-5'}>
+                <div className={'w-full h-full mt-5 flex flex-col justify-start item-center'}>
                     {data?.data ? (
                         data?.data.map((item: orderType, i: number) => (
                             <div key={i}

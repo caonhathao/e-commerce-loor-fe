@@ -33,10 +33,8 @@ const UserOrderDetail: React.FC<Props> = ({order_id, setOpen}) => {
     }, [order_id])
 
     useEffect(() => {
-        console.log("✅ ORDER ID:", order_id);
-        console.log("📦 Bill data:", billData);
-    }, [billData, order_id]);
-
+        console.log(data);
+    }, [data])
 
     if (data === null || billData === null) return <Loading/>
 
@@ -98,12 +96,13 @@ const UserOrderDetail: React.FC<Props> = ({order_id, setOpen}) => {
                     <p>Địa chỉ giao hàng: <strong>{data.address}</strong></p>
                 </div>
             </div>
-            <div className={'p-2 w-full h-full'}>
+            <div className={'p-2 w-full h-full flex flex-col justify-center items-start'}>
+                <p><strong className={'text-lg'}>Thông tin hóa đơn</strong></p>
+                <p className={'my-1'}>Mã hóa đơn:<strong>{billData?.id}</strong></p>
+                <p className={'my-1'}>Mã đơn hàng: <strong>{billData?.order_id}</strong></p>
                 <table className={"border-collapse border border-gray-400"}>
                     <thead>
                     <tr>
-                        <th className={'border border-gray-500 w-[10%]'}>Mã HD</th>
-                        <th className={'border border-gray-500 w-[10%]'}>Mã DH</th>
                         <th className={'border border-gray-500 w-[20%]'}>PTTT</th>
                         <th className={'border border-gray-500 w-[20%]'}>Tình trạng</th>
                         <th className={'border border-gray-500 w-[40%]'}>Lí do (nếu có)</th>
@@ -111,11 +110,9 @@ const UserOrderDetail: React.FC<Props> = ({order_id, setOpen}) => {
                     </thead>
                     <tbody>
                     <tr>
-                        <td className={'border border-gray-500'}>{billData?.id}</td>
-                        <td className={'border border-gray-500'}>{billData?.order_id}</td>
-                        <td className={'border border-gray-500'}>{billData?.payment}</td>
-                        <td className={'border border-gray-500'}>{billData?.payment_status}</td>
-                        <td className={'border border-gray-500'}>{billData?.reason ?? 'Không có'}</td>
+                        <td className={'border border-gray-500 p-2 text-center'}>{billData?.payment}</td>
+                        <td className={'border border-gray-500 p-2 text-center'}>{billData?.payment_status}</td>
+                        <td className={'border border-gray-500 p-2 text-center'}>{billData?.reason ?? 'Không có'}</td>
                     </tr>
                     </tbody>
                 </table>

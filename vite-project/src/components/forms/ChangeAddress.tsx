@@ -31,7 +31,7 @@ const ChangeAddress: React.FC<CreateAddressProps> = ({setOpen, setCurrent}) => {
     }, [addressSuccess]);
 
     return (
-        <div className={'w-full h-full fixed top-0 left-0 z-50 flex flex-col justify-center items-center bg-white'}>
+        <div className={'w-full h-full fixed top-0 left-0 z-[999] flex flex-col justify-center items-center bg-white'}>
             <Formik initialValues={{
                 id: '',
                 is_default: false,

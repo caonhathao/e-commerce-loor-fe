@@ -22,7 +22,7 @@ const CreatePhone: React.FC<CreateAddressProps> = ({setOpen, setSuccess}) => {
 
     return (
         <div
-            className="w-[80%] h-fit p-2 absolute rounded-lg shadow-lg shadow-gray-500 border-2 border-[rgb(var(--main-color))] bg-white">
+            className="w-[80%] h-fit p-2 fixed z-[998] rounded-lg shadow-lg shadow-gray-500 border-2 border-[rgb(var(--main-color))] bg-white">
             <Formik
                 initialValues={{
                     numberphone: ''

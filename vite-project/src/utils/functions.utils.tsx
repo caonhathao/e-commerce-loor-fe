@@ -81,13 +81,25 @@ export const fetchDataWithQuery = async (
     }
 }
 
-export const postData = async (url: string) => {
+export const postData = async (url: string, values: any) => {
     try {
-        const response = await apiClient.post(url);
+        const response = await apiClient.post(url,values);
         if (response.status === 200) {
             console.log(response.data)
         } else {
             toast.error('Failed')
+        }
+    } catch (e) {
+        console.error(e)
+        toast.error('Failed')
+    }
+}
+
+export const deleteData = async (url: string, values: any) => {
+    try {
+        const response = await apiClient.delete(url, {data: values});
+        if (response.status !== 200) {
+            console.error(response.data.message)
         }
     } catch (e) {
         console.error(e)

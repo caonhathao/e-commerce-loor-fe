@@ -16,10 +16,6 @@ const CreatePhone: React.FC<CreateAddressProps> = ({setOpen, setSuccess}) => {
     const [userData, setUserData] = useState<userType>();
     const {setUser} = useUser()
 
-    useEffect(() => {
-        console.log(userData);
-    }, [userData])
-
     return (
         <div
             className="w-[80%] h-fit p-2 fixed z-[998] rounded-lg shadow-lg shadow-gray-500 border-2 border-[rgb(var(--main-color))] bg-white">

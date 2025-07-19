@@ -83,7 +83,7 @@ const UserOrders = () => {
                                     className={'text-[rgb(var(--main-color))]'}>{item.address}</strong></div>
                             </div>
                         ))
-                    ) : (<p>Bạn chưa có đơn hàng nào!</p>)}
+                    ) : (<p className={'w-full text-center'}>Bạn chưa có đơn hàng nào!</p>)}
                 </div>
             </div>
             {openDetail ? (<UserOrderDetail order_id={choose} setOpen={setOpenDetail}/>) : null}

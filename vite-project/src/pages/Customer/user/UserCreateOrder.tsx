@@ -10,9 +10,9 @@ import {addressType, listVariantsType} from "../../../utils/data-types.tsx";
 import {BsCaretRightFill, BsHouse, BsX} from "react-icons/bs";
 import {fetchData, formatedNumber} from "../../../utils/functions.utils.tsx";
 import {useUser} from "../../../context/UserContext.tsx";
-import CreateAddress from "../../../components/forms/CreateAddress.tsx";
+import CreateAddress from "../../../components/forms/Address/CreateAddress.tsx";
 import CreatePhone from "../../../components/forms/CreatePhone.tsx";
-import ChangeAddress from "../../../components/forms/ChangeAddress.tsx";
+import ChangeAddress from "../../../components/forms/Address/ChangeAddress.tsx";
 
 const socket = io(endpoints.system.socketConnection, {
     withCredentials: true,

@@ -1,12 +1,11 @@
 import React, {useEffect, useState} from "react";
-import {listDistrictType, listProvinceType} from "../../utils/data-types.tsx";
-import {fetchData} from "../../utils/functions.utils.tsx";
-import endpoints from "../../services/endpoints.tsx";
-import apiClient from "../../services/apiClient.tsx";
+import {listDistrictType, listProvinceType} from "../../../utils/data-types.tsx";
+import {fetchData} from "../../../utils/functions.utils.tsx";
+import endpoints from "../../../services/endpoints.tsx";
+import apiClient from "../../../services/apiClient.tsx";
 import {toast} from "react-toastify";
 import {Formik, Form, Field} from "formik";
 import * as Yup from "yup";
-import {useUser} from "../../context/UserContext.tsx";
 
 interface CreateAddressProps {
     setOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -16,7 +15,6 @@ interface CreateAddressProps {
 const CreateAddress: React.FC<CreateAddressProps> = ({setOpen, setSuccess}) => {
     const [listProvince, setListProvince] = useState<listProvinceType[]>([]);
     const [listDistrict, setListDistrict] = useState<listDistrictType[]>([]);
-    const {setUser} = useUser()
 
     useEffect(() => {
         fetchData(endpoints.public.getAllProvinces, true, setListProvince, 'Có lỗi trong quá trình lấy dữ liệu');
@@ -36,6 +34,10 @@ const CreateAddress: React.FC<CreateAddressProps> = ({setOpen, setSuccess}) => {
             toast.error('Có lỗi trong quá trình lấy dữ liệu');
         }
     };
+
+    useEffect(()=>{
+        console.log(listDistrict);
+    },[listDistrict])
 
     return (
         <div

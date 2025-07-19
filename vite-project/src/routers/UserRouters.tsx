@@ -4,6 +4,7 @@ import {UserLayout} from "../layout/UserLayout.tsx";
 import UserCart from "../pages/Customer/user/UserCart.tsx";
 import {UserProvider} from "../context/UserContext.tsx";
 import UserOrders from "../pages/Customer/user/UserOrders.tsx";
+import UserNotify from "../pages/Customer/user/UserNotify.tsx";
 import UserProfile from "../pages/Customer/user/UserProfile.tsx";
 
 const UserRouters = () => {
@@ -18,6 +19,7 @@ const UserRouters = () => {
                     <Route index element={<UserProfile/>}/>
                     <Route path={'show-cart'} element={<UserCart/>}/>
                     <Route path={'show-receipts'} element={<UserOrders/>}/>
+                    <Route path={'show-notifications'} element={<UserNotify/>}/>
                 </Route>
             </Route>
         </>

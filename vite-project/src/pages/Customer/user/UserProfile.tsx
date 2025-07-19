@@ -6,11 +6,13 @@ import endpoints from "../../../services/endpoints.tsx";
 import UpdateAddress from "../../../components/forms/Address/UpdateAddress.tsx";
 import Loading from "../../../components/loading/Loading.tsx";
 import UpdateProfile from "../../../components/forms/UpdateProfile.tsx";
+import UpdateImage from "../../../components/forms/UpdateImage.tsx";
 
 const UserProfile = () => {
     const {user, setUser} = useUser()
     const [openCreateAddress, setOpenCreateAddress] = useState<boolean>(false)
     const [openUpdateInfo, setOpenUpdateInfo] = useState<boolean>(false)
+    const [openUpdateImg, setOpenUpdateImg] = useState<boolean>(false)
 
     const [success, setSuccess] = useState<boolean>(false)
 
@@ -42,8 +44,9 @@ const UserProfile = () => {
                 <div
                     className={'w-[30%] h-full p-2 flex flex-col justify-center items-center gap-2 border-r-2 border-[rgb(var(--border-color))]'}>
                     <img src={user?.image_link} alt={'avatar'} className={'rounded-lg'}/>
-                    <button type={'button'} className={'border-2 border-[rgb(var(--border-color))] rounded-lg p-2'}>Đổi
-                        ảnh
+                    <button type={'button'} className={'border-2 border-[rgb(var(--border-color))] rounded-lg p-2'}
+                            onClick={() => setOpenUpdateImg(true)}>
+                        Đổi ảnh
                     </button>
                 </div>
                 <div className={'w-[70%] flex flex-col justify-start items-start'}>
@@ -95,6 +98,11 @@ const UserProfile = () => {
             <div className={` w-full h-full absolute top-0 left-0`}>
                 <UpdateProfile setOpen={setOpenUpdateInfo} setSuccess={setSuccess}/>
             </div> : null}
+        {openUpdateImg ?
+            <div>
+                <UpdateImage setOpen={setOpenUpdateImg} setSuccess={setSuccess}/>
+            </div> : null
+        }
     </div>)
 }
 export default UserProfile

@@ -315,7 +315,7 @@ const UserCart = () => {
     return (
         <>
             <div className={'w-full h-full flex flex-col justify-center items-start flex-col'}>
-                <div className={'h-[400px]'}></div>
+                <div className={'min-h-[300px] max-h-[300px]'}></div>
                 <div className={'w-full h-full flex flex-col justify-start items-center p-2 my-2'}>
                     {data.length > 0 ? (
                         data.map(brand => <div key={brand.brand_id}

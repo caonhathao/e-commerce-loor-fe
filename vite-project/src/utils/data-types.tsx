@@ -131,3 +131,17 @@ export interface receiptData {
     reason: string | null,
     createdAt: string,
 }
+
+export interface notificationType {
+    current_items: number;
+    current_page: number;
+    total_items: number;
+    total_pages: number;
+    data: {
+        content: string,
+        createdAt: string,
+        status: boolean,
+        type: string,
+        redirect_url: string,
+    }
+}

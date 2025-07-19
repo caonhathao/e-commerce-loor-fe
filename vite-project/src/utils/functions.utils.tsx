@@ -37,12 +37,11 @@ export const fetchData = async (
         if (isClient) {
             response = await apiClient.get(url);
             if (response && response.status === 200) {
-                // if (messageSuccess?.length !== 0) toast.success(messageSuccess)
+                if (messageSuccess && messageSuccess?.length !== 0) toast.success(messageSuccess)
                 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                 // @ts-expect-error
                 setData(response.data)
-            }
-            // else toast.error(messageErr ?? 'Error')
+            } else if (messageErr && messageErr.length !== 0) toast.error(messageErr)
         } else {
             response = await fetch(url)
             if (response && response.status === 200) {
@@ -83,7 +82,7 @@ export const fetchDataWithQuery = async (
 
 export const postData = async (url: string, values: any) => {
     try {
-        const response = await apiClient.post(url,values);
+        const response = await apiClient.post(url, values);
         if (response.status === 200) {
             console.log(response.data)
         } else {

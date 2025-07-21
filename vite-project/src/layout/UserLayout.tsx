@@ -114,7 +114,7 @@ export const UserLayout = () => {
                             <p className={'text-center'}>Giỏ hàng</p>
                         </li>
                         <li className={`w-fit h-fit flex flex-col justify-center items-center`}
-                            onClick={() => activeCurrTab(2, '/show-receipts')}>
+                            onClick={() => activeCurrTab(2, '/show-orders')}>
                             <div
                                 className={` border-2 border-[rgb(var(--border-color))] ${activeTab[2] ? 'bg-[rgb(var(--accent-color))] text-white' : 'bg-white text-black'} rounded-full p-3 w-fit h-fit`}>
                                 <BsReceipt size={25}/>

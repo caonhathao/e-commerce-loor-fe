@@ -3,12 +3,14 @@ import endpoints from "../../../services/endpoints.tsx";
 import {useEffect, useState} from "react";
 import {Pagination, Stack} from "@mui/material";
 import {orderDataType, orderStatus, orderType} from "../../../utils/data-types.tsx";
-import UserOrderDetail from "./UserOrderDetail.tsx";
+import UserOrderDetail from "../../../components/user/UserOrderDetail.tsx";
+import {useParams} from "react-router-dom";
 
 const UserOrders = () => {
     const [data, setData] = useState<orderDataType>();
     const [openDetail, setOpenDetail] = useState<boolean>(false);
     const [choose, setChoose] = useState<string>('');
+    const {order_id} = useParams<{ order_id?: string }>();
     const handleOrderStatusMean = (_status: keyof typeof orderStatus) => {
         if (_status === 'PENDING') {
             return <p>Tình trạng: <strong className={'text-yellow-500'}>
@@ -42,22 +44,26 @@ const UserOrders = () => {
         }
     };
 
-    useEffect(() => {
-        fetchData(endpoints.user.getOrders, true, setData, 'Lấy dữ liệu thất bại')
-    }, [])
-
-    // useEffect(() => {
-    //     console.log(data)
-    // }, [data]);
-
     const handleOpenDetail = (order_id: string) => {
         setChoose(order_id);
         setOpenDetail(true);
     }
 
+    useEffect(() => {
+        if (order_id) handleOpenDetail(order_id)
+    }, [order_id])
+
+    useEffect(() => {
+        fetchData(endpoints.user.getOrders, true, setData, 'Lấy dữ liệu thất bại')
+    }, [openDetail])
+
+    // useEffect(() => {
+    //     console.log(data)
+    // }, [data]);
+
     return (
         <>
-            <div className={'w-full h-full p-2 fixed top-75'}>
+            <div className={'w-full h-full p-2 absolute top-75'}>
                 {data !== null && data !== undefined ? (
                     <Stack spacing={2} alignItems={'center'}>
                         <Pagination count={data?.total_pages}
@@ -77,7 +83,7 @@ const UserOrders = () => {
                                     {handleOrderStatusMean(item.status as keyof typeof orderStatus)}
                                 </div>
                                 <p>Ngày tạo <strong
-                                    className={'text-[rgb(var(--main-color))]'}>{formatedDate(item.createdAt)}</strong>
+                                    className={'text-[rgb(var(--main-color))]'}>{formatedDate(item.createdAt, true)}</strong>
                                 </p>
                                 <div>Địa chỉ giao hàng: <strong
                                     className={'text-[rgb(var(--main-color))]'}>{item.address}</strong></div>

@@ -1,103 +1,110 @@
-import {buildUrlWithParams} from "../utils/utils.js.tsx";
+import { buildUrlWithParams } from "../utils/utils.js.tsx";
+
+const API_HOST = "http://localhost:8761"; // từ VITE_API_HOST + VITE_SERVER_PORT
 
 const endpoints = {
     system: {
-        socketConnection: import.meta.env.VITE_API_HOST + import.meta.env.VITE_SERVER_PORT,
+        socketConnection: API_HOST,
     },
     auth: {
-        userLogin: import.meta.env.VITE_API_L_USER,
-        userRegister: import.meta.env.VITE_API_R_USER,
-        userLogout: import.meta.env.VITE_API_LO_USER,
-        brandLogin: import.meta.env.VITE_API_L_BRAND,
-        brandRegister: import.meta.env.VITE_API_R_BRAND,
-        brandLogout: import.meta.env.VITE_API_LO_BRAND,
-        refresh: import.meta.env.VITE_API_TOKEN_REFRESH,
-        authBrand: import.meta.env.VITE_API_V_BRAND,
+        userLogin: "/api/public/user-login",
+        userRegister: "/api/public/create-user",
+        userLogout: "/api/user/logout",
+        brandLogin: "/api/public/brand-login",
+        brandRegister: "/api/public/create-brand",
+        brandLogout: "/api/vendor/logout",
+        refresh: "/api/auth/refresh",
+        authBrand: "/api/system/authentication/",
     },
     admin: {
-        createCategory: import.meta.env.VITE_API_C_CATEGORY,
-        updateCategory: (id: string) => buildUrlWithParams(import.meta.env.VITE_API_U_CATEGORY, {id}),
-        deleteCategory: (id: string) => buildUrlWithParams(import.meta.env.VITE_API_D_CATEGORY, {id}),
+        createCategory: "/api/manager/create-category",
+        updateCategory: (id: string) => buildUrlWithParams("/api/manager/update-category/:id", { id }),
+        deleteCategory: (id: string) => buildUrlWithParams("/api/manager/delete-category/:id", { id }),
 
-        createSubCategory: import.meta.env.VITE_API_C_SUBCATEGORY,
-        updateSubCategory: (id: string) => buildUrlWithParams(import.meta.env.VITE_API_U_SUBCATEGORY, {id}),
-        deleteSubCategory: (id: string) => buildUrlWithParams(import.meta.env.VITE_API_D_SUBCATEGORY, {id}),
+        createSubCategory: "/api/manager/create-sub-category",
+        updateSubCategory: (id: string) => buildUrlWithParams("/api/manager/update-sub-category/:id", { id }),
+        deleteSubCategory: (id: string) => buildUrlWithParams("/api/manager/delete-sub-category/:id", { id }),
 
-        getAllBrands: import.meta.env.VITE_API_G_A_BRAND,
-        getAllUsers: import.meta.env.VITE_API_G_A_USER,
+        getAllBrands: "/api/manager/get-all-brands",
+        getAllUsers: "/api/manager/get-all-users",
 
-        lockUser: import.meta.env.VITE_API_H_USER,
-        restoreUser: import.meta.env.VITE_API_UH_USER,
+        lockUser: "/api/manager/lock-user-by-id",
+        restoreUser: "/api/manager/restore-user-by-id",
     },
     brand: {
-        updateBrandInfo: import.meta.env.VITE_API_U_BRAND,
+        updateBrandInfo: "/api/vendor/brand-update",
 
-        getProductByIdFromBrand: (id: string) => buildUrlWithParams(import.meta.env.VITE_API_I_PRODUCT_VENDOR, {id}),
+        getProductByIdFromBrand: (id: string) => buildUrlWithParams("/api/vendor/get-product-by-id/:id", { id }),
 
-        createProduct: import.meta.env.VITE_API_C_PRODUCT,
-        updateProduct: (id: string | number) => buildUrlWithParams(import.meta.env.VITE_API_U_PRODUCT, {id}),
-        disableProduct: import.meta.env.VITE_API_H_PRODUCT,
-        deleteProduct: (id: string) => buildUrlWithParams(import.meta.env.VITE_API_D_PRODUCT, {id}),
+        createProduct: "/api/vendor/create-products",
+        updateProduct: (id: string | number) => buildUrlWithParams("/api/vendor/update-product/:id", { id }),
+        disableProduct: "/api/vendor/disabled-products",
+        deleteProduct: "/api/vendor/delete-product",
 
-        createVariant: (id: string) => buildUrlWithParams(import.meta.env.VITE_API_C_VARIANT, {id}),
-        updateVariant: (id: string) => buildUrlWithParams(import.meta.env.VITE_API_U_VARIANT, {id}),
+        createVariant: (id: string) => buildUrlWithParams("/api/vendor/create-new-variant/:id", { id }),
+        updateVariant: (id: string) => buildUrlWithParams("/api/vendor/update-variant-with-id/:id", { id }),
 
-        deleteVariant: (id: string) => buildUrlWithParams(import.meta.env.VITE_API_D_VARIANT, {id}),
-        updateAttribute: (id: string) => buildUrlWithParams(import.meta.env.VITE_API_U_ATTRIBUTE, {id}),
+        deleteVariant: (id: string) => buildUrlWithParams("/api/vendor/delete-variant-with-id", { id }),
+        updateAttribute: (id: string) => buildUrlWithParams("/api/vendor/create-new-variant-attribute/:id", { id }),
 
-        getAllNotifications: import.meta.env.VITE_API_G_A_VENDOR,
+        getAllNotifications: "/api/vendor/get-all-notify-me",
 
-        getOrders: import.meta.env.VITE_API_G_A_ORDERS_VENDOR,
-        getOrdersByStatus: import.meta.env.VITE_API_G_ORDERS_STATUS,
-        acceptOrder: import.meta.env.VITE_API_AC_ORDER,
-        updateOrder: import.meta.env.VITE_API_U_ORDER,
+        getOrders: "/api/vendor/get-all-orders",
+        getOrdersByStatus: "/api/vendor/get-all-orders-by-status",
+        acceptOrder: "/api/vendor/accept-order",
+        updateOrder: "/api/vendor/update-status-order",
     },
     user: {
-        getUserInfo: import.meta.env.VITE_API_I_USER,
-        updateUserInfo: import.meta.env.VITE_API_U_USER,
-        updatePassword: import.meta.env.VITE_API_U_USER_CHANGE_PASS,
-        logout: import.meta.env.VITE_API_LO_USER,
+        getUserInfo: "/api/user/get-user-by-id",
+        updateUserInfo: "/api/user/update-user-info",
+        updatePassword: "/api/user/change-password",
+        logout: "/api/user/logout",
 
-        createAddress: import.meta.env.VITE_API_C_ADDRESS,
-        updateAddress: import.meta.env.VITE_API_U_ADDRESS,
-        getAllAddress: import.meta.env.VITE_API_G_A_ADDRESS,
-        deleteAddress: import.meta.env.VITE_API_D_ADDRESS,
+        createAddress: "/api/user/add-shipping-address",
+        updateAddress: "/api/user/update-shipping-address",
+        getAllAddress: "/api/user/get-all-address",
+        deleteAddress: "/api/user/remove-shipping-address",
 
-        getAllNotifications: import.meta.env.VITE_API_G_A_CUSTOMER,
+        getAllNotifications: "/api/user/get-all-notify-me",
+        getNotificationDetail: "/api/user/get-notify-detail",
+        getNotificationByType: "/api/user/get-all-notify-by-type",
+        deleteNotification: "/api/user/delete-notification",
+        deleteNotifications: "/api/user/delete-notifications",
+        deleteAllNotifications: "/api/user/delete-all-notifications",
 
-        getOrders: import.meta.env.VITE_API_G_A_ORDERS_CUSTOMER,
-        createOrder: import.meta.env.VITE_API_C_ORDER,
-        cancelOrder: (id: string) => buildUrlWithParams(import.meta.env.VITE_API_D_ORDER, {id}),
-        getOrderDetail: (id: string) => buildUrlWithParams(import.meta.env.VITE_API_I_ORDER, {id}),
+        getOrders: "/api/user/get-all-orders/",
+        createOrder: "/api/user/create-new-order",
+        cancelOrder: (id: string) => buildUrlWithParams("/api/user/cancel-order/:id", { id }),
+        getOrderDetail: (id: string) => buildUrlWithParams("/api/user/get-order-detail/:id", { id }),
 
-        getReceiptByOrderId: (id: string) => buildUrlWithParams(import.meta.env.VITE_API_I_RECEIPT_BY_ORDER, {id}),
+        getReceiptByOrderId: (id: string) => buildUrlWithParams("/api/user/get-receipt-from-order/:id", { id }),
 
-        addToCart: import.meta.env.VITE_API_C_CART,
-        getCart: import.meta.env.VITE_API_G_CART,
-        updateCart: import.meta.env.VITE_API_U_CART,
-        deleteCart: import.meta.env.VITE_API_D_CART,
+        addToCart: "/api/user/add-to-cart",
+        getCart: "/api/user/get-cart",
+        updateCart: "/api/user/update-cart",
+        deleteCart: "/api/user/delete-cart",
     },
     public: {
-        getAllProvinces: import.meta.env.VITE_API_G_A_PROVINCES,
-        getAllDistricts: (province_id: string) => buildUrlWithParams(import.meta.env.VITE_API_G_A_DISTRICTS, {province_id}),
+        getAllProvinces: "/api/public/get-all-provinces",
+        getAllDistricts: (province_id: string) => buildUrlWithParams("/api/public/get-all-districts/:province_id", { province_id }),
 
-        getAllProducts: import.meta.env.VITE_API_G_A_PRODUCT,
-        getProductByIdFromUser: (id: string) => buildUrlWithParams(import.meta.env.VITE_API_I_PRODUCT_USER, {id}),
-        getProductByKeyword: (key: string) => buildUrlWithParams(import.meta.env.VITE_API_G_S_PRODUCT, {key}),
-        getProductByPrice: import.meta.env.VITE_API_G_S_PRODUCT_PRICE,
-        getAllProductsFromBrand: (id: string) => buildUrlWithParams(import.meta.env.VITE_API_G_A_PRODUCT_FROM_BRAND, {id}),
+        getAllProducts: "/api/public/get-all-products",
+        getProductByIdFromUser: (id: string) => buildUrlWithParams("/api/public/get-product-by-id/:id", { id }),
+        getProductByKeyword: (key: string) => buildUrlWithParams("/api/public/get-product-by-key/:key", { key }),
+        getProductByPrice: "/api/public/get-product-by-price",
+        getAllProductsFromBrand: (id: string) => buildUrlWithParams("/api/public/get-all-products/:id", { id }),
 
-        getVariantDetail: (id: string) => buildUrlWithParams(import.meta.env.VITE_API_I_VARIANT, {id}),
-        getAllVariants: (id: string) => buildUrlWithParams(import.meta.env.VITE_API_G_A_VARIANT, {id}),
+        getVariantDetail: (id: string) => buildUrlWithParams("/api/public/get-variant-by-id/:id", { id }),
+        getAllVariants: (id: string) => buildUrlWithParams("/api/public/get-all-variants/:id", { id }),
 
-        getAllAttributes: import.meta.env.VITE_API_G_ATTRIBUTE,
+        getAllAttributes: "/api/public/get-all-variant-attributes",
 
-        getBrandDetail: (id: string) => buildUrlWithParams(import.meta.env.VITE_API_I_BRAND, {id}),
+        getBrandDetail: (id: string) => buildUrlWithParams("/api/public/get-brand-by-id/:id", { id }),
 
-        getAllCategories: import.meta.env.VITE_API_G_A_CATEGORY,
-        getAllSubCategories: (id: string) => buildUrlWithParams(import.meta.env.VITE_API_G_A_SUBCATEGORY, {id}),
-        getSubCategory: (id: string) => buildUrlWithParams(import.meta.env.VITE_API_I_SUBCATEGORY, {id}),
+        getAllCategories: "/api/public/get-all-category",
+        getAllSubCategories: (id: string) => buildUrlWithParams("/api/public/get-all-sub-from-category/:id", { id }),
+        getSubCategory: (id: string) => buildUrlWithParams("/api/public/get-sub-category/:id", { id }),
     }
-}
+};
 
 export default endpoints;

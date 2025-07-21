@@ -4,6 +4,7 @@ import apiClient from "../../services/apiClient.tsx";
 import endpoints from "../../services/endpoints.tsx";
 import {Pagination, Stack} from "@mui/material";
 import ProductCard from "../../components/modules/ProductCard.tsx";
+import err404 from '../../assets/img/404.png'
 
 interface productType {
     id: string,
@@ -61,7 +62,7 @@ const Home = () => {
         <div className={'w-full h-full'}>
             <div className={'flex flex-row flex-wrap justify-start items-center m-2'}>
                 {data && data.data.map((item, i) => (
-                    <ProductCard url_path={item.id} img_path={item.image_products[0].image_link} index={i}
+                    <ProductCard url_path={item.id} img_path={item.image_products[0].image_link ?? err404} index={i}
                                  name={item.name} price={item.average_price} rating={'5.0'}/>
                 ))}
             </div>

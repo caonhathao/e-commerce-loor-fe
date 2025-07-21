@@ -12,18 +12,19 @@ export const formatedDate = (s: string | undefined, showTime: boolean = false) =
     return new Date(s).toLocaleString('vi-VN', {
         timeZone: 'Asia/Ho_Chi_Minh',
         hour12: false,
-        ...(showTime
-            ? {} // mặc định show cả ngày lẫn giờ
-            : {
-                hour: undefined,
-                minute: undefined,
-                second: undefined,
-            }),
         year: 'numeric',
         month: '2-digit',
         day: '2-digit',
+        ...(showTime
+            ? {
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+            }
+            : {}),
     });
 };
+
 
 export const fetchData = async (
     url: string,
@@ -58,6 +59,29 @@ export const fetchData = async (
     }
 }
 
+export const fetchDataWithPayload = async (
+    url: string,
+    setData?: React.Dispatch<SetStateAction<any>>,
+    payload?: any,
+    messageErr?: string,
+    messageSuccess?: string
+) => {
+    try {
+        const response = await apiClient.get(url, {
+            params:
+            payload
+        });
+        if (response && response.status === 200) {
+            if (messageSuccess && messageSuccess?.length !== 0) toast.success(messageSuccess)
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-expect-error
+            setData(response.data)
+        } else if (messageErr && messageErr.length !== 0) toast.error(messageErr)
+    } catch (e) {
+        console.error(e)
+    }
+}
+
 export const fetchDataWithQuery = async (
     url: string,
     setData: React.Dispatch<SetStateAction<any>>,
@@ -71,20 +95,22 @@ export const fetchDataWithQuery = async (
             }
         });
         if (response.status === 200) {
-            console.log(response.data)
             setData(response.data)
-        } else
-            console.error(response.data.message)
+        } else if (response.status === 201) {
+            setData(undefined)
+            toast.success(response.data.message)
+        }
     } catch (e) {
         console.error(e)
+        toast.error('Failed')
     }
 }
 
-export const postData = async (url: string, values: any) => {
+export const postData = async (url: string, values: any, setData?: React.Dispatch<SetStateAction<any>>) => {
     try {
         const response = await apiClient.post(url, values);
         if (response.status === 200) {
-            console.log(response.data)
+            setData?.(response.data)
         } else {
             toast.error('Failed')
         }
@@ -94,12 +120,12 @@ export const postData = async (url: string, values: any) => {
     }
 }
 
-export const deleteData = async (url: string, values: any) => {
+export const deleteData = async (url: string, values?: any) => {
     try {
         const response = await apiClient.delete(url, {data: values});
         if (response.status !== 200) {
             console.error(response.data.message)
-        }
+        } else toast.success('Xóa thành công')
     } catch (e) {
         console.error(e)
         toast.error('Failed')

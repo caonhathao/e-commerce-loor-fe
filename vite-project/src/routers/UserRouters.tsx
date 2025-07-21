@@ -18,7 +18,8 @@ const UserRouters = () => {
                 </UserProvider>}>
                     <Route index element={<UserProfile/>}/>
                     <Route path={'show-cart'} element={<UserCart/>}/>
-                    <Route path={'show-receipts'} element={<UserOrders/>}/>
+                    <Route path={'show-orders'} element={<UserOrders/>}/>
+                    <Route path={'show-orders/:order_id'} element={<UserOrders/>}/>
                     <Route path={'show-notifications'} element={<UserNotify/>}/>
                 </Route>
             </Route>

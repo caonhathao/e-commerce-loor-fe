@@ -1,11 +1,11 @@
 import React, {SetStateAction, useEffect, useState} from "react";
-import {fetchData, formatedDate, formatedNumber} from "../../../utils/functions.utils.tsx";
-import endpoints from "../../../services/endpoints.tsx";
-import {orderDetailType, receiptData} from "../../../utils/data-types.tsx";
-import Loading from "../../../components/loading/Loading.tsx";
+import {fetchData, formatedDate, formatedNumber} from "../../utils/functions.utils.tsx";
+import endpoints from "../../services/endpoints.tsx";
+import {orderDetailType, receiptData} from "../../utils/data-types.tsx";
+import Loading from "../loading/Loading.tsx";
 import {BsExclamationTriangleFill, BsXLg, BsXSquareFill} from "react-icons/bs";
 import {toast} from "react-toastify";
-import apiClient from "../../../services/apiClient.tsx";
+import apiClient from "../../services/apiClient.tsx";
 
 interface Props {
     order_id: string,

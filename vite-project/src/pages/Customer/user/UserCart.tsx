@@ -316,7 +316,7 @@ const UserCart = () => {
         <>
             <div className={'w-full h-full flex flex-col justify-center items-start flex-col'}>
                 <div className={'min-h-[300px] max-h-[300px]'}></div>
-                <div className={'w-full h-full flex flex-col justify-start items-center p-2 my-2'}>
+                <div className={'w-full h-full flex flex-col justify-start items-center p-2 mt-2 pb-20'}>
                     {data.length > 0 ? (
                         data.map(brand => <div key={brand.brand_id}
                                                className={'w-full h-fit flex flex-col justify-between items-center'}>
@@ -338,8 +338,8 @@ const UserCart = () => {
                                 </button>
                             </div>
                             <div className={'w-full flex flex-col justify-start items-center gap-2 my-3'}>
-                                {brand.items && brand.items.map(item => <div key={item.id}
-                                                                             className={'w-full flex flex-row justify-center items-center gap-4 border-b-[1px] border-(rgb(var(--border-color))) p-2'}>
+                                {brand.items && brand.items.map(item =>
+                                    <div key={item.id} className={'w-full h-[200px] flex flex-row justify-center items-center gap-4 border-b-[1px] border-(rgb(var(--border-color))) p-2'}>
                                     <div>
                                         <div className={'w-full flex flex-row justify-start items-center gap-2 p-2'}>
                                             <div className={'w-[30%] flex flex-col justify-center items-center'}>

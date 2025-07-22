@@ -10,7 +10,7 @@ import {BsEye, BsEyeSlash, BsPerson} from "react-icons/bs";
 import apiClient from "../../../services/apiClient.tsx";
 import endpoints from "../../../services/endpoints.tsx";
 
-function SignUp() {
+function UserSignUp() {
     const navigate = useNavigate();
     const [greeting, setGreeting] = useState('');
     const [currDate] = useState(new Date());
@@ -218,4 +218,4 @@ function SignUp() {
     )
 }
 
-export default SignUp
+export default UserSignUp

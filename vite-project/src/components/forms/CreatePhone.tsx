@@ -4,7 +4,7 @@ import apiClient from "../../services/apiClient.tsx";
 import {toast} from "react-toastify";
 import {Formik, Form, Field} from "formik";
 import * as Yup from "yup";
-import {userType} from "../../utils/data-types.tsx";
+import {userType} from "../../utils/user.data-types.tsx";
 import {useUser} from "../../context/UserContext.tsx";
 
 interface CreateAddressProps {

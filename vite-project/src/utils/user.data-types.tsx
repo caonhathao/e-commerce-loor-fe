@@ -1,3 +1,40 @@
+export interface Product {
+    id: string;
+    name: string;
+    average_price: number;
+    category_id: string;
+    subcategory_id: string;
+    origin: string,
+    status: string,
+    createdAt: string,
+    updatedAt: string,
+    other_variant: string;
+    stock: string;
+}
+
+export interface productType {
+    id: string,
+    brand_id: string,
+    category_id: string,
+    subcategory_id: string,
+    name: string,
+    image_products: {
+        image_link: string,
+    }[],
+    average_price: string,
+    status: string,
+    origin: string,
+    stock: number,
+}
+
+export interface productDataType {
+    current_page: number,
+    total_pages: number,
+    current_items: number,
+    total_items: number,
+    data: productType[]
+}
+
 export interface cartType {
     brand_id: string;
     brand_image: string;
@@ -16,6 +53,16 @@ export interface cartType {
             }
         }
     }[]
+}
+
+export interface variantType{
+    id: string,
+    name: string,
+    price: number,
+    sku:string,
+    status:string,
+    stock:number,
+    has_attribute: boolean;
 }
 
 export interface listVariantsType {

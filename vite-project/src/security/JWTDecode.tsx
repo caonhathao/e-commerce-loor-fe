@@ -1,5 +1,5 @@
 import {jwtDecode} from "jwt-decode";
-import {jwtPayloadData} from "../utils/data-types.tsx";
+import {jwtPayloadData} from "../utils/user.data-types.tsx";
 
 
 const JWTDecode = (token: string | null): jwtPayloadData | null => {

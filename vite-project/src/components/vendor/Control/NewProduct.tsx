@@ -106,7 +106,7 @@ const NewProduct = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await apiClient.get(endpoints.public.getCategory);
+                const response = await apiClient.get(endpoints.public.getAllCategories);
                 if (response) setCategory(response.data);
                 else toast.error('Failed to get categories!');
             } catch (err) {

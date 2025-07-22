@@ -2,7 +2,7 @@ import {deleteData, fetchData, fetchDataWithQuery, formatedDate, postData} from 
 import endpoints from "../../../services/endpoints.tsx";
 import React, {useEffect, useState} from "react";
 import {Pagination, Stack} from "@mui/material";
-import {notificationType} from "../../../utils/data-types.tsx";
+import {notificationType} from "../../../utils/user.data-types.tsx";
 import {BsAppIndicator, BsBan, BsBell, BsCheckCircle, BsExclamationCircleFill, BsSlash} from "react-icons/bs";
 import Loading from "../../../components/loading/Loading.tsx";
 import UserNotifyDetail from "../../../components/user/UserNotifyDetail.tsx";

@@ -11,7 +11,7 @@ export const buildPathUrl = (urlTemplate: string, pathParams: { [key: string]: s
 
 export const buildUrlWithParams = (
     urlTemplate: string,
-    pathParams: { [key: string]: string | number },
+    pathParams: { [key: string]: string | number | undefined },
     queryParams?: { [key: string]: string | number }) => {
 
     let url = buildPathUrl(urlTemplate, pathParams);

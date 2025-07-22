@@ -15,7 +15,7 @@ const ProtectedRouter = ({requiredRoles}: ProtectedRouterProps) => {
         return <Navigate to="/account" replace/>
     }
     if (requiredRoles && !requiredRoles.some((role) => hasRole(role))) {
-        alert('ok')
+        alert(requiredRoles)
         return <Navigate to="/account" replace/>;
     }
 

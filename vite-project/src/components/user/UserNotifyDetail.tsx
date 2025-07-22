@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {notificationDetailData} from "../../utils/data-types.tsx";
+import {notificationDetailData} from "../../utils/user.data-types.tsx";
 import Loading from "../loading/Loading.tsx";
 import {fetchDataWithPayload, formatedDate} from "../../utils/functions.utils.tsx";
 import endpoints from "../../services/endpoints.tsx";

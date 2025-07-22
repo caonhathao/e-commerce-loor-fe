@@ -5,7 +5,7 @@ import {fetchData, formatedNumber} from "../../../utils/functions.utils.tsx";
 import {animate, press} from "motion"
 import errImg from '../../../assets/img/404.png'
 import UserCreateOrder from "./UserCreateOrder.tsx";
-import {cartType, listVariantsType} from "../../../utils/data-types.tsx";
+import {cartType, listVariantsType} from "../../../utils/user.data-types.tsx";
 import apiClient from "../../../services/apiClient.tsx";
 import {useUser} from "../../../context/UserContext.tsx";
 import Loading from "../../../components/loading/Loading.tsx";

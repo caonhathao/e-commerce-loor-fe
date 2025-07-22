@@ -1,4 +1,4 @@
-import {userType} from "../utils/data-types.tsx";
+import {userType} from "../utils/user.data-types.tsx";
 import {createContext, ReactNode, useContext, useState} from "react";
 
 interface UserContextType {

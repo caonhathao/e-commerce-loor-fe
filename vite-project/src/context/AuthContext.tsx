@@ -98,6 +98,7 @@ export const AuthProvider = ({children}: { children: ReactNode }) => {
                 await postData(endpoints.user.logout); // chỉ gọi nếu có token
             } catch (e) {
                 console.warn('Logout API failed, but proceeding to clear local data anyway');
+                console.error(e);
             }
         }
 

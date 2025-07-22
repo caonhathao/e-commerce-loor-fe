@@ -2,7 +2,7 @@ import {fetchData, fetchDataWithQuery, formatedDate} from "../../../utils/functi
 import endpoints from "../../../services/endpoints.tsx";
 import {useEffect, useState} from "react";
 import {Pagination, Stack} from "@mui/material";
-import {orderDataType, orderStatus, orderType} from "../../../utils/data-types.tsx";
+import {orderDataType, orderStatus, orderType} from "../../../utils/user.data-types.tsx";
 import UserOrderDetail from "../../../components/user/UserOrderDetail.tsx";
 import {useParams} from "react-router-dom";
 

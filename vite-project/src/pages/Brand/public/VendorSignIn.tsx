@@ -1,16 +1,13 @@
 import {useEffect, useState} from "react";
 import {useFormik} from "formik";
 import * as Yup from "yup";
-import {Tooltip} from "@mui/material";
 import Typewriter from "typewriter-effect";
 import {Link, useNavigate} from "react-router-dom";
 import '../../../assets/css/pages/customer/SignUp.css'
 import {ToastContainer, toast} from "react-toastify";
 import {
-    BsArrowThroughHeartFill,
     BsEyeFill,
     BsEyeSlash,
-    BsInfoCircle
 } from "react-icons/bs";
 import apiClient from "../../../services/apiClient.tsx";
 import endpoints from "../../../services/endpoints.tsx";
@@ -73,32 +70,24 @@ const VendorSignIn = () => {
     }, []);
 
     return (
-        <div className="w-screen min-h-screen bg-white flex jus-center items-center flex-col relative">
+        <div className="w-screen min-h-screen bg-white flex flex-col justify-between items-center relative">
             <div
-                className={'bg-[var(--secondary-background)] w-full max-w-[calc(100vw-40px)] text-white font-bold p-2 flex justify-between items-center flex-row rounded-b-lg'}>
-                <div className={'text-2xl w-[80%]'}>
-                    <Link to={'/'} className={'text-[var(--text-color)]'}>
-                        Chào mừng bạn đến với
-                        <div
-                            className={'text-[var(--accent-color)] w-fit flex flex-row gap-2 justify-center items-center'}>
-                            LOLITA SHOPPING
-                            <BsArrowThroughHeartFill size={20} color={'var(--accent-color)'}/>
-                        </div>
-                    </Link>
-                </div>
-                <div className={'flex flex-row flex-wrap justify-center items-center w-fit gap-2'}>
-                    <Tooltip title={'Điều khoản'}>
-                        <div
-                            className={'text-[var(--text-color)] p-3 border-2 border-[var(--accent-color)] rounded-lg'}>
-                            <BsInfoCircle size={20}/>
-                        </div>
-                    </Tooltip>
+                className={'bg-[var(--secondary-background)] w-full max-w-[calc(100vw-40px)] text-white font- flex flex-row justify-center'}>
+                {/*this is for header and navigate buttons*/}
+                <div id={'header'}
+                     className={'bg-[rbg(var(--main-color))] w-full h-1/4 shadow-sm shadow-[rgb(var(--secondary-color))] z-20 rounded-b-xl'}>
+                    <div
+                        className={'bg-[rgb(var(--main-color))] w-full h-fit text-center text-2xl p-3 rounded-b-xl'}>
+                        <Link to={'/'} className={'text-white font-bold'}>
+                            Chào mừng bạn đến với <br/>Loli shopping
+                        </Link>
+                    </div>
                 </div>
             </div>
             <div
-                className={'w-[80%] rounded-lg shadow-lg shadow-gray-600 p-2 flex justify-center items-center flex-col my-5'}>
+                className={'w-[80%] rounded-lg shadow-lg shadow-gray-600 flex flex-col justify-center items-center my-5 border-2 border-[rgb(var(--main-color))]'}>
                 <div
-                    className={'text-[var(--text-color)] bg-[var(--main-color)] p-4 rounded-lg min-w-full max-w-full min-h-[200px] flex items-center justify-center text-center text-lg'}>
+                    className={'text-white bg-[rgb(var(--main-color))] p-4 rounded-t-lg min-w-full max-w-full min-h-[200px] flex items-center justify-center text-center text-lg'}>
                     <h3>
                         <Typewriter
                             options={{
@@ -111,12 +100,12 @@ const VendorSignIn = () => {
                         />
                     </h3>
                 </div>
-                <div className={'flex justify-center items-center'}>
+                <div className={'flex justify-center items-center p-2'}>
                     <form className={'bg-[var(--primary-background)]'} onSubmit={formData.handleSubmit}>
-                        <h3 style={{color: 'var(--text-color)'}}>Nhà bán hàng ơi, hãy đăng nhập và kiểm tra <strong>hộp
-                            thư</strong> của bạn đi nào:)</h3>
+                        <p className={'text-amber-600 italic'}>Nhà bán hàng ơi, hãy đăng nhập và kiểm tra <strong
+                            className={'underline'}>hộp thư</strong> của bạn đi nào:)</p>
 
-                        <fieldset className={'mt-2.5 rounded-lg border-1 border-[var(--border-color)]'}>
+                        <fieldset className={'mt-2.5 rounded-lg border-1 border-[var(--border-color)] p-1'}>
                             <input className={'p-2 outline-0 w-full'} type='text' name={'email'}
                                    placeholder={'Email'}
                                    onChange={formData.handleChange}
@@ -132,15 +121,15 @@ const VendorSignIn = () => {
                             </p>)}
 
                         <fieldset
-                            className={'mt-2.5 rounded-lg border-1  border-[var(--border-color)] flex flex-row gap-2 justify-center items-center'}>
-                            <input className={'p-2 outline-0 w-full border-r-2 border-[var(--border-color)]'}
+                            className={'mt-2.5 rounded-lg border-1  border-[var(--border-color)] flex flex-row gap-2 justify-center items-center p-1'}>
+                            <input className={'p-2 outline-0 w-full border-r-2 border-[rgb(var(--border-color))]'}
                                    type={showPass ? 'test' : 'password'} name={'password'}
                                    placeholder={'Mật khẩu'}
                                    onChange={formData.handleChange}
                                    onBlur={formData.handleBlur}
                             />
                             <button type={'button'}
-                                    className={'p-1 m-1 border-2 border-[var(--accent-color)] rounded-full'}
+                                    className={'p-1 m-1 border-[1px] border-[rgb([var(--border-color))] rounded-full text-gray-600'}
                                     onClick={() => handleShowPassword()}>
                                 {showPass ? <BsEyeSlash/> : <BsEyeFill/>
                                 }</button>
@@ -157,22 +146,52 @@ const VendorSignIn = () => {
                         <div className={'flex flex-col justify-center items-center'}>
                             <div className={'grid grid-cols-2 grid-rows-1 gap-2'}>
                                 <button
-                                    className={'bg-[var(--btn-primary-bg)] rounded-full border-2 border-[var(--bg-color-btn-2)] px-2 py-3 m-2.5 text-[var(--text-color)]'}
-                                    type={'submit'}>Xác nhận
-                                </button>
-                                <button
-                                    className={'rounded-full border-2 border-[var(--btn-secondary-text)] px-2 py-3 m-2.5 text-[var(--text-color)]'}
+                                    className={'rounded-full border-2 border-[rgb(var(--border-color))] px-2 py-3 m-2.5 text-[rgb(var(--text-color))]'}
                                     onClick={() => {
                                         navigate(-1)
                                     }}>Hủy
                                 </button>
+                                <button
+                                    className={'bg-[rgb(var(--main-color))] rounded-full px-3 py-3 m-2.5 text-white'}
+                                    type={'submit'}>Xác nhận
+                                </button>
                             </div>
-                            <Link to={'/register-new-vendor'}>Bạn là người mới sao? Đăng kí ở đây nè</Link>
+                            <p>
+                                Bạn là người mới sao? Đăng kí
+                                <Link to={'/register-new-vendor'} className={'underline text-blue-500'}>
+                                    {' '}ở đây nè
+                                </Link>
+                            </p>
                         </div>
                     </form>
                 </div>
             </div>
-            <div className={'footer'}></div>
+            <div className={'w-full flex flex-col justify-center items-center gap-2'}>
+                <div className={'w-full grid grid-cols-3 grid-rows-1 gap-4 px-2'}>
+                    <button
+                        className={'p-2 border-2 border-[rgb(var(--main-color))] rounded-full text-[rgb(var(--main-color))]'}>
+                        Điều khoản
+                    </button>
+                    <button
+                        className={'p-2 border-2 border-[rgb(var(--secondary-color))] rounded-full text-[rgb(var(--secondary-color))]'}>
+                        Hướng dẫn
+                    </button>
+                    <button
+                        className={'p-2 border-2 border-amber-600 rounded-full text-amber-600'}>
+                        Thắc mắc
+                    </button>
+                </div>
+                <div className={'w-full grid grid-cols-2 grid-rows-1 gap-4 px-2'}>
+                    <button
+                        className={'p-2 border-2 border-[rgb(var(--border-color))] rounded-full text-[rgb(var(--border-color))]'}>
+                        Khiếu nại
+                    </button>
+                    <button
+                        className={'p-2 border-2 border-red-400 rounded-full text-red-400'}>Góp
+                        ý
+                    </button>
+                </div>
+            </div>
             <ToastContainer/>
         </div>
     )

@@ -6,7 +6,7 @@ import {getAccessToken} from "../../../services/tokenStore.tsx";
 import {io} from "socket.io-client";
 import Loading from "../../../components/loading/Loading.tsx";
 import {toast, ToastContainer} from "react-toastify";
-import {addressType, listVariantsType} from "../../../utils/data-types.tsx";
+import {addressType, listVariantsType} from "../../../utils/user.data-types.tsx";
 import {BsCaretRightFill, BsHouse, BsX} from "react-icons/bs";
 import {fetchData, formatedNumber} from "../../../utils/functions.utils.tsx";
 import {useUser} from "../../../context/UserContext.tsx";

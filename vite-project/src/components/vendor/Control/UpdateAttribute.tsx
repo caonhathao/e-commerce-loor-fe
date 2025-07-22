@@ -73,7 +73,7 @@ const UpdateAttribute = ({setOpen}: Props) => {
 
     const handleSubmit = async (values: object) => {
         try {
-            if(params.id){
+            if (params.id) {
                 const response = await apiClient.post(endpoints.brand.updateAttribute(params.id), values);
                 if (response.status === 200 || response.status === 201) {
                     toast.success('Cập nhật thuộc tính thành công', {autoClose: 1500})
@@ -100,9 +100,9 @@ const UpdateAttribute = ({setOpen}: Props) => {
     }, [attributes]);
 
     return (
-        <div className={'w-full h-fit absolute top-0 left-0 z-20 flex flex-col justify-center items-center'}>
+        <div className={'w-screen h-full absolute z-20 flex flex-col justify-center items-center'}>
             <div
-                className={'w-full h-full bg-white shadow-lg shadow-amber-400 rounded-lg p-2 border-[1px] border-[var(--text-color)]'}>
+                className={'w-[80%] h-fit bg-white shadow-lg shadow-amber-400 rounded-lg p-2 border-[1px] border-[var(--text-color)] relative'}>
                 <div
                     className={'absolute -top-1 -right-1 bg-gradient-to-b from-indigo-500 from-20% via-purple-500 to-pink-500 p-1 rounded-lg cursor-pointer'}>
                     <BsXCircle size={30} color={'white'} onClick={() => handleClose()}/>
@@ -110,13 +110,14 @@ const UpdateAttribute = ({setOpen}: Props) => {
                 <div className={'w-full h-full flex flex-col justify-between items-center'}>
                     <div>
                         <div className={'w-full flex flex-col justify-center items-center '}>
-                            <p className={'text-center font-bold text-[var(--text-color)] p-2 m-2 border-b-2 border-[var(--text-color)]'}>BẢNG
-                                THUỘC TÍNH</p>
+                            <p className={'text-center font-bold text-[rgb(var(--main-color))] p-2 m-2 border-b-2 border-[rgb(var(--border-color))]'}>
+                                BẢNG THUỘC TÍNH
+                            </p>
                         </div>
                         <div className={'w-full h-full '}>
                             <div
-                                className={'w-full border-2 border-[var(--text-color)] rounded-2xl p-2 flex flex-row justify-around items-center gap-2'}>
-                                <p className={'w-[30%] font-bold'}>Danh mục</p>
+                                className={'w-full border-2 border-[rgb(var(--border-color))] rounded-2xl p-2 flex flex-row justify-around items-center gap-2'}>
+                                <p className={'w-[30%] font-bold text-[rgb(var(--main-color))]'}>Danh mục</p>
                                 <select
                                     className={'w-[60%] h-full flex flex-col justify-start items-center border-2 border-gray-500 rounded-lg p-1'}
                                     onChange={(e) => handleSelectCategory(e)}>
@@ -129,13 +130,13 @@ const UpdateAttribute = ({setOpen}: Props) => {
                                 </select>
                             </div>
                             <div className={'w-full p-2 flex justify-center items-center font-bold'}>
-                                <p className={' border-b-2 border-[var(--text-color)] w-fit'}>
+                                <p className={' border-b-2 border-[rgb(var(--border-color))] w-fit text-[rgb(var(--main-color))]'}>
                                     Thuộc tính
                                 </p>
                             </div>
                             {attributes && Object.entries(attributes).map(([key, value]) => (
                                 <div
-                                    className={'my-1 border-2 border-[var(--text-color)] rounded-2xl p-2 flex flex-row justify-around items-center gap-2'}>
+                                    className={'my-1 border-2 border-[rgb(var(--main-color))] rounded-2xl p-2 flex flex-row justify-around items-center gap-2'}>
                                     <input
                                         className={'w-[60%] h-full flex flex-col justify-start items-center border-2 border-gray-500 rounded-lg p-1'}
                                         value={key}
@@ -145,13 +146,13 @@ const UpdateAttribute = ({setOpen}: Props) => {
                                            value={value}
                                            disabled={true}/>
                                     <button type={'button'}
-                                            className={'border-2 border-[var(--bg-color-btn-1)] rounded-lg p-1.5 font-bold'}
+                                            className={'border-2 border-[rgb(var(--border-color))] rounded-lg p-1.5 font-bold'}
                                             onClick={() => handleRemoveAttributesByValue(value)}><BsEraserFill
                                         size={20}/>
                                     </button>
                                 </div>
                             ))}
-                            <p className={'w-full border-2 border-[var(--text-color)] rounded-full my-2'}></p>
+                            <p className={'w-full border-2 border-[rgb(var(--border-color))] rounded-full my-2'}></p>
                             {category && category ? (
                                 <div
                                     className={'my-1 border-2 border-[var(--text-color)] rounded-2xl p-2 flex flex-row justify-around items-center gap-2'}>
@@ -188,7 +189,7 @@ const UpdateAttribute = ({setOpen}: Props) => {
                     </div>
                     <div className={'w-full flex flex-row justify-center items-center'}>
                         <button type={'submit'}
-                                className={'border-2 border-[var(--border-color)] rounded-full p-2 bg-[var(--btn-primary-bg)] font-bold'}
+                                className={'text-white border-2 border-[rgb(var(--main-color))] rounded-full p-2 bg-[rgb(var(--main-color))] font-bold'}
                                 onClick={() => handleSubmit(attributes)}>Xác nhận
                         </button>
                     </div>

@@ -85,11 +85,14 @@ export const fetchDataWithPayload = async (
 export const fetchDataWithQuery = async (
     url: string,
     setData: React.Dispatch<SetStateAction<any>>,
-    page: number,
-    limit: number | 10) => {
+    page?: number,
+    limit?: number | 10,
+    values?: Record<string, string>,
+) => {
     try {
         const response = await apiClient.get(url, {
             params: {
+                ...values,
                 page: page,
                 limit: limit
             }
@@ -106,7 +109,7 @@ export const fetchDataWithQuery = async (
     }
 }
 
-export const postData = async (url: string, values: any, setData?: React.Dispatch<SetStateAction<any>>) => {
+export const postData = async (url: string, values?: any, setData?: React.Dispatch<SetStateAction<any>>) => {
     try {
         const response = await apiClient.post(url, values);
         if (response.status === 200) {

@@ -1,4 +1,4 @@
-import {BsBoxArrowInLeft} from "react-icons/bs";
+import {BsBoxArrowInLeft, BsChatDotsFill, BsQuestionCircleFill} from "react-icons/bs";
 import React, {useEffect, useState} from "react";
 import {useNavigate, useParams} from "react-router-dom";
 import {toast} from "react-toastify";
@@ -6,32 +6,10 @@ import apiClient from "../../../services/apiClient.tsx";
 import endpoints from "../../../services/endpoints.tsx";
 import {formatedNumber} from "../../../utils/functions.utils.tsx";
 import {orderStatusOptions} from "../../../utils/attributes.tsx";
-
-interface dataDetailType {
-    amount: number;
-    cost: number;
-    createdAt: string;
-    variant_id: string;
-    product_variants: {
-        name: string,
-        sku: string,
-        price: number,
-    }
-}
-
-interface dataType {
-    cost: number;
-    fee: number;
-    user_id: string;
-    createdAt: string;
-    status: string;
-    OrderDetail: dataDetailType[]
-}
-
-
+import {orderDetailType} from "../../../utils/user.data-types.tsx";
 
 const VendorOrderDetail = () => {
-    const [data, setData] = useState<dataType>();
+    const [data, setData] = useState<orderDetailType>();
     const [status, setStatus] = useState<string>('');
     const navigate = useNavigate();
     const param = useParams();
@@ -71,7 +49,7 @@ const VendorOrderDetail = () => {
         e.preventDefault();
         try {
             if (data !== null || data !== undefined) {
-                const payload = { id: param.id, status };
+                const payload = {id: param.id, status};
                 console.log(payload)
                 const response = await apiClient.put(endpoints.brand.updateOrder, payload);
                 if (response.status === 200) toast.success('Cập nhật trạng thái thành công')
@@ -102,76 +80,91 @@ const VendorOrderDetail = () => {
     }, [])
 
     return (
-        <div className={'w-full h-full flex flex-col justify-center items-center'}>'
+        <div className={'w-full h-full flex flex-col justify-between items-center'}>
             <div
                 className={'absolute top-5 left-5 bg-gradient-to-b from-indigo-500 from-20% via-purple-500 to-pink-500 p-2.5 rounded-lg shadow-lg shadow-gray-500'}
                 onClick={() => navigate(-1)}><BsBoxArrowInLeft size={20} color={'white'}/>
             </div>
-            <p className={'font-bold text-lg border-b-2 border-[var(--border-color)] mb-3'}>Thông tin đơn hàng</p>
-            <p className={'text-sm mb-3'}><strong>Mã đơn hàng:</strong> {param.id}</p>
-            <div className={'w-[95%] h-full border-l-2 border-t-2 border-[var(--border-color)] rounded-lg'}>
-                <table>
-                    <thead>
-                    <tr>
-                        <th className={'border-r-2 border-b-2 border-[var(--border-color)] rounded-lg'}>SKU</th>
-                        <th className={'border-r-2 border-b-2 border-[var(--border-color)] rounded-lg'}>Tên</th>
-                        <th className={'border-r-2 border-b-2 border-[var(--border-color)] rounded-lg'}>SL</th>
-                        <th className={'border-r-2 border-b-2 border-[var(--border-color)] rounded-lg'}>Đơn giá</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {
-                        data && Object.entries(data?.OrderDetail).map(([key, value]) => (
-                            <tr key={key}>
-                                <td className={'text-center w-3/10 h-30 p-1 border-r-2 border-b-2 border-[var(--border-color)] rounded-lg'}>{value.product_variants["sku"]}</td>
-                                <td className={'text-center w-2/5 h-30 p-1 border-r-2 border-b-2 border-[var(--border-color)] rounded-lg'}>{value.product_variants["name"]}</td>
-                                <td className={'text-center w-2/5 h-30 p-1 border-r-2 border-b-2 border-[var(--border-color)] rounded-lg'}></td>
-                                <td className={'text-center w-1/5 h-30 p-1 border-r-2 border-b-2 border-[var(--border-color)] rounded-lg'}>{formatedNumber(value.product_variants["price"])}đ</td>
-                            </tr>
-                        ))
-                    }
-                    </tbody>
-                </table>
+            <div className={'w-full h-fit flex flex-col justify-start items-center gap-4'}>
+                <p className={'font-bold text-xl text-[rgb(var(--main-color))] border-b-2 border-[rgb(var(--border-color))] mb-3'}>Thông
+                    tin đơn hàng</p>
+                <p className={'text-sm mb-3'}><strong>Mã đơn hàng:</strong> {param.id}</p>
+                <div className={'w-[95%] h-full border-l-2 border-t-2 border-[var(--border-color)] rounded-lg'}>
+                    <table>
+                        <thead>
+                        <tr>
+                            <th className={'border-r-2 border-b-2 border-[var(--border-color)] rounded-lg'}>SKU</th>
+                            <th className={'border-r-2 border-b-2 border-[var(--border-color)] rounded-lg'}>Tên</th>
+                            <th className={'border-r-2 border-b-2 border-[var(--border-color)] rounded-lg'}>SL</th>
+                            <th className={'border-r-2 border-b-2 border-[var(--border-color)] rounded-lg'}>Đơn giá</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {
+                            data && Object.entries(data?.OrderDetail).map(([key, value]) => (
+                                <tr key={key}>
+                                    <td className={'text-center w-3/10 h-30 p-1 border-r-2 border-b-2 border-[var(--border-color)] rounded-lg'}>{value.product_variants["sku"]}</td>
+                                    <td className={'text-center w-2/5 h-30 p-1 border-r-2 border-b-2 border-[var(--border-color)] rounded-lg'}>{value.product_variants["name"]}</td>
+                                    <td className={'text-center w-2/5 h-30 p-1 border-r-2 border-b-2 border-[var(--border-color)] rounded-lg'}></td>
+                                    <td className={'text-center w-1/5 h-30 p-1 border-r-2 border-b-2 border-[var(--border-color)] rounded-lg'}>{formatedNumber(value.product_variants["price"])}đ</td>
+                                </tr>
+                            ))
+                        }
+                        </tbody>
+                    </table>
+                </div>
+                <p className={'font-bold text-xl text-[rgb(var(--main-color))] border-b-2 border-[rgb(var(--border-color))] mt-5 mb-3'}>Tổng
+                    giá trị đơn hàng</p>
+                <div className={'w-[95%] h-full border-l-2 border-t-2 rounded-lg'}>
+                    <table>
+                        <thead>
+                        <tr>
+                            <th className={'border-r-2 border-b-2 border-[var(--border-color)] rounded-lg'}>Tên</th>
+                            <th className={'border-r-2 border-b-2 border-[var(--border-color)] rounded-lg'}>SL</th>
+                            <th className={'border-r-2 border-b-2 border-[var(--border-color)] rounded-lg'}>Tổng</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {
+                            data && Object.entries(data?.OrderDetail).map(([key, value]) => (
+                                <tr key={key}>
+                                    <td className={'text-center w-3/5 h-30 p-1 border-b-2 border-[var(--border-color)] rounded-lg'}>{value.product_variants["name"]}</td>
+                                    <td className={'text-center w-1/5 h-30 p-1 border-b-2 border-[var(--border-color)] rounded-lg'}>{value.amount}</td>
+                                    <td className={'text-center w-1/5 h-30 p-1 border-r-2  border-b-2 border-[var(--border-color)] rounded-lg'}>{formatedNumber(value.amount * value.product_variants["price"])}đ</td>
+                                </tr>
+                            ))
+                        }
+                        <tr>
+                            <td colSpan={2}
+                                className={'font-bold text-center w-3/5 p-1 border-b-2 border-[var(--border-color)] rounded-lg'}>
+                                Tổng giá trị
+                            </td>
+                            <td className={'text-center w-1/5 p-1 border-r-2  border-b-2 border-[var(--border-color)] rounded-lg'}>{formatedNumber(data?.cost)}đ</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p className={'font-bold text-xl text-[rgb(var(--main-color))] border-b-2 border-[rgb(var(--border-color))] mt-5 mb-3'}>
+                    Trạng thái hiện tại của đơn hàng
+                </p>
+                <div
+                    className={'border-2 border-[var(--border-color)] p-1 rounded-lg flex justify-center items-center gap-2'}>
+                    {handleRenderSelect(data?.status)}
+                    <button type={"button"} className={'bg-[var(--btn-primary-bg)] py-1 px-2 rounded-full'}
+                            onClick={(e) => handleSubmit(e)}>
+                        Xác nhận
+                    </button>
+                </div>
             </div>
-            <p className={'font-bold text-lg border-b-2 border-[var(--border-color)] my-3'}>Tổng giá trị đơn hàng</p>
-            <div className={'w-[95%] h-full border-l-2 border-t-2 border-[var(--border-color)] rounded-lg'}>
-                <table>
-                    <thead>
-                    <tr>
-                        <th className={'border-r-2 border-b-2 border-[var(--border-color)] rounded-lg'}>Tên</th>
-                        <th className={'border-r-2 border-b-2 border-[var(--border-color)] rounded-lg'}>SL</th>
-                        <th className={'border-r-2 border-b-2 border-[var(--border-color)] rounded-lg'}>Tổng</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {
-                        data && Object.entries(data?.OrderDetail).map(([key, value]) => (
-                            <tr key={key}>
-                                <td className={'text-center w-3/5 h-30 p-1 border-b-2 border-[var(--border-color)] rounded-lg'}>{value.product_variants["name"]}</td>
-                                <td className={'text-center w-1/5 h-30 p-1 border-b-2 border-[var(--border-color)] rounded-lg'}>{value.amount}</td>
-                                <td className={'text-center w-1/5 h-30 p-1 border-r-2  border-b-2 border-[var(--border-color)] rounded-lg'}>{formatedNumber(value.amount * value.product_variants["price"])}đ</td>
-                            </tr>
-                        ))
-                    }
-                    <tr>
-                        <td colSpan={2}
-                            className={'font-bold text-center w-3/5 p-1 border-b-2 border-[var(--border-color)] rounded-lg'}>
-                            Tổng giá trị
-                        </td>
-                        <td className={'text-center w-1/5 p-1 border-r-2  border-b-2 border-[var(--border-color)] rounded-lg'}>{formatedNumber(data?.cost)}đ</td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-            <p className={'font-bold text-lg border-b-2 border-[var(--border-color)] my-3'}>
-                Trạng thái hiện tại của đơn hàng
-            </p>
-            <div
-                className={'border-2 border-[var(--border-color)] p-1 rounded-lg flex justify-center items-center gap-2'}>
-                {handleRenderSelect(data?.status)}
-                <button type={"button"} className={'bg-[var(--btn-primary-bg)] py-1 px-2 rounded-full'}
-                        onClick={(e) => handleSubmit(e)}>
-                    Xác nhận
+            <div className={'w-fit h-fit grid grid-cols-2 grid-rows-1 mt-15 gap-4'}>
+                <button
+                    className={'p-2 rounded-lg border-2 border-[rgb(var(--main-color))] flex justify-center items-center gap-2'}>
+                    <BsChatDotsFill size={20} color={"rgb(var(--main-color))"}/>Chat với người mua
+                </button>
+
+                <button
+                    className={'p-2 rounded-lg border-2 border-[rgb(var(--main-color))] flex justify-center items-center gap-2'}>
+                    <BsQuestionCircleFill size={20} color={"rgb(var(--main-color))"}/>Hỗ trợ đơn hàng
                 </button>
             </div>
         </div>

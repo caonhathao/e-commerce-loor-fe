@@ -5,8 +5,8 @@ import {useEffect, useState} from "react";
 import endpoints from "../../../services/endpoints.tsx";
 import UpdateAddress from "../../../components/forms/Address/UpdateAddress.tsx";
 import Loading from "../../../components/loading/Loading.tsx";
-import UpdateProfile from "../../../components/forms/UpdateProfile.tsx";
-import UpdateImage from "../../../components/forms/UpdateImage.tsx";
+import UpdateProfile from "../../../components/forms/user/UpdateProfile.tsx";
+import UpdateImage from "../../../components/forms/user/UpdateImage.tsx";
 
 const UserProfile = () => {
     const {user, setUser} = useUser()
@@ -24,7 +24,7 @@ const UserProfile = () => {
 
     useEffect(() => {
         if (success) {
-            fetchData(endpoints.user.getUserInfo, true, setUser);
+            fetchData(endpoints.user.getUserInfo, false, setUser);
             setSuccess(false)
         }
     }, [success]);

@@ -13,6 +13,7 @@ import {ProductProvider} from "../context/ProductContext.tsx";
 import VendorLayout from "../layout/VendorLayout.tsx";
 import VendorOrderDetail from "../pages/Brand/Vendor/VendorOrderDetail.tsx";
 import NotFound from "../pages/Global/NotFound.tsx";
+import {VendorProvider} from "../context/VendorContext.tsx";
 
 const VendorRouters = () => {
     return (
@@ -24,9 +25,12 @@ const VendorRouters = () => {
                        />
                    }
             >
-                <Route element={<ProductProvider>
-                    <VendorLayout/>
-                </ProductProvider>}>
+                <Route element={
+                    <VendorProvider>
+                        <ProductProvider>
+                            <VendorLayout/>
+                        </ProductProvider>
+                    </VendorProvider>}>
 
                     <Route index element={<VendorHome/>}/>
                     <Route path="manage" element={<VendorManage/>}/>

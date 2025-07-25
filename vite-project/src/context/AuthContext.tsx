@@ -41,7 +41,6 @@ export const AuthProvider = ({children}: { children: ReactNode }) => {
     const navigate = useNavigate();
 
     useEffect(() => {
-
         const refreshToken = async () => {
             try {
                 const response = await apiClient.get(endpoints.auth.refresh);

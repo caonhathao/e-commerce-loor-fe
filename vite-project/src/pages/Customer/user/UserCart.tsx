@@ -119,7 +119,7 @@ const UserCart = () => {
         try {
             const response = await apiClient.delete(endpoints.user.deleteCart, {data: idsToDelete})
             if (response && response.status === 200) {
-                fetchData(endpoints.user.getCart, true, setData, 'Lấy dữ liệu thất bại')
+                fetchData(endpoints.user.getCart, false, setData, 'Lấy dữ liệu thất bại')
                 return;
             } else {
                 toast.error('Thất bại')
@@ -282,7 +282,7 @@ const UserCart = () => {
 
     //get user's cart data
     useEffect(() => {
-        fetchData(endpoints.user.getCart, true, setData, 'Lấy dữ liệu thất bại')
+        fetchData(endpoints.user.getCart, false, setData, 'Lấy dữ liệu thất bại')
     }, [])
 
     //set amount

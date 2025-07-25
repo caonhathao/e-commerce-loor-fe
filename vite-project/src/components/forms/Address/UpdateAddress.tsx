@@ -27,7 +27,7 @@ const UpdateAddress: React.FC<CreateAddressProps> = ({setOpen, setSuccess}) => {
     useEffect(() => {
         if (addressSuccess) {
             try {
-                fetchData(endpoints.user.getUserInfo, true, setUser, 'Lấy địa chỉ thất bại')
+                fetchData(endpoints.user.getUserInfo, false, setUser, 'Lấy địa chỉ thất bại')
 
             } catch (e) {
                 console.error(e)

@@ -41,7 +41,6 @@ const VendorSignIn = () => {
                     toast.success('Sign in successfully.', {autoClose: 2000});
                     setTimeout(() => {
                         navigate('/vendor');
-                        // window.location.reload();
                     }, 2500);
                 } else toast.warning('Sign in failed.');
             } catch (err) {

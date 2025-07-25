@@ -1,10 +1,10 @@
 import {Field, Form, Formik} from "formik";
 import {toast} from "react-toastify";
 import React from "react";
-import endpoints from "../../services/endpoints.tsx";
-import apiClient from "../../services/apiClient.tsx";
-import {useUser} from "../../context/UserContext.tsx";
-import Loading from "../loading/Loading.tsx";
+import endpoints from "../../../services/endpoints.tsx";
+import apiClient from "../../../services/apiClient.tsx";
+import {useUser} from "../../../context/UserContext.tsx";
+import Loading from "../../loading/Loading.tsx";
 import * as Yup from "yup";
 
 interface CreateAddressProps {
@@ -35,7 +35,6 @@ const UpdateProfile: React.FC<CreateAddressProps> = ({setOpen, setSuccess}) => {
                             .required('Không để trống số điện thoại')
                             .matches(/^[0-9]+$/, 'Chỉ được nhập số')
                             .length(10, 'Số điện thoại phải đủ 10 chữ số'),
-
                     })}
                     onSubmit={async (values) => {
                         try {
@@ -53,8 +52,7 @@ const UpdateProfile: React.FC<CreateAddressProps> = ({setOpen, setSuccess}) => {
                             console.error('Failed to create address', e);
                             toast.error('Error!');
                         }
-                    }
-                    }>
+                    }}>
                 {({
                       values,
                       errors,
@@ -74,7 +72,7 @@ const UpdateProfile: React.FC<CreateAddressProps> = ({setOpen, setSuccess}) => {
                                 <legend>Tên tài khoản</legend>
                                 <Field type="text" name="account_name"
                                        value={values.account_name}
-                                       className="w-full h-fit rounded-lg p-2 "
+                                       className="w-full h-fit rounded-lg p-2"
                                        onChange={handleChange}
                                        onBlur={handleBlur}>
                                 </Field>

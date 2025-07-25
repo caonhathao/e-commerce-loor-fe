@@ -22,7 +22,7 @@ const ChangeAddress: React.FC<CreateAddressProps> = ({setOpen, setCurrent}) => {
     useEffect(() => {
         if (addressSuccess) {
             try {
-                fetchData(endpoints.user.getUserInfo, true, setUser, 'Lấy địa chỉ thất bại')
+                fetchData(endpoints.user.getUserInfo, false, setUser, 'Lấy địa chỉ thất bại')
             } catch (e) {
                 console.error(e)
                 toast.error('Có lỗi xảy ra')

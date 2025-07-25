@@ -17,7 +17,7 @@ const CreateAddress: React.FC<CreateAddressProps> = ({setOpen, setSuccess}) => {
     const [listDistrict, setListDistrict] = useState<listDistrictType[]>([]);
 
     useEffect(() => {
-        fetchData(endpoints.public.getAllProvinces, true, setListProvince, 'Có lỗi trong quá trình lấy dữ liệu');
+        fetchData(endpoints.public.getAllProvinces, false, setListProvince, 'Có lỗi trong quá trình lấy dữ liệu');
     }, []);
 
     const handleGetDistricts = async (provinceId: string) => {

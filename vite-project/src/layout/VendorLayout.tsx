@@ -1,4 +1,4 @@
-import avatar from '../assets/img/loli.png'
+import err404 from '../assets/img/404.png'
 import {Outlet, useNavigate} from "react-router-dom";
 import {useEffect, useRef, useState} from "react";
 import * as Bs from 'react-icons/bs'
@@ -7,6 +7,9 @@ import {toast} from "react-toastify";
 import JWTDecode from "../security/JWTDecode.tsx";
 import {getAccessToken} from "../services/tokenStore.tsx";
 import {useAuth} from "../context/AuthContext.tsx";
+import {fetchData} from "../utils/functions.utils.tsx";
+import endpoints from "../services/endpoints.tsx";
+import {useVendor} from "../context/VendorContext.tsx";
 
 const VendorLayout = () => {
     const [activeTab, setActiveTab] = useState([false, false, false, false, false, false]);
@@ -20,6 +23,7 @@ const VendorLayout = () => {
     const constraintsRef = useRef<HTMLDivElement | null>(null)
 
     const {logout} = useAuth();
+    const {vendor, setVendor} = useVendor();
 
     const activeCurrTab = (index: number, url: string) => {
         setActiveTab((prevState) => {
@@ -78,6 +82,11 @@ const VendorLayout = () => {
     };
 
     useEffect(() => {
+        if (!vendor)
+            fetchData(endpoints.brand.getBrandInfo, true).then((data) => setVendor(data))
+    }, [vendor])
+
+    useEffect(() => {
         const anchor = document.querySelector("#anchorPoint");
         if (anchor) {
             const rect = anchor.getBoundingClientRect();
@@ -133,7 +142,7 @@ const VendorLayout = () => {
                     className={'w-screen h-max bg-gradient-to-r from-indigo-500 from-20% via-purple-500 to-pink-500 text-white'}>
                     <div className={'w-screen flex flex-row items-center justify-around'}>
                         <div className={'w-3/12 flex flex-col justify-center items-center p-2'}>
-                            <img className={'w-10 rounded-4xl'} src={avatar} alt={'avatar'}/>
+                            <img className={'w-10 rounded-4xl'} src={vendor?.image_link ?? err404} alt={'avatar'}/>
                             <div className={'text-orange-300 font-bold'}>avatar</div>
                         </div>
                         <div className={'w-9/12 text-center text-lg text-yellow-300 font-bold'}>Xin chào <br/> {

@@ -33,7 +33,7 @@ export const UserLayout = () => {
     }
 
     useEffect(() => {
-        if (!user) fetchData(endpoints.user.getUserInfo, true, setUser, 'Lấy dữ liệu thất bại!')
+        if (!user) fetchData(endpoints.user.getUserInfo, false, setUser, 'Lấy dữ liệu thất bại!')
     }, [user]);
 
     useEffect(() => {
@@ -91,7 +91,7 @@ export const UserLayout = () => {
                 </div>
                 {/*searching bar here*/}
                 <div className={'w-full h-fit flex flex-row justify-center items-center p-2'}>
-                    <SearchingBar placeholderText={"Tìm kiếm đơn hàng,.."}/>
+                    <SearchingBar url={''} minLength={10} placeholderText={"Tìm kiếm đơn hàng,.."}/>
                 </div>
                 {/*Navigate bar here (vertical)*/}
                 <div

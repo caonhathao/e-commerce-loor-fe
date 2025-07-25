@@ -32,6 +32,7 @@ const endpoints = {
         restoreUser: "/api/manager/restore-user-by-id",
     },
     brand: {
+        getBrandInfo: "/api/brand/get-profile",
         updateBrandInfo: "/api/vendor/brand-update",
 
         getProductByIdFromBrand: (id: string | undefined) => buildUrlWithParams("/api/vendor/get-product-by-id/:id", {id}),
@@ -42,7 +43,7 @@ const endpoints = {
         disableProduct: "/api/vendor/disabled-products",
         deleteProduct: "/api/vendor/delete-product",
 
-        getAllVariants:"/api/vendor/get-all-variants",
+        getAllVariants: "/api/vendor/get-all-variants",
         createVariant: (id: string) => buildUrlWithParams("/api/vendor/create-new-variant/:id", {id}),
         updateVariant: (id: string) => buildUrlWithParams("/api/vendor/update-variant-with-id/:id", {id}),
 

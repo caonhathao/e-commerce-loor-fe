@@ -20,7 +20,7 @@ const UserNotify = () => {
     useEffect(() => {
         const fetch = async () => {
             await fetchDataWithQuery(endpoints.user.getAllNotifications, setData, 1, 10,)
-            await fetchData(endpoints.user.getUserInfo, true, setUser)
+            await fetchData(endpoints.user.getUserInfo, false, setUser)
             setReload(false)
         }
         fetch()
@@ -78,10 +78,10 @@ const UserNotify = () => {
         try {
             if (removeList.length === 1) {
                 await deleteData(endpoints.user.deleteNotification, removeList);
-                await fetchData(endpoints.user.getUserInfo, true, setUser)
+                await fetchData(endpoints.user.getUserInfo, false, setUser)
             } else {
                 await deleteData(endpoints.user.deleteNotifications, removeList);
-                await fetchData(endpoints.user.getUserInfo, true, setUser)
+                await fetchData(endpoints.user.getUserInfo, false, setUser)
             }
 
             setReload(true);
@@ -100,7 +100,7 @@ const UserNotify = () => {
             return
         }
         await deleteData(endpoints.user.deleteAllNotifications)
-        await fetchData(endpoints.user.getUserInfo, true, setUser)
+        await fetchData(endpoints.user.getUserInfo, false, setUser)
     }
 
     if (data === null) return (<Loading/>)

@@ -11,7 +11,7 @@ import {BsCaretRightFill, BsHouse, BsX} from "react-icons/bs";
 import {fetchData, formatedNumber} from "../../../utils/functions.utils.tsx";
 import {useUser} from "../../../context/UserContext.tsx";
 import CreateAddress from "../../../components/forms/Address/CreateAddress.tsx";
-import CreatePhone from "../../../components/forms/CreatePhone.tsx";
+import CreatePhone from "../../../components/forms/user/CreatePhone.tsx";
 import ChangeAddress from "../../../components/forms/Address/ChangeAddress.tsx";
 
 const socket = io(endpoints.system.socketConnection, {
@@ -64,7 +64,6 @@ const UserCreateOrder: React.FC<Props> = ({listVariant, setOpenCreate}) => {
                 shipping_type: 'GIAO_HANG_NHANH'
             }
 
-            console.log(payload)
             const fullPayload = {
                 ...payload,
                 list: listVariant.list
@@ -76,7 +75,7 @@ const UserCreateOrder: React.FC<Props> = ({listVariant, setOpenCreate}) => {
                 toast.success(response.data.message, {
                     autoClose: 1000,
                     onClose: () => {
-                        fetchData(endpoints.user.getUserInfo, true, setUser, 'Cập nhật thất bại')
+                        fetchData(endpoints.user.getUserInfo, false, setUser, 'Cập nhật thất bại')
                         setOpenCreate(false)
                     }
                 });
@@ -112,7 +111,7 @@ const UserCreateOrder: React.FC<Props> = ({listVariant, setOpenCreate}) => {
 
     //get address data on first load
     useEffect(() => {
-        fetchData(endpoints.user.getAllAddress, true, setDataAddress, 'Có lỗi xảy ra!');
+        fetchData(endpoints.user.getAllAddress, false, setDataAddress, 'Có lỗi xảy ra!');
     }, []);
 
     useEffect(() => {
@@ -123,7 +122,7 @@ const UserCreateOrder: React.FC<Props> = ({listVariant, setOpenCreate}) => {
     useEffect(() => {
             if (addressSuccess) {
                 try {
-                    fetchData(endpoints.user.getUserInfo, true, setUser, 'Lấy địa chỉ thất bại')
+                    fetchData(endpoints.user.getUserInfo, false, setUser, 'Lấy địa chỉ thất bại')
                     setCurrentAddress({
                         address: user?.shipping_address[0].address + ', ' + user?.shipping_address[0].ward + ' ,' + user?.shipping_address[0].city,
                         default: user?.shipping_address[0].is_default ?? false

@@ -1,10 +1,10 @@
 import {Form, Formik} from "formik";
 import {toast} from "react-toastify";
 import React, {useRef, useState} from "react";
-import endpoints from "../../services/endpoints.tsx";
-import apiClient from "../../services/apiClient.tsx";
-import {useUser} from "../../context/UserContext.tsx";
-import Loading from "../loading/Loading.tsx";
+import endpoints from "../../../services/endpoints.tsx";
+import apiClient from "../../../services/apiClient.tsx";
+import {useUser} from "../../../context/UserContext.tsx";
+import Loading from "../../loading/Loading.tsx";
 import * as Yup from "yup";
 import {BsXCircle} from "react-icons/bs";
 

@@ -25,35 +25,23 @@ export const formatedDate = (s: string | undefined, showTime: boolean = false) =
     });
 };
 
-
 export const fetchData = async (
     url: string,
-    isClient: boolean,
+    isReturn: boolean = false,
     setData?: React.Dispatch<SetStateAction<any>>,
     messageErr?: string,
     messageSuccess?: string
 ) => {
     try {
-        let response;
-        if (isClient) {
-            response = await apiClient.get(url);
-            if (response && response.status === 200) {
-                if (messageSuccess && messageSuccess?.length !== 0) toast.success(messageSuccess)
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-expect-error
-                setData(response.data)
-            } else if (messageErr && messageErr.length !== 0) toast.error(messageErr)
-        } else {
-            response = await fetch(url)
-            if (response && response.status === 200) {
-                // if (messageSuccess?.length !== 0) toast.success(messageSuccess)
-                const data = await response.json();
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-expect-error
-                setData(data)
-            }
-            // else toast.error(messageErr ?? 'Error')
-        }
+        const response = await apiClient.get(url);
+        if (response && response.status === 200) {
+            if (messageSuccess && messageSuccess?.length !== 0) toast.success(messageSuccess)
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-expect-error
+            if (!isReturn) setData(response.data)
+            else return response.data
+        } else if (messageErr && messageErr.length !== 0) toast.error(messageErr)
+
     } catch (e) {
         console.error(e)
     }

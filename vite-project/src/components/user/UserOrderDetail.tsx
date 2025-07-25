@@ -28,8 +28,8 @@ const UserOrderDetail: React.FC<Props> = ({order_id, setOpen}) => {
     }
 
     useEffect(() => {
-        fetchData(endpoints.user.getOrderDetail(order_id), true, setData, 'Có lỗi xẩy ra')
-        fetchData(endpoints.user.getReceiptByOrderId(order_id), true, setBillData, 'Có lỗi xảy ra');
+        fetchData(endpoints.user.getOrderDetail(order_id), false, setData, 'Có lỗi xẩy ra')
+        fetchData(endpoints.user.getReceiptByOrderId(order_id), false, setBillData, 'Có lỗi xảy ra');
     }, [order_id])
 
     useEffect(() => {

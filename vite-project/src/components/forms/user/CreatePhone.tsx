@@ -1,11 +1,11 @@
 import React, {useEffect, useState} from "react";
-import endpoints from "../../services/endpoints.tsx";
-import apiClient from "../../services/apiClient.tsx";
+import endpoints from "../../../services/endpoints.tsx";
+import apiClient from "../../../services/apiClient.tsx";
 import {toast} from "react-toastify";
 import {Formik, Form, Field} from "formik";
 import * as Yup from "yup";
-import {userType} from "../../utils/user.data-types.tsx";
-import {useUser} from "../../context/UserContext.tsx";
+import {userType} from "../../../utils/user.data-types.tsx";
+import {useUser} from "../../../context/UserContext.tsx";
 
 interface CreateAddressProps {
     setOpen: React.Dispatch<React.SetStateAction<boolean>>;

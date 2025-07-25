@@ -54,7 +54,7 @@ const UserOrders = () => {
     }, [order_id])
 
     useEffect(() => {
-        fetchData(endpoints.user.getOrders, true, setData, 'Lấy dữ liệu thất bại')
+        fetchData(endpoints.user.getOrders, false, setData, 'Lấy dữ liệu thất bại')
     }, [openDetail])
 
     // useEffect(() => {

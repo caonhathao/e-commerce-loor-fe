@@ -1,183 +1,99 @@
 import {useEffect, useState} from "react";
-import JWTDecode from "../../../security/JWTDecode.tsx";
-import {toast} from "react-toastify";
-import Loading from "../../../components/loading/Loading.tsx";
-import {useFormik} from "formik";
-import * as Yup from "yup";
-import {getAccessToken} from "../../../services/tokenStore.tsx";
-import apiClient from "../../../services/apiClient.tsx";
 import endpoints from "../../../services/endpoints.tsx";
-
-interface vendorData {
-    id?: string;
-    name?: string;
-    email?: string;
-    numberphone?: string;
-    address?: string;
-    is_locked?: boolean;
-}
+import {fetchData} from "../../../utils/functions.utils.tsx";
+import {BsListCheck, BsPencilSquare, BsQuestionCircle} from "react-icons/bs";
+import UpdateProfile from "../../../components/forms/vendor/UpdateProfile.tsx";
+import {useVendor} from "../../../context/VendorContext.tsx";
 
 const VendorProfile = () => {
-    const [data, setData] = useState<vendorData>({});
-    const [isEdit, setIsEdit] = useState(false);
-    const [effect, setEffect] = useState([false])
-
-    const handleEdit = (index: number) => {
-        setIsEdit(!isEdit);
-        setEffect((prev) => {
-            const temp = [...prev]
-            temp[index] = !temp[index]
-            return temp
-        })
-    }
-
-
-    const handleResetFields = () => {
-        setIsEdit(false);
-        //formData.resetForm(); delete all data was shown in input field:(
-
-        formData.setValues({
-            id: data["id"] || '',
-            name: data["name"] || '',
-            email: data["email"] || '',
-            numberphone: data["numberphone"] || '',
-            address: data["address"] || '',
-            is_locked: data["is_locked"] || false
-        });
-
-        setEffect(() => {
-            return [false]
-        })
-    }
-
-    const formData = useFormik({
-        initialValues: {
-            id: '',
-            name: '',
-            email: '',
-            numberphone: '',
-            address: '',
-            is_locked: false
-        },
-        onSubmit: async (values) => {
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-expect-error
-            const ID = JWTDecode(getAccessToken()).id;
-            const response = await apiClient.put(endpoints.brand.updateBrandInfo(ID), JSON.stringify(values));
-            if (response.status === 200) {
-                toast.success('Cập nhật thành công. Vui lòng đăng nhập lại để thấy sự thay đổi', {autoClose: 2000});
-            } else toast.error('Update failed! Please try again');
-        },
-        validationSchema: Yup.object({
-            name: Yup.string().required('Name is required'),
-            email: Yup.string().required('Email is required'),
-            numberphone: Yup.string().required('Number is required'),
-            address: Yup.string().required('Address is required'),
-        })
-    })
+    const {vendor, setVendor} = useVendor()
+    const [openUpdate, setOpenUpdate] = useState<boolean>(false)
+    const [updateSuccess, setUpdateSuccess] = useState<boolean>(false)
 
     useEffect(() => {
-        const fetch = async () => {
-            try {
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-expect-error
-                const id = JWTDecode(getAccessToken()).id;
-                const response = await apiClient.get(endpoints.public.getBrandDetail(id));
-
-                if (response) {
-                    toast.success('Loading data successfully.', {autoClose: 1500, position: "bottom-right"});
-                    setTimeout(() => {
-                        setData(response.data);
-                    }, 1600);
-                }
-            } catch (err) {
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-expect-error
-                console.error(err.message);
-            }
+        if (updateSuccess) {
+            fetchData(endpoints.brand.getBrandInfo, false, setVendor, 'Lấy dữ liệu thất bại!')
+            setUpdateSuccess(false)
         }
-        fetch()
-    }, []);
-
-    useEffect(() => {
-        if (data) {
-            formData.setValues({
-                id: data["id"] || '',
-                name: data["name"] || '',
-                email: data["email"] || '',
-                numberphone: data["numberphone"] || '',
-                address: data["address"] || '',
-                is_locked: data["is_locked"] || false
-            });
-        }
-    }, [data]);
-
-    if (JSON.stringify(data) === '{}') return <Loading/>;
+    }, [updateSuccess])
 
     return (
-        <div className={'w-96 h-screen flex flex-col justify-start items-center ml-9'}>
-            <div className={'w-fit h-fit grid grid-cols-2 grid-rows-2 gap-4 text-black nb-2'}>
-                <button
-                    className={`border border-gray-600 rounded-4xl text-center p-1 ${effect[0] ? ` border-indigo-500 bg-indigo-500 focus:outline-2 focus:outline-offset-2 focus:outline-indigo-500 text-white` : `bg-white text-black`}`}
-                    onClick={() => handleEdit(0)}>Chỉnh sửa
-                </button>
-                <button className={'border border-gray-600 rounded-4xl text-center p-1'}>Hỗ trợ</button>
-                <button className={' col-span-2 border border-gray-600 rounded-4xl text-center p-1'}>Đổi mật khẩu
-                </button>
-            </div>
-            <div className={'w-full h-fit flex flex-col justify-center items-center'}>
-                <h3 className={'font-bold text-lg w-fit m-2 text-yellow-600'}>Thông tin cửa hàng</h3>
-                <form className={'w-70'} onSubmit={(e) => {
-                    e.preventDefault();
-                    formData.handleSubmit(e);
-                }}>
-                    <fieldset
-                        className={'w-full border border-gray-700 rounded-lg p-0 m-2 flex flex-col items-center justify-around'}>
-                        <legend>ID</legend>
-                        <input className={'p-2 w-full'} type={'text'} name={'id'} disabled={true} value={data["id"]}/>
-                    </fieldset>
+        <div className={'w-full h-full flex flex-col justify-between items-center relative'}>
+            <div className={'w-full flex flex-col justify-center items-center gap-4'}>
+                <div className={'w-[90%] text-center flex flex-col justify-center items-center gap-2 mb-5'}>
+                    <p className={'text-xl text-[rgb(var(--main-color))] font-bold border-b-2 border-[rgb(var(--border-color))]'}>
+                        Thông tin nhà bán hàng
+                    </p>
+                    <p className={'italic text-sm'}><strong>Ngày tạo: </strong>{vendor?.createdAt ?? `Không rõ`}</p>
+                </div>
 
-                    <fieldset
-                        className={'w-full border border-gray-700 rounded-lg p-0 m-2 flex flex-col items-center justify-around'}>
-                        <legend>Tên cửa hàng</legend>
-                        <input className={'p-2 w-full'} type={'text'} name={'name'} disabled={!isEdit}
-                               value={formData.values.name}
-                               onChange={formData.handleChange}/>
-                    </fieldset>
-                    <fieldset
-                        className={'w-full border border-gray-700 rounded-lg p-0 m-2 flex flex-col items-center justify-around'}>
-                        <legend>Email</legend>
-                        <input className={'p-2 w-full'} type={'text'} name={'email'} disabled={!isEdit}
-                               value={formData.values.email}
-                               onChange={formData.handleChange}/>
-                    </fieldset>
-                    <fieldset
-                        className={'w-full border border-gray-700 rounded-lg p-0 m-2 flex flex-col items-center justify-around'}>
-                        <legend>Địa chỉ</legend>
-                        <textarea className={'p-2 w-full'} name={'address'} disabled={!isEdit}
-                                  value={formData.values.address} onChange={formData.handleChange}></textarea>
-                    </fieldset>
-                    <fieldset
-                        className={'w-full border border-gray-700 rounded-lg p-2 m-2 flex flex-col items-center justify-around'}>
-                        <legend>Tình trạng</legend>
-                        <div className={' w-full flex flex-row justify-around items-center'}>
-                            Bị khóa
-                            <input type={'checkbox'} name={'email'} disabled={!isEdit}
-                                   checked={formData.values.is_locked}/>
-                        </div>
-                    </fieldset>
-                    <div className={'w-full flex flex-row items-center justify-around'}>
-                        <button type={'button'}
-                                className={`border border-gray-600 rounded-4xl text-center py-1 px-3`}
-                                onClick={handleResetFields} disabled={!isEdit}>Hủy
-                        </button>
-                        <button type={'submit'}
-                                disabled={!isEdit}
-                                className={`border border-gray-600 rounded-4xl text-center py-1 px-3`}>Lưu
+                <div
+                    className={'w-[90%] flex flex-col justify-center items-start gap-2 my-5 border-2 border-[rgb(var(--border-color))] p-2 rounded-lg'}>
+                    <div
+                        className={'w-full flex flex-row justify-between items-center gap-2 border-b-2 border-[rgb(var(--border-color))] p-1'}>
+                        <p className={'w-full text-lg text-[rgb(var(--main-color))] font-bold'}>
+                            Thông tin chung
+                        </p>
+                        <button className={'bg-[rgb(var(--btn-primary-bg))] p-1 rounded-lg'}
+                                onClick={() => setOpenUpdate(true)}>
+                            <BsPencilSquare size={20} color={'white'}/>
                         </button>
                     </div>
-                </form>
+                    <div>
+                        <p><strong>Tên cửa hàng: </strong>{vendor?.name}</p>
+                        <p>
+                            <strong>Mô tả cửa
+                                hàng: </strong>{vendor?.description === 'none' ? 'Chưa có mô tả' : vendor?.description}
+                        </p>
+                    </div>
+                </div>
+
+                <div
+                    className={'w-[90%] flex flex-col justify-center items-start gap-2 my-5 border-2 border-[rgb(var(--border-color))] p-2 rounded-lg'}>
+                    <div
+                        className={'w-full flex flex-row justify-between items-center gap-2 border-b-2 border-[rgb(var(--border-color))] p-1'}>
+                        <p className={'w-full text-lg text-[rgb(var(--main-color))] font-bold'}>
+                            Thông tin liên hệ
+                        </p>
+                        <button className={'bg-[rgb(var(--btn-primary-bg))] p-1 rounded-lg'}
+                                onClick={() => setOpenUpdate(true)}>
+                            <BsPencilSquare size={20} color={'white'}/>
+                        </button>
+                    </div>
+                    <div>
+                        <p><strong>Email: </strong>{vendor?.email}</p>
+                        <p><strong>SDT: </strong> {vendor?.numberphone}</p>
+                    </div>
+                </div>
+
+                <div
+                    className={'w-[90%] flex flex-col justify-center items-start gap-2 my-5 border-2 border-[rgb(var(--border-color))] p-2 rounded-lg'}>
+                    <p className={'w-full text-lg text-[rgb(var(--main-color))] font-bold border-b-2 border-[rgb(var(--border-color))]'}>
+                        Tình trạng tài khoản:
+                    </p>
+                    <div className={'w-full flex flex-row justify-between items-center gap-2'}>
+                        <p><strong>Bị khóa: </strong></p>
+                        <BsQuestionCircle size={20} color={'red'}/>
+                    </div>
+                    <div className={'w-full flex flex-row justify-between items-center gap-2'}>
+                        <p><strong>Số cảnh báo: </strong>{0}</p>
+                        <BsListCheck size={20} color={'red'}/>
+                    </div>
+                </div>
+
+                <div className={'w-[90%] grid grid-cols-2 grid-rows-2 items-center gap-4 mt-3'}>
+                    <button className={'border-2 border-[rgb(var(--main-color))] rounded-lg'}>Đổi ảnh đại diện</button>
+                    <button className={'border-2 border-green-600 rounded-lg'}>Đổi mật khẩu</button>
+                </div>
             </div>
+            <div className={'w-full h-fit grid grid-cols-3 grid-rows-1 items-center gap-4 my-10'}>
+                <button className={'border-2 border-green-600 rounded-lg'}>Hỗ trợ</button>
+                <button className={'border-2 border-amber-600 rounded-lg'}>Báo lỗi</button>
+                <button className={'border-2 border-red-500 rounded-lg'}>Khiếu nại</button>
+            </div>
+            {openUpdate ? (
+                <UpdateProfile setOpen={setOpenUpdate} setSuccess={setUpdateSuccess}/>
+            ) : null}
         </div>
     )
 }

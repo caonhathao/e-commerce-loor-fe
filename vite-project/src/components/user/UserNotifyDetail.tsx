@@ -66,10 +66,6 @@ const UserNotifyDetail: React.FC<UserNotifyDetailProps> = ({setOpen, id}) => {
             fetchDataWithPayload(endpoints.user.getNotificationDetail, setNotifyData, {id})
     }, [id])
 
-    useEffect(() => {
-        console.log(notifyData)
-    }, [notifyData]);
-
     if (notifyData === null) return (<Loading/>)
 
     return (

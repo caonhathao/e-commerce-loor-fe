@@ -45,12 +45,10 @@ const VendorOrderDetail = () => {
     }
 
     const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-        console.log('click')
         e.preventDefault();
         try {
             if (data !== null || data !== undefined) {
                 const payload = {id: param.id, status};
-                console.log(payload)
                 const response = await apiClient.put(endpoints.brand.updateOrder, payload);
                 if (response.status === 200) toast.success('Cập nhật trạng thái thành công')
                 else toast.error('Cập nhật trạng thái thất bại')

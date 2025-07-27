@@ -1,13 +1,18 @@
 import {useEffect, useState} from "react";
 import endpoints from "../../../services/endpoints.tsx";
-import {fetchData} from "../../../utils/functions.utils.tsx";
+import {fetchData, formatedDate} from "../../../utils/functions.utils.tsx";
 import {BsListCheck, BsPencilSquare, BsQuestionCircle} from "react-icons/bs";
 import UpdateProfile from "../../../components/forms/vendor/UpdateProfile.tsx";
 import {useVendor} from "../../../context/VendorContext.tsx";
+import UpdateImage from "../../../components/forms/vendor/UpdateImage.tsx";
+import ChangePassword from "../../../components/forms/vendor/ChangePassword.tsx";
 
 const VendorProfile = () => {
     const {vendor, setVendor} = useVendor()
+
     const [openUpdate, setOpenUpdate] = useState<boolean>(false)
+    const [updateAvatar, setUpdateAvatar] = useState<boolean>(false)
+    const [changePassword, setChangePassword] = useState<boolean>(false)
     const [updateSuccess, setUpdateSuccess] = useState<boolean>(false)
 
     useEffect(() => {
@@ -24,7 +29,8 @@ const VendorProfile = () => {
                     <p className={'text-xl text-[rgb(var(--main-color))] font-bold border-b-2 border-[rgb(var(--border-color))]'}>
                         Thông tin nhà bán hàng
                     </p>
-                    <p className={'italic text-sm'}><strong>Ngày tạo: </strong>{vendor?.createdAt ?? `Không rõ`}</p>
+                    <p className={'italic text-sm'}><strong>Ngày
+                        tạo: </strong>{vendor?.createdAt ? formatedDate(vendor?.createdAt) : `Không rõ`}</p>
                 </div>
 
                 <div
@@ -82,8 +88,12 @@ const VendorProfile = () => {
                 </div>
 
                 <div className={'w-[90%] grid grid-cols-2 grid-rows-2 items-center gap-4 mt-3'}>
-                    <button className={'border-2 border-[rgb(var(--main-color))] rounded-lg'}>Đổi ảnh đại diện</button>
-                    <button className={'border-2 border-green-600 rounded-lg'}>Đổi mật khẩu</button>
+                    <button className={'border-2 border-[rgb(var(--main-color))] rounded-lg'}
+                            onClick={() => setUpdateAvatar(true)}>Đổi ảnh đại diện
+                    </button>
+                    <button className={'border-2 border-green-600 rounded-lg'}
+                            onClick={() => setChangePassword(true)}>Đổi mật khẩu
+                    </button>
                 </div>
             </div>
             <div className={'w-full h-fit grid grid-cols-3 grid-rows-1 items-center gap-4 my-10'}>
@@ -93,6 +103,14 @@ const VendorProfile = () => {
             </div>
             {openUpdate ? (
                 <UpdateProfile setOpen={setOpenUpdate} setSuccess={setUpdateSuccess}/>
+            ) : null}
+
+            {updateAvatar ? (
+                <UpdateImage setOpen={setUpdateAvatar} setSuccess={setUpdateSuccess}/>
+            ) : null}
+
+            {changePassword ? (
+                <ChangePassword setOpen={setChangePassword} setSuccess={setUpdateSuccess}/>
             ) : null}
         </div>
     )

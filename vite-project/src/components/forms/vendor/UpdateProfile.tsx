@@ -6,7 +6,7 @@ import {BsXSquare} from "react-icons/bs";
 import Loading from "../../loading/Loading.tsx";
 import endpoints from "../../../services/endpoints.tsx";
 import {toast} from "react-toastify";
-import apiClient from "../../../services/apiClient.tsx";
+import {putData} from "../../../utils/functions.utils.tsx";
 
 interface UpdateProfileProps {
     setOpen: React.Dispatch<SetStateAction<boolean>>
@@ -14,7 +14,7 @@ interface UpdateProfileProps {
 }
 
 const UpdateProfile: React.FC<UpdateProfileProps> = ({setOpen, setSuccess}) => {
-    const {vendor,} = useVendor();
+    const {vendor} = useVendor();
 
     if (!vendor) return <Loading/>
 
@@ -44,16 +44,14 @@ const UpdateProfile: React.FC<UpdateProfileProps> = ({setOpen, setSuccess}) => {
                     })}
                     onSubmit={async (values) => {
                         try {
-                            const response = await apiClient.put(endpoints.brand.updateBrandInfo, values);
-                            if (response.status === 200) {
+                            const data = await putData(endpoints.brand.updateBrandInfo, true, values);
+                            if (data && data.status === 200) {
                                 toast.success('Cập nhật thành công', {autoClose: 1000})
                                 setTimeout(() => {
                                     setOpen(false);
                                     setSuccess(true);
                                 }, 1200)
-                            } else {
-                                console.error(response.data.message);
-                            }
+                            } else toast.error('Cập nhật thất bại')
                         } catch (e) {
                             console.error('Failed to create address', e);
                             toast.error('Cập nhật thất bại');

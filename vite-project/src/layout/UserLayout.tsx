@@ -8,7 +8,13 @@ import Loading from "../components/loading/Loading.tsx";
 import {useUser} from "../context/UserContext.tsx";
 import {fetchData} from "../utils/functions.utils.tsx";
 import err404 from '../assets/img/404.png'
-import {ToastContainer} from "react-toastify";
+import {toast, ToastContainer} from "react-toastify";
+import {io} from "socket.io-client";
+
+const socket = io(endpoints.system.socketConnection, {
+    withCredentials: true,
+    transports: ['websocket', 'polling'],
+});
 
 export const UserLayout = () => {
     const {user, setUser} = useUser();
@@ -71,6 +77,16 @@ export const UserLayout = () => {
         }
     }, []);
 
+    useEffect(() => {
+        const handleCheck = (data: any) =>console.log(data.message);
+
+        socket.off('creating_new_order').on('creating_new_order', handleCheck);
+
+        return () => {
+            socket.off('creating_new_order', handleCheck);
+        };
+    }, []);
+
     if (user === undefined) return <Loading/>
 
     return (
@@ -91,7 +107,7 @@ export const UserLayout = () => {
                 </div>
                 {/*searching bar here*/}
                 <div className={'w-full h-fit flex flex-row justify-center items-center p-2'}>
-                    <SearchingBar url={''} minLength={10} placeholderText={"Tìm kiếm đơn hàng,.."}/>
+                    <SearchingBar url={''} minLength={10} errorText={'Có lỗi xảy ra'} reload={false} placeholderText={"Tìm kiếm đơn hàng,.."}/>
                 </div>
                 {/*Navigate bar here (vertical)*/}
                 <div

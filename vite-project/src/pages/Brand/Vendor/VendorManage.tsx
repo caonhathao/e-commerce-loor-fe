@@ -65,10 +65,6 @@ const VendorManage = () => {
         }
     }, []);
 
-    useEffect(()=>{
-        console.log(data)
-    },[data])
-
     if (data === undefined) return <Loading/>
 
     return (

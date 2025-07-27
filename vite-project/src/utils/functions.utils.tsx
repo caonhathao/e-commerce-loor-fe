@@ -1,6 +1,7 @@
 import React, {SetStateAction} from "react";
 import apiClient from "../services/apiClient.tsx";
 import {toast} from "react-toastify";
+import CryptoJS from 'crypto-js';
 
 export const formatedNumber = (s: number | undefined) => {
     if (s === undefined) return '';
@@ -24,6 +25,10 @@ export const formatedDate = (s: string | undefined, showTime: boolean = false) =
             : {}),
     });
 };
+
+export const encrypt = (str: string) => {
+    return CryptoJS.SHA256(str).toString(CryptoJS.enc.Hex);
+}
 
 export const fetchData = async (
     url: string,
@@ -89,7 +94,6 @@ export const fetchDataWithQuery = async (
             setData(response.data)
         } else if (response.status === 201) {
             setData(undefined)
-            toast.success(response.data.message)
         }
     } catch (e) {
         console.error(e)
@@ -97,17 +101,38 @@ export const fetchDataWithQuery = async (
     }
 }
 
-export const postData = async (url: string, values?: any, setData?: React.Dispatch<SetStateAction<any>>) => {
+export const postData = async (url: string, isReturn: boolean = false, values?: any, setData?: React.Dispatch<SetStateAction<any>>) => {
     try {
         const response = await apiClient.post(url, values);
         if (response.status === 200) {
-            setData?.(response.data)
+            if (isReturn) return response.data
+            else setData?.(response.data)
+        } else if (response.status === 201) {
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-expect-error
+            setData(undefined)
         } else {
-            toast.error('Failed')
+            toast.warning('Không tìm được thông báo', {autoClose: 1000})
         }
     } catch (e) {
         console.error(e)
         toast.error('Failed')
+    }
+}
+
+export const putData = async (url: string, isReturn: boolean = false, values: any, setData?: React.Dispatch<SetStateAction<any>>) => {
+    try {
+        const response = await apiClient.put(url, values);
+        if (response.status === 200) {
+            if (isReturn) return response
+            else {
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-expect-error
+                setData(response.data)
+            }
+        } else console.error(response.data.message)
+    } catch (e) {
+        console.error(e)
     }
 }
 

@@ -39,7 +39,7 @@ apiClient.interceptors.response.use(
                 return apiClient(originalRequest);
             } catch (e) {
                 removeAccessToken();
-                window.location.href = '/';
+                window.location.href = '/account';
                 return Promise.reject(e);
             }
         }

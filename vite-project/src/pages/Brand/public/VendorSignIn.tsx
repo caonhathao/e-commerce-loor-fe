@@ -38,11 +38,11 @@ const VendorSignIn = () => {
                 if (response.status === 200) {
                     const {access, data} = response.data;
                     login(access, data);
-                    toast.success('Sign in successfully.', {autoClose: 2000});
+                    toast.success('Sign in successfully.', {autoClose: 1000});
                     setTimeout(() => {
                         navigate('/vendor');
-                    }, 2500);
-                } else toast.warning('Sign in failed.');
+                    }, 1500);
+                } else toast.warning('Đăng nhập thất bại');
             } catch (err) {
                 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                 // @ts-expect-error

@@ -15,6 +15,7 @@ const endpoints = {
         brandLogout: "/api/vendor/logout",
         refresh: "/api/auth/refresh",
         authBrand: "/api/system/authentication/",
+        logout: "/api/me/logout",
     },
     admin: {
         createCategory: "/api/manager/create-category",
@@ -34,6 +35,7 @@ const endpoints = {
     brand: {
         getBrandInfo: "/api/brand/get-profile",
         updateBrandInfo: "/api/vendor/brand-update",
+        changePassword: "/api/vendor/change-password",
 
         getProductByIdFromBrand: (id: string | undefined) => buildUrlWithParams("/api/vendor/get-product-by-id/:id", {id}),
         getAllProducts: "/api/vendor/get-all-products",
@@ -61,7 +63,6 @@ const endpoints = {
         getUserInfo: "/api/user/get-user-by-id",
         updateUserInfo: "/api/user/update-user-info",
         updatePassword: "/api/user/change-password",
-        logout: "/api/user/logout",
 
         createAddress: "/api/user/add-shipping-address",
         updateAddress: "/api/user/update-shipping-address",

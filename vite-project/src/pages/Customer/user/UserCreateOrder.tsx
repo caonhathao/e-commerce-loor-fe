@@ -10,9 +10,9 @@ import {addressType, listVariantsType} from "../../../utils/user.data-types.tsx"
 import {BsCaretRightFill, BsHouse, BsX} from "react-icons/bs";
 import {fetchData, formatedNumber} from "../../../utils/functions.utils.tsx";
 import {useUser} from "../../../context/UserContext.tsx";
-import CreateAddress from "../../../components/forms/Address/CreateAddress.tsx";
+import CreateAddress from "../../../components/forms/user/Address/CreateAddress.tsx";
 import CreatePhone from "../../../components/forms/user/CreatePhone.tsx";
-import ChangeAddress from "../../../components/forms/Address/ChangeAddress.tsx";
+import ChangeAddress from "../../../components/forms/user/Address/ChangeAddress.tsx";
 
 const socket = io(endpoints.system.socketConnection, {
     withCredentials: true,
@@ -94,9 +94,9 @@ const UserCreateOrder: React.FC<Props> = ({listVariant, setOpenCreate}) => {
         }
 
         // Đăng ký 1 lần duy nhất
-        const handleCheck = (data: any) => console.log("🛒", data.message);
-        const handleCreate = (data: any) => console.log("📦", data.message);
-        const handleStore = (data: any) => console.log("💾", data.message);
+        const handleCheck = (data: any) => toast(data.message);
+        const handleCreate = (data: any) => toast(data.message);
+        const handleStore = (data: any) => toast(data.message);
 
         socket.off('checking_order').on('checking_order', handleCheck);
         socket.off('creating_new_order').on('creating_new_order', handleCreate);
@@ -240,12 +240,12 @@ const UserCreateOrder: React.FC<Props> = ({listVariant, setOpenCreate}) => {
                     </div>
                 </div>
                 {/*main content*/}
-                <div className={'w-full h-fit my-2 p-2 bg-white absolute top-75 z-[99] overflow-y-auto'}>
+                <div className={'w-full h-fit my-2 p-2 bg-white absolute top-75 z-[99]'}>
                     <div className={'w-full h-full flex flex-col justify-start items-center my-2'}>
                         {listVariant.list.map((item, index) => {
                             return (
                                 <div key={index}
-                                     className={'w-full h-fit bg-white flex flex-col justify-center items-center'}>
+                                     className={'w-full h-fit bg-white flex flex-col justify-center items-center mb-25'}>
                                     <div
                                         className={'w-full h-fit flex flex-row justify-start items-center gap-2 my-5 px-2'}>
                                         <p className={'col-span-1 text-center'}>

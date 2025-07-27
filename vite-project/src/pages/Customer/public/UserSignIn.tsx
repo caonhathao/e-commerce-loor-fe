@@ -27,7 +27,6 @@ function UserSignIn() {
             password: ''
         },
         onSubmit: async (values) => {
-            console.log(values)
             setCount(count + 1);
             try {
                 const response = await apiClient.post(endpoints.auth.userLogin, values)

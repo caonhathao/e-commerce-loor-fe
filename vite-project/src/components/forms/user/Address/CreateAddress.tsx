@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from "react";
-import {listDistrictType, listProvinceType} from "../../../utils/user.data-types.tsx";
-import {fetchData} from "../../../utils/functions.utils.tsx";
-import endpoints from "../../../services/endpoints.tsx";
-import apiClient from "../../../services/apiClient.tsx";
+import {listDistrictType, listProvinceType} from "../../../../utils/user.data-types.tsx";
+import {fetchData} from "../../../../utils/functions.utils.tsx";
+import endpoints from "../../../../services/endpoints.tsx";
+import apiClient from "../../../../services/apiClient.tsx";
 import {toast} from "react-toastify";
 import {Formik, Form, Field} from "formik";
 import * as Yup from "yup";

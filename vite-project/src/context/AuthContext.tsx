@@ -6,6 +6,8 @@ import endpoints from "../services/endpoints.tsx";
 import {useNavigate} from "react-router-dom";
 import {toast} from "react-toastify";
 import {postData} from "../utils/functions.utils.tsx";
+import Cookies from "js-cookie";
+import {io} from "socket.io-client";
 
 type User = {
     id: string;
@@ -33,6 +35,11 @@ type AuthContextType = {
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+const socket = io(endpoints.system.socketConnection, {
+    withCredentials: true,
+    transports: ['websocket', 'polling'],
+});
 
 export const AuthProvider = ({children}: { children: ReactNode }) => {
     const [user, setUser] = useState<User | null>(null);
@@ -84,6 +91,10 @@ export const AuthProvider = ({children}: { children: ReactNode }) => {
     }, []);
 
     const login = (token: string, userData: User) => {
+        const decoded = JWTDecode(token);
+        if (decoded?.id) {
+            socket.emit('register_user', decoded.id);
+        }
         setAccessToken(token);
         setUser(userData);
     }
@@ -94,14 +105,14 @@ export const AuthProvider = ({children}: { children: ReactNode }) => {
         const token = getAccessToken();
         if (token) {
             try {
-                await postData(endpoints.user.logout); // chỉ gọi nếu có token
+                await postData(endpoints.auth.logout, true); // chỉ gọi nếu có token
+                removeAccessToken(); // luôn xóa cookie & localStorage
             } catch (e) {
                 console.warn('Logout API failed, but proceeding to clear local data anyway');
                 console.error(e);
             }
         }
-
-        removeAccessToken(); // luôn xóa cookie & localStorage
+        Cookies.remove('refresh')
         setUser(null);
 
         toast.success('Đăng xuất thành công', {

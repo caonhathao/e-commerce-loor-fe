@@ -8,9 +8,9 @@ interface Props {
     url: string;
     minLength: number;
     errorText: string;
-    setData: React.Dispatch<SetStateAction<any>>;
     reload: boolean;
     placeholderText?: string;
+    setData?: React.Dispatch<SetStateAction<any>>;
 }
 
 const SearchingBar: React.FC<Props> = ({

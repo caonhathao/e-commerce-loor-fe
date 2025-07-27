@@ -10,6 +10,12 @@ import {useAuth} from "../context/AuthContext.tsx";
 import {fetchData} from "../utils/functions.utils.tsx";
 import endpoints from "../services/endpoints.tsx";
 import {useVendor} from "../context/VendorContext.tsx";
+import {io} from "socket.io-client";
+
+const socket = io(endpoints.system.socketConnection, {
+    withCredentials: true,
+    transports: ['websocket', 'polling'],
+});
 
 const VendorLayout = () => {
     const [activeTab, setActiveTab] = useState([false, false, false, false, false, false]);
@@ -41,10 +47,7 @@ const VendorLayout = () => {
 
     const signOut = () => {
         logout();
-        toast.success('Đăng xuất thành công', {autoClose: 2000});
-        setTimeout(() => {
-            window.location.href = '/';
-        }, 2500);
+        toast.success('Đăng xuất thành công', {autoClose: 1000});
     }
 
     const closeMenu = () => {
@@ -133,6 +136,20 @@ const VendorLayout = () => {
             }
         }
     }, [minimizeMenu]);
+
+    useEffect(() => {
+        const decoded = JWTDecode(getAccessToken());
+        if (decoded?.id) {
+            socket.emit('register_user', decoded.id);
+        }
+        const handleCheck = (data: any) => toast(data.message);
+
+        socket.off('new_order').on('new_order', handleCheck);
+
+        return () => {
+            socket.off('new_order', handleCheck);
+        };
+    }, []);
 
     return (
         <div className={'w-screen h-screen overflow-x-hidden'}>

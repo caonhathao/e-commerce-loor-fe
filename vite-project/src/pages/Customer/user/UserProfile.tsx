@@ -3,7 +3,7 @@ import {fetchData, formatedDate} from "../../../utils/functions.utils.tsx";
 import {BsCheck2Circle, BsPencilFill} from "react-icons/bs";
 import {useEffect, useState} from "react";
 import endpoints from "../../../services/endpoints.tsx";
-import UpdateAddress from "../../../components/forms/Address/UpdateAddress.tsx";
+import UpdateAddress from "../../../components/forms/user/Address/UpdateAddress.tsx";
 import Loading from "../../../components/loading/Loading.tsx";
 import UpdateProfile from "../../../components/forms/user/UpdateProfile.tsx";
 import UpdateImage from "../../../components/forms/user/UpdateImage.tsx";
@@ -85,9 +85,13 @@ const UserProfile = () => {
                 </div>
             </div>
 
-            <div className={'w-[80%] grid grid-cols-2 items-center p-2 gap-4'}>
-                <button type={'button'} className={'border-2 border-amber-400 rounded-lg p-2'}>Hỗ trợ</button>
+            <div className={'w-[80%] grid grid-cols-2 items-center p-2 gap-4 mb-5'}>
                 <button type={'button'} className={'border-2 border-red-500 p-2 rounded-lg'}>Xóa tài khoản</button>
+                <button type={'button'} className={'border-2 border-green-600 rounded-lg p-2'}>Đổi mật khẩu</button>
+            </div>
+            <div className={'w-[80%] grid grid-cols-2 items-center p-2 gap-4 mt-5'}>
+                <button type={'button'} className={'border-2 border-amber-400 rounded-lg p-2'}>Hỗ trợ</button>
+                <button type={'button'} className={'border-2 border-blue-500 p-2 rounded-lg'}>Góp ý</button>
             </div>
         </div>
         {openCreateAddress ?

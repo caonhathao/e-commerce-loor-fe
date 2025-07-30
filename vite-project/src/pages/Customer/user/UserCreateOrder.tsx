@@ -66,10 +66,13 @@ const UserCreateOrder: React.FC<Props> = ({listVariant, setOpenCreate}) => {
 
             const fullPayload = {
                 ...payload,
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-expect-error
                 list: listVariant.list
             }
 
             const response = await apiClient.post(endpoints.user.createOrder, fullPayload);
+
             if (response && response.status === 200) {
                 setIsSubmitted(false)
                 toast.success(response.data.message, {
@@ -79,10 +82,22 @@ const UserCreateOrder: React.FC<Props> = ({listVariant, setOpenCreate}) => {
                         setOpenCreate(false)
                     }
                 });
+            } else {
+                toast.warning(response.data.message, {autoClose: 1000})
+                setTimeout(() => {
+                    setIsSubmitted(false)
+                }, 1200)
             }
-        } catch (err) {
-            console.error(err)
-            toast.error('Khởi tạo thât bại.')
+        } catch (err: unknown) {
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-expect-error
+            console.error('Error:', err.response?.data || err.message || err);
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-expect-error
+            toast.error(err.response?.data?.message || err.message, {autoClose: 1500});
+            setTimeout(() => {
+                setIsSubmitted(false)
+            }, 1700)
         }
     }
 

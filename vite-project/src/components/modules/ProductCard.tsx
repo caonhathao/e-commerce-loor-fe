@@ -22,8 +22,8 @@ const ProductCard: React.FC<Props> = ({url_path, img_path, index, name, price, r
              onClick={() => {
                  navigator(`product-detail/${url_path}`)
              }}>
-            <div className={'h-3/5 flex flex-col justify-center items-center'}>
-                <img src={img_path} alt="picture"/>
+            <div className={'h-3/5 flex flex-col justify-center items-center '}>
+                <img className={'h-full object-contain'} src={img_path} alt="picture"/>
             </div>
             <div className={'h-2/5 flex flex-col justify-between items-center'}>
                 <div className={'max-h-2/3 text-base p-1 overflow-hidden'}>{name}</div>

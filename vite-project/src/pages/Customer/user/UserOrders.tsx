@@ -5,10 +5,12 @@ import {Pagination, Stack} from "@mui/material";
 import {orderDataType, orderStatus, orderType} from "../../../utils/user.data-types.tsx";
 import UserOrderDetail from "../../../components/user/UserOrderDetail.tsx";
 import {useParams} from "react-router-dom";
+import SearchingBar from "../../../components/modules/SearchingBar.tsx";
 
 const UserOrders = () => {
     const [data, setData] = useState<orderDataType>();
     const [openDetail, setOpenDetail] = useState<boolean>(false);
+    const [reload, setReload] = useState<boolean>(false);
     const [choose, setChoose] = useState<string>('');
     const {order_id} = useParams<{ order_id?: string }>();
     const handleOrderStatusMean = (_status: keyof typeof orderStatus) => {
@@ -55,22 +57,27 @@ const UserOrders = () => {
 
     useEffect(() => {
         fetchData(endpoints.user.getOrders, false, setData, 'Lấy dữ liệu thất bại')
-    }, [openDetail])
-
-    // useEffect(() => {
-    //     console.log(data)
-    // }, [data]);
+        setReload(false)
+    }, [openDetail, reload])
 
     return (
         <>
-            <div className={'w-full h-full p-2 absolute top-75'}>
-                {data !== null && data !== undefined ? (
-                    <Stack spacing={2} alignItems={'center'}>
-                        <Pagination count={data?.total_pages}
-                                    page={data?.current_page}
-                                    onChange={(_e, value) => fetchDataWithQuery(endpoints.user.getOrders, setData, value, 10)}/>
-                    </Stack>
-                ) : null}
+            <div className={'w-full h-full p-2'}>
+                {/*searching bar here*/}
+                <div className={'w-full h-fit flex flex-row justify-center items-center my-2'}>
+                    <SearchingBar url={endpoints.user.searchOrder} minLength={8} errorText={'Thiếu từ khóa'}
+                                  setData={setData} setReload={setReload}
+                                  placeholderText={"Tìm kiếm đơn hàng,.."}/>
+                </div>
+                <div className={'w-full h-fit flex flex-row justify-center items-center my-2'}>
+                    {data !== null && data !== undefined ? (
+                        <Stack spacing={2} alignItems={'center'}>
+                            <Pagination count={data?.total_pages}
+                                        page={data?.current_page}
+                                        onChange={(_e, value) => fetchDataWithQuery(endpoints.user.getOrders, setData, value, 10)}/>
+                        </Stack>
+                    ) : null}
+                </div>
                 <div className={'w-full h-full mt-5 flex flex-col justify-start item-center'}>
                     {data?.data ? (
                         data?.data.map((item: orderType, i: number) => (

@@ -63,7 +63,10 @@ const Header = () => {
 
                         <div className={'w-[10%] text-center ml-2'}>
                             <button
-                                className='text-[rgb(var(--main-color))] border-2 border-[rgb(var(--border-color))] p-2 rounded-full'>
+                                className='text-[rgb(var(--main-color))] border-2 border-[rgb(var(--border-color))] p-2 rounded-full'
+                                onClick={() => {
+                                    navigate('/user')
+                                }}>
                                 <BsPerson size={25}/>
                             </button>
                         </div>

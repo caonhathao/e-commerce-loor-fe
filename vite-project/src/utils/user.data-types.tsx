@@ -48,6 +48,7 @@ export interface cartType {
         product_variants: {
             name: string,
             price: number,
+            stock: number,
             products: {
                 status: boolean,
             }
@@ -55,13 +56,13 @@ export interface cartType {
     }[]
 }
 
-export interface variantType{
+export interface variantType {
     id: string,
     name: string,
     price: number,
-    sku:string,
-    status:string,
-    stock:number,
+    sku: string,
+    status: string,
+    stock: number,
     has_attribute: boolean;
 }
 
@@ -179,8 +180,8 @@ export interface receiptData {
     createdAt: string,
 }
 
-export interface notificationDetailData{
-    id:string,
+export interface notificationDetailData {
+    id: string,
     title: string,
     content: string,
     createdAt: string,

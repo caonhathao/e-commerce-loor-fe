@@ -100,4 +100,4 @@ export const orderStatusOptions = {
     POSTPONED: 'Hoãn lại',
     REFUNDED: 'Hoàn trả',
     COMPLETE: 'Hoàn thành',
-};
+} as const

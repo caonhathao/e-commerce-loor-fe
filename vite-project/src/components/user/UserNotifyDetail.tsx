@@ -69,12 +69,12 @@ const UserNotifyDetail: React.FC<UserNotifyDetailProps> = ({setOpen, id}) => {
     if (notifyData === null) return (<Loading/>)
 
     return (
-        <div className={'w-full h-screen absolute top-0 left-0 z-[200] bg-white'}>
+        <div className={'w-full h-screen absolute top-0 left-0 z-[200] bg-white p-4'}>
             <div
                 className={'w-full h-fit flex flex-row justify-between items-center p-2 border-b-2 border-[rgb(var(--border-color))]'}>
-                <p className={'w-full text-center text-[rgb(var(--main-color))] font-bold text-lg'}>{notifyData?.title}</p>
+                <p className={'w-full text-center text-[rgb(var(--main-color))] font-bold text-xl'}>{notifyData?.title}</p>
                 <button type={'button'}
-                        className={'absolute top-0.5 right-1 w-10 h-10 bg-red-500 rounded-lg flex justify-center items-center text-white'}
+                        className={'absolute top-1 right-1 w-10 h-10 bg-red-500 rounded-lg flex justify-center items-center text-white'}
                         onClick={() => setOpen(false)}>
                     <BsX size={30}/>
                 </button>
@@ -82,10 +82,11 @@ const UserNotifyDetail: React.FC<UserNotifyDetailProps> = ({setOpen, id}) => {
             <div>
                 <div
                     className={'w-full h-fit flex flex-row justify-between items-center p-2 text-sm italic border-b-2 border-[rgb(var(--main-color))]'}>
-                    <p>Thời gian: {formatedDate(notifyData?.createdAt, true)}</p>
+                    <p><strong>Thời gian: </strong>
+                        {formatedDate(notifyData?.createdAt, true)}</p>
                     {handleRenderColorTYpe(notifyData?.type)}
                 </div>
-                <div className={'w-full h-fit p-3'}>
+                <div className={'w-full h-fit p-3 leading-7'}>
                     <p>{notifyData?.content}</p>
                     <p>
                         Xem chi tiết <Link to={`/user/show-orders/${handleGetID(notifyData?.redirect_url)}`}

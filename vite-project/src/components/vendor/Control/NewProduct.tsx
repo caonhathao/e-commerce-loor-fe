@@ -139,16 +139,16 @@ const NewProduct = () => {
     }
 
     return (
-        <div className={'w-auto h-full ml-8 p-2 my-2 flex flex-col justify-start items-center'}>
+        <div className={'w-full h-full p-2 my-2 flex flex-col justify-start items-center'}>
             <form
                 className={'w-full h-fit flex flex-col items-center justify-center'}
                 onSubmit={(e) => {
                     e.preventDefault();
                     formData.handleSubmit(e);
                 }}>
-                <h3 className={'font-bold text-lg w-fit m-2 text-yellow-600'}>Tạo sản phẩm mới</h3>
+                <p className={'font-bold text-xl w-fit m-2 text-yellow-600 border-b-2 border-[rgb(var(--border-color))]'}>Tạo sản phẩm mới</p>
 
-                {/*selection for category and sub category*/}
+                {/*selection for category and subcategory*/}
                 <fieldset
                     className={'w-full border border-gray-700 rounded-lg p-2 m-2 flex flex-col items-center justify-around'}>
                     <legend>Phân loại</legend>

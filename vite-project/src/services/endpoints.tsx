@@ -72,6 +72,7 @@ const endpoints = {
         getAllNotifications: "/api/user/get-all-notify-me",
         getNotificationDetail: "/api/user/get-notify-detail",
         getNotificationByType: "/api/user/get-all-notify-by-type",
+        markAsRead: "/api/user/mark-all-notifications-read",
         deleteNotification: "/api/user/delete-notification",
         deleteNotifications: "/api/user/delete-notifications",
         deleteAllNotifications: "/api/user/delete-all-notifications",
@@ -81,11 +82,13 @@ const endpoints = {
         createOrder: "/api/user/create-new-order",
         cancelOrder: (id: string) => buildUrlWithParams("/api/user/cancel-order/:id", {id}),
         getOrderDetail: (id: string) => buildUrlWithParams("/api/user/get-order-detail/:id", {id}),
+        searchOrder: '/api/user/search-by-id',
 
         getReceiptByOrderId: (id: string) => buildUrlWithParams("/api/user/get-receipt-from-order/:id", {id}),
 
         addToCart: "/api/user/add-to-cart",
         getCart: "/api/user/get-cart",
+        searchCart: "/api/user/search-cart",
         updateCart: "/api/user/update-cart",
         deleteCart: "/api/user/delete-cart",
     },
@@ -95,7 +98,7 @@ const endpoints = {
 
         getAllProducts: "/api/public/get-all-products",
         getProductByIdFromUser: (id: string) => buildUrlWithParams("/api/public/get-product-by-id/:id", {id}),
-        getProductByKeyword: (key: string) => buildUrlWithParams("/api/public/get-product-by-key/:key", {key}),
+        getProductByKeyword:"/api/public/search-product",
         getProductByPrice: "/api/public/get-product-by-price",
         getAllProductsFromBrand: (id: string | undefined) => buildUrlWithParams("/api/public/get-all-products/:id", {id}),
 

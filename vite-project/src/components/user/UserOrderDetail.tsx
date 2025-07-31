@@ -39,7 +39,7 @@ const UserOrderDetail: React.FC<Props> = ({order_id, setOpen}) => {
     if (data === null || billData === null) return <Loading/>
 
     return (
-        <div className={'w-full h-full fixed top-0 left-0 z-50 bg-white flex flex-col justify-start iem-center'}>
+        <div className={'w-full h-full fixed top-0 left-0 z-[110] bg-white flex flex-col justify-start iem-center'}>
             <div
                 className={'w-full h-fit p-2 grid grid-cols-5 grid-rows-1 gap-3 items-center border-b-2 border-[rgb(var(--border-color))]'}>
                 <div className={'col-span-3 col-start-2 text-center'}>

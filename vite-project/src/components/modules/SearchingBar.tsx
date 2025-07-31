@@ -1,40 +1,41 @@
-import React, {SetStateAction, useEffect, useRef} from "react";
+import React, {SetStateAction, useRef} from "react";
 import {Formik, Form, Field, FormikHelpers, FormikProps} from "formik";
 import {toast} from "react-toastify";
-import {BsSearch} from "react-icons/bs";
+import {BsArrowClockwise, BsSearch} from "react-icons/bs";
 import apiClient from "../../services/apiClient.tsx";
 
 interface Props {
     url: string;
     minLength: number;
     errorText: string;
-    reload: boolean;
     placeholderText?: string;
-    setData?: React.Dispatch<SetStateAction<any>>;
+    setReload: React.Dispatch<SetStateAction<boolean>>
+    setData: React.Dispatch<SetStateAction<any>>;
 }
 
 const SearchingBar: React.FC<Props> = ({
                                            url,
                                            minLength,
                                            errorText,
+                                           setReload,
                                            setData,
-                                           reload,
                                            placeholderText,
                                        }) => {
     const formikRef = useRef<FormikProps<{ keyword: string }>>(null);
 
-    useEffect(() => {
-        if (reload && formikRef.current) {
+    const handleResetData = () => {
+        if (formikRef.current && setReload) {
             formikRef.current.resetForm();
+            setReload(true);
         }
-    }, [reload]);
+    }
 
     return (
-        <div className="w-[80%]">
+        <div className="w-[90%]">
             <Formik
                 innerRef={formikRef}
-                initialValues={{ keyword: '' }}
-                onSubmit={async (values, { setSubmitting }: FormikHelpers<{ keyword: string }>) => {
+                initialValues={{keyword: ''}}
+                onSubmit={async (values, {setSubmitting}: FormikHelpers<{ keyword: string }>) => {
                     try {
                         const checkStr = values.keyword.trim();
                         if (checkStr.length === 0) {
@@ -63,12 +64,12 @@ const SearchingBar: React.FC<Props> = ({
                     }
                 }}
             >
-                {({ values, handleChange, handleSubmit }) => (
+                {({values, handleChange, handleSubmit}) => (
                     <Form
-                        className="w-full flex justify-around items-center border-2 border-[rgb(var(--main-color))] rounded-full p-2 bg-white"
+                        className="w-full flex justify-around items-center gap-2 border-2 border-[rgb(var(--main-color))] rounded-full p-2 bg-white"
                         onSubmit={handleSubmit}
                     >
-                        <fieldset className="w-[80%]">
+                        <fieldset className="w-[70%]">
                             <Field
                                 className="outline-0 w-full text-[rgb(var(--text-color))] bg-white"
                                 name="keyword"
@@ -77,8 +78,11 @@ const SearchingBar: React.FC<Props> = ({
                                 placeholder={placeholderText ?? "Type anything"}
                             />
                         </fieldset>
+                        <button className={"w-[10%]"} type="button" onClick={() => handleResetData()}>
+                            <BsArrowClockwise size={20} color={"rgb(var(--main-color))"}/>
+                        </button>
                         <button className="w-[10%]" type="submit">
-                            <BsSearch size={20} color={"rgb(var(--main-color))"} />
+                            <BsSearch size={20} color={"rgb(var(--main-color))"}/>
                         </button>
                     </Form>
                 )}

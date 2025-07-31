@@ -9,6 +9,7 @@ import {cartType, listVariantsType} from "../../../utils/user.data-types.tsx";
 import apiClient from "../../../services/apiClient.tsx";
 import {useUser} from "../../../context/UserContext.tsx";
 import Loading from "../../../components/loading/Loading.tsx";
+import SearchingBar from "../../../components/modules/SearchingBar.tsx";
 
 interface amountType {
     amount: number,
@@ -35,6 +36,7 @@ const UserCart = () => {
     const [amount, setAmount] = useState<amountType[]>([])
     const [listVariants, setListVariants] = useState<listVariantsType>()
     const [openCreateOrder, setOpenCreateOrder] = useState<boolean>(false)
+    const [reload, setReload] = useState<boolean>(false)
     const [total, setTotal] = useState<number>(0)
     const {user} = useUser()
 
@@ -282,8 +284,16 @@ const UserCart = () => {
 
     //get user's cart data
     useEffect(() => {
-        fetchData(endpoints.user.getCart, false, setData, 'Lấy dữ liệu thất bại')
-    }, [])
+        fetchData(endpoints.user.getCart, true, undefined, 'Lấy dữ liệu thất bại').then((data) => {
+            setData(data)
+            setReload(false)
+        })
+    }, [reload])
+
+    useEffect(() => {
+        console.log("data:", data)
+        console.log("reload:", reload)
+    }, [data, reload])
 
     //set amount
     useEffect(() => {
@@ -304,18 +314,15 @@ const UserCart = () => {
         }
     }, [data]);
 
-    // useEffect(() => {
-    //     console.log(user)
-    // }, [user])
-
     if (!user) {
         return <Loading/>
     }
 
     return (
         <>
-            <div className={'w-full h-full flex flex-col justify-center items-start flex-col'}>
-                <div className={'min-h-[300px] max-h-[300px]'}></div>
+            <div className={'w-full h-full flex flex-col justify-center items-center'}>
+                <SearchingBar url={endpoints.user.searchCart} setReload={setReload} setData={setData}
+                              placeholderText={'Tìm sản phẩm'} minLength={6} errorText={'Thiéu từ khóa'}/>
                 <div className={'w-full h-full flex flex-col justify-start items-center p-2 mt-2 pb-20'}>
                     {data.length > 0 ? (
                         data.map(brand => <div key={brand.brand_id}
@@ -324,7 +331,7 @@ const UserCart = () => {
                                 <img src={brand.brand_image || errImg}
                                      alt="brand"
                                      className={'w-12 h-12 border-2 broder-[rgb(var(--border-color))] rounded-full p-2'}/>
-                                <p className={'text-lg border-t-2 border-b-2 border-[rgb(var(--border-color))] rounded-b-lg rounded-t-lg px-2 font-bold'}>{brand.brand_name}</p>
+                                <p className={'text-lg border-t-2 border-b-2 border-[rgb(var(--border-color))] rounded-b-lg rounded-t-lg px-2 font-bold whitespace-nowrap'}>{brand.brand_name}</p>
                                 <div
                                     className={'w-full h-fit border-b-2 border-[rgb(var(--border-color))] rounded-b-lg'}>
                                 </div>
@@ -339,66 +346,71 @@ const UserCart = () => {
                             </div>
                             <div className={'w-full flex flex-col justify-start items-center gap-2 my-3'}>
                                 {brand.items && brand.items.map(item =>
-                                    <div key={item.id} className={'w-full h-[200px] flex flex-row justify-center items-center gap-4 border-b-[1px] border-(rgb(var(--border-color))) p-2'}>
-                                    <div>
-                                        <div className={'w-full flex flex-row justify-start items-center gap-2 p-2'}>
-                                            <div className={'w-[30%] flex flex-col justify-center items-center'}>
-                                                <img src={item.image_link} alt={'thumbnail'}/>
-                                            </div>
-                                            <p className={'w-[70%] text-lg'}>{item.product_variants.name}</p>
-                                        </div>
-                                        <div className={'w-full grid grid-cols-5 grid-rows-1 gap-2 p-2'}>
-                                            <div className={'col-span-5 grid grid-cols-5 items-center'}>
-                                                <div className={'col-span-2'}>
-                                                    <p className={'col-span-2 text-lg'}>
-                                                        Số lượng:<strong
-                                                        className={'text-[rgb(var(--main-color))]'}> {item.amount}</strong>
-                                                    </p>
-                                                    <p className="col-span-3 text-lg">
-                                                        Tổng: <strong className={'text-[rgb(var(--main-color))]'}>{
-                                                        formatedNumber(
-                                                            (amount.find(a => a.variant_id === item.variant_id)?.amount ?? item.amount)
-                                                            * item.product_variants.price
-                                                        )
-                                                    }đ</strong>
-                                                    </p>
+                                    <div key={item.id}
+                                         className={'w-full h-[200px] flex flex-row justify-center items-center gap-4 border-b-[1px] border-(rgb(var(--border-color))) p-2'}>
+                                        <div>
+                                            <div
+                                                className={'w-full flex flex-row justify-start items-center gap-2 p-2'}>
+                                                <div className={'w-[30%] flex flex-col justify-center items-center'}>
+                                                    <img src={item.image_link} alt={'thumbnail'}/>
                                                 </div>
+                                                <div className={'w-[70%]'}>
+                                                    <p className={'text-lg font-bold h-15 overflow-hidden'}>{item.product_variants.name}</p>
+                                                    <p className={'text-gray-600 italic'}>({item.product_variants.stock === 0 ? 'Ngừng kinh doanh' : null})</p>
+                                                </div>
+                                            </div>
+                                            <div className={'w-full grid grid-cols-5 grid-rows-1 gap-2 p-2'}>
+                                                <div className={'col-span-5 grid grid-cols-5 items-center'}>
+                                                    <div className={'col-span-2'}>
+                                                        <p className={'col-span-2 text-lg'}>
+                                                            Số lượng:<strong
+                                                            className={'text-[rgb(var(--main-color))]'}> {item.amount}</strong>
+                                                        </p>
+                                                        <p className="col-span-3 text-lg">
+                                                            Tổng: <strong className={'text-[rgb(var(--main-color))]'}>{
+                                                            formatedNumber(
+                                                                (amount.find(a => a.variant_id === item.variant_id)?.amount ?? item.amount)
+                                                                * item.product_variants.price
+                                                            )
+                                                        }đ</strong>
+                                                        </p>
+                                                    </div>
 
-                                                <div
-                                                    className={'col-span-3 flex flex-row justify-end items-center gap-4'}>
                                                     <div
-                                                        className={'w-fit h-fit flex flex-row jus-center items-center gap-2'}>
-                                                        <button type={'button'}
-                                                                id={'minus-btn'}
-                                                                className={'w-10 h-10 border-2 border-[rgb(var(--main-color))] rounded-lg font-bold text-lg'}
-                                                                onClick={() => handleMinus(item.variant_id)}
-                                                        >
-                                                            -
-                                                        </button>
-                                                        <input type={'number'}
-                                                               className={'w-10 h-10 text-center border-2 border-[rgb(var(--border-color))] rounded-lg'}
-                                                               value={amount.find(a => a.variant_id === item.variant_id)?.amount ?? item.amount}
-                                                               readOnly={true}/>
-                                                        <button type={'button'}
-                                                                id={'add-btn'}
-                                                                className={'w-10 h-10 border-2 border-[rgb(var(--main-color))] rounded-lg font-bold text-lg'}
-                                                                onClick={() => handleAdd(item.variant_id, item.amount)}
-                                                        >
-                                                            +
-                                                        </button>
-                                                    </div>
-                                                    <div className={'flex flex-col justify-center items-center'}>
-                                                        <input type={'checkbox'} className={'w-5 h-5 text'}
-                                                               checked={amount.find(a => a.variant_id === item.variant_id)?.checked ?? false}
-                                                               onChange={() => handleAddOne(item)}
-                                                        />
+                                                        className={'col-span-3 flex flex-row justify-end items-center gap-4'}>
+                                                        <div
+                                                            className={'w-fit h-fit flex flex-row jus-center items-center gap-2'}>
+                                                            <button type={'button'}
+                                                                    id={'minus-btn'}
+                                                                    className={'w-10 h-10 border-2 border-[rgb(var(--main-color))] rounded-lg font-bold text-lg'}
+                                                                    onClick={() => handleMinus(item.variant_id)}
+                                                            >
+                                                                -
+                                                            </button>
+                                                            <input type={'number'}
+                                                                   className={'w-10 h-10 text-center border-2 border-[rgb(var(--border-color))] rounded-lg'}
+                                                                   value={amount.find(a => a.variant_id === item.variant_id)?.amount ?? item.amount}
+                                                                   readOnly={true}/>
+                                                            <button type={'button'}
+                                                                    id={'add-btn'}
+                                                                    className={'w-10 h-10 border-2 border-[rgb(var(--main-color))] rounded-lg font-bold text-lg'}
+                                                                    onClick={() => handleAdd(item.variant_id, item.amount)}
+                                                            >
+                                                                +
+                                                            </button>
+                                                        </div>
+                                                        <div className={'flex flex-col justify-center items-center'}>
+                                                            <input type={'checkbox'} className={'w-5 h-5 text'}
+                                                                   checked={amount.find(a => a.variant_id === item.variant_id)?.checked ?? false}
+                                                                   onChange={() => handleAddOne(item)}
+                                                            />
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
 
-                                </div>)}
+                                    </div>)}
                             </div>
                         </div>)
                     ) : (
@@ -406,7 +418,7 @@ const UserCart = () => {
                     )}
                 </div>
                 <div
-                    className={'w-full h-fit bottom-0 absolute border-t-2 border-[rgb(var(--main-color))] rounded-t-lg  bg-white flex flex-row justify-between items-center p-2 fixed z-10 bottom-0 right-0'}>
+                    className={'w-full h-fit bottom-0 border-t-2 border-[rgb(var(--main-color))] rounded-t-lg  bg-white flex flex-row justify-between items-center p-2 fixed z-10 right-0'}>
                     <div className={'w-fit h-full flex flex-row justify-center items-center gap-2'}>
                         <input type={'checkbox'} className={'w-7 h-7'}
                                onChange={(e) => handleAddAll(data, e.target.checked)}/>

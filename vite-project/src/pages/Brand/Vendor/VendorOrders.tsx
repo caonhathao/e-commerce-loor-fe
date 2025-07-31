@@ -4,66 +4,83 @@ import apiClient from "../../../services/apiClient.tsx";
 import endpoints from "../../../services/endpoints.tsx";
 import {useNavigate} from "react-router-dom";
 import {orderStatusOptions} from "../../../utils/attributes.tsx";
-import {fetchDataWithQuery, formatedDate} from "../../../utils/functions.utils.tsx";
+import {fetchDataWithQuery, formatedDate, postData} from "../../../utils/functions.utils.tsx";
 import Loading from "../../../components/loading/Loading.tsx";
-import {BsArrowClockwise, BsBookmarkFill, BsCalendar2DayFill, BsCheckCircleFill, BsFunnel, BsUpc} from "react-icons/bs";
+import {BsBookmarkFill, BsCalendar2DayFill, BsCheckCircleFill, BsFunnel, BsUpc} from "react-icons/bs";
 import SearchingBar from "../../../components/modules/SearchingBar.tsx";
 import {orderListType} from "../../../utils/vendor.data-types.tsx";
 import {Pagination, Stack} from "@mui/material";
+
+type OrderStatus = keyof typeof orderStatusOptions;
 
 const VendorOrders = () => {
     const [data, setData] = useState<orderListType>();
     const [reload, setReload] = useState<boolean>(false);
     const navigate = useNavigate();
+    const [currentTab, setCurrentTab] = useState<number>(-1)
+    const [activeTab, setActiveTab] = useState(new Array(9).fill(false));
+
+    const handleFilterByType = (type: string, index: number) => {
+        setActiveTab((prevState) => {
+            const newContent = [...prevState];
+            if (currentTab !== index) {
+                setCurrentTab(index);
+                newContent[currentTab] = !newContent[currentTab];
+                newContent[index] = true;
+            }
+            return newContent;
+        })
+        fetchDataWithQuery(endpoints.user.getOrdersByStatus, setData, {status: type})
+    }
 
     const handleOpenDetail = (order_id: string) => {
         navigate(`/vendor/orders/order-detail/${order_id}`)
     }
 
-    const handleRenderStatus = (status: keyof typeof orderStatusOptions) => {
-        if (status === 'PENDING') {
+    const handleRenderStatus = (_status: keyof typeof orderStatusOptions) => {
+        if (_status === 'PENDING') {
             return <p className={'text-[rgb(var(--main-color))]'}>
-                {orderStatusOptions[status as keyof typeof orderStatusOptions]}
+                {orderStatusOptions[_status as keyof typeof orderStatusOptions]}
             </p>
         }
-        if (status === 'CONFIRMED') {
+        if (_status === 'CONFIRMED') {
             return <p className={'text-[rgb(var(--secondary-color))]'}>
-                {orderStatusOptions[status as keyof typeof orderStatusOptions]}
+                {orderStatusOptions[_status as keyof typeof orderStatusOptions]}
             </p>
         }
-        if (status === 'PREPARING') {
+        if (_status === 'PREPARING') {
             return <p className={'text-cyan-700'}>
-                {orderStatusOptions[status as keyof typeof orderStatusOptions]}
+                {orderStatusOptions[_status as keyof typeof orderStatusOptions]}
             </p>
         }
-        if (status === 'DELIVERING') {
+        if (_status === 'DELIVERING') {
             return <p className={'text-gray-600'}>
-                {orderStatusOptions[status as keyof typeof orderStatusOptions]}
+                {orderStatusOptions[_status as keyof typeof orderStatusOptions]}
             </p>
         }
-        if (status === 'CANCELED') {
+        if (_status === 'CANCELED') {
             return <p className={'text-red-500'}>
-                {orderStatusOptions[status as keyof typeof orderStatusOptions]}
+                {orderStatusOptions[_status as keyof typeof orderStatusOptions]}
             </p>
         }
-        if (status === 'ABORTED') {
+        if (_status === 'ABORTED') {
             return <p className={'text-amber-900'}>
-                {orderStatusOptions[status as keyof typeof orderStatusOptions]}
+                {orderStatusOptions[_status as keyof typeof orderStatusOptions]}
             </p>
         }
-        if (status === 'POSTPONED') {
+        if (_status === 'POSTPONED') {
             return <p className={'text-blue-500'}>
-                {orderStatusOptions[status as keyof typeof orderStatusOptions]}
+                {orderStatusOptions[_status as keyof typeof orderStatusOptions]}
             </p>
         }
-        if (status === 'COMPLETE') {
+        if (_status === 'COMPLETE') {
             return <p className={'text-green-700'}>
-                {orderStatusOptions[status as keyof typeof orderStatusOptions]}
+                {orderStatusOptions[_status as keyof typeof orderStatusOptions]}
             </p>
         }
-        if (status === 'REFUNDED') {
+        if (_status === 'REFUNDED') {
             return <p className={'text-black'}>
-                {orderStatusOptions[status as keyof typeof orderStatusOptions]}
+                {orderStatusOptions[_status as keyof typeof orderStatusOptions]}
             </p>
         }
     }
@@ -91,6 +108,8 @@ const VendorOrders = () => {
                     if (response && response.status === 200) {
                         setData(response.data)
                         setReload(false)
+                        setCurrentTab(-1)
+                        setActiveTab(new Array(9).fill(false))
                     } else toast.error('Lỗi khi truy vấn dữ liệu!')
                 } catch (e) {
                     console.error(e)
@@ -107,11 +126,48 @@ const VendorOrders = () => {
         <div className={'w-full h-screen flex flex-col justify-start items-center'}>
             <div
                 className={'w-[90%] fit h-fit flex flex-row justify-center items-center gap-4 text-black my-4'}>
-                <p><BsFunnel size={20} color={"rgb(var(--main-color))"}/></p>
                 <SearchingBar url={endpoints.brand.searchOrders} minLength={10} errorText={'Hãy nhập từ khóa'}
-                              setData={setData} reload={reload} placeholderText={'Tối thiểu 10 kí tự...'}/>
-                <p
-                    onClick={() => setReload(true)}><BsArrowClockwise size={20} color={"rgb(var(--main-color))"}/></p>
+                              setData={setData} setReload={setReload} placeholderText={'Tối thiểu 10 kí tự...'}/>
+            </div>
+            <div
+                className={`w-full min-w-0 h-fit bg-white flex flex-row justify-start items-center gap-2 py-2 mb-5 overflow-x-auto`}>
+                <button
+                    className={`border-2  whitespace-nowrap border-[rgb(var(--btn-primary-bg))] p-2 rounded-lg ${activeTab[0] ? `text-white bg-[rgb(var(--btn-primary-bg))]` : `text-black bg-white`}`}
+                    onClick={() => handleFilterByType('PENDING', 0)}>
+                    Đang chờ
+                </button>
+                <button
+                    className={`border-2  whitespace-nowrap  border-[rgb(var(--btn-primary-bg))] p-2 rounded-lg ${activeTab[1] ? `text-white bg-[rgb(var(--btn-primary-bg))]` : `text-black bg-white`}`}
+                    onClick={() => handleFilterByType('CONFIRMED', 1)}>Đã xác nhận
+                </button>
+                <button
+                    className={`border-2  border-[rgb(var(--btn-primary-bg))] whitespace-nowrap p-2 rounded-lg ${activeTab[2] ? `text-white bg-[rgb(var(--btn-primary-bg))]` : `text-black bg-white`}`}
+                    onClick={() => handleFilterByType('PREPARING', 2)}>Đang chuẩn bị
+                </button>
+                <button
+                    className={`border-2  border-[rgb(var(--btn-primary-bg))] whitespace-nowrap p-2 rounded-lg ${activeTab[3] ? `text-white bg-[rgb(var(--btn-primary-bg))]` : `text-black bg-white`}`}
+                    onClick={() => handleFilterByType('DELIVERING', 3)}>Đang vận chuyển
+                </button>
+                <button
+                    className={`border-2  border-[rgb(var(--btn-primary-bg))] whitespace-nowrap p-2 rounded-lg ${activeTab[4] ? `text-white bg-[rgb(var(--btn-primary-bg))]` : `text-black bg-white`}`}
+                    onClick={() => handleFilterByType('CANCELED', 4)}>Hủy bỏ
+                </button>
+                <button
+                    className={`border-2  border-[rgb(var(--btn-primary-bg))] whitespace-nowrap p-2 rounded-lg ${activeTab[5] ? `text-white bg-[rgb(var(--btn-primary-bg))]` : `text-black bg-white`}`}
+                    onClick={() => handleFilterByType('ABORTED', 5)}>Từ chối
+                </button>
+                <button
+                    className={`border-2 border-[rgb(var(--btn-primary-bg))] whitespace-nowrap p-2 rounded-lg ${activeTab[6] ? `text-white bg-[rgb(var(--btn-primary-bg))]` : `text-black bg-white`}`}
+                    onClick={() => handleFilterByType('POSTPONED', 6)}>Hoãn lại
+                </button>
+                <button
+                    className={`border-2 border-[rgb(var(--btn-primary-bg))] whitespace-nowrap p-2 rounded-lg ${activeTab[6] ? `text-white bg-[rgb(var(--btn-primary-bg))]` : `text-black bg-white`}`}
+                    onClick={() => handleFilterByType('REFUNDED', 7)}>Hoàn trả
+                </button>
+                <button
+                    className={`border-2 border-[rgb(var(--btn-primary-bg))] whitespace-nowrap p-2 rounded-lg ${activeTab[6] ? `text-white bg-[rgb(var(--btn-primary-bg))]` : `text-black bg-white`}`}
+                    onClick={() => handleFilterByType('COMPLETE', 8)}>Hoàn thành
+                </button>
             </div>
             <div className={'mt-3 mb-5'}>
                 {data !== null && data !== undefined ? (
@@ -128,7 +184,8 @@ const VendorOrders = () => {
                          className={'w-full h-fit border-2 border-[rgb(var(--border-color))] p-2 rounded-lg bg-amber-100 mb-2 shadow-lg shadow-gray-300'}
                          onClick={() => handleOpenDetail(value.id)} style={{cursor: 'pointer'}}>
                         <p className={'text-lg border-b-[1px] border-[rgb(var(--border-color))] mb-2 w-full flex justify-start items-center gap-2'}>
-                            <strong className={'w-fit flex justify-center items-center gap-1 text-[rgb(var(--main-color))]'}>
+                            <strong
+                                className={'w-fit flex justify-center items-center gap-1 text-[rgb(var(--main-color))]'}>
                                 <BsBookmarkFill/>Bạn có một đơn đặt hàng mới
                             </strong>
                         </p>
@@ -136,7 +193,7 @@ const VendorOrders = () => {
                             <strong className={'w-fit flex justify-center items-center gap-1'}>
                                 <BsCheckCircleFill/>Tình trạng:
                             </strong>
-                            {handleRenderStatus(value.status)}</p>
+                            {handleRenderStatus(value.status as OrderStatus)}</p>
                         <p className={'text-sm w-full flex justify-start items-center gap-2'}>
                             <strong className={'w-fit flex justify-center items-center gap-1'}>
                                 <BsUpc/>Mã đặt hàng:

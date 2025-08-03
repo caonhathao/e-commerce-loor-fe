@@ -80,10 +80,10 @@ export const UserLayout = () => {
     useEffect(() => {
         const handleCheck = (data: any) => console.log(data.message);
 
-        socket.off('creating_new_order').on('creating_new_order', handleCheck);
+        socket.off('update_status_order').on('update_status_order', handleCheck);
 
         return () => {
-            socket.off('creating_new_order', handleCheck);
+            socket.off('update_status_order', handleCheck);
         };
     }, []);
 

@@ -50,7 +50,7 @@ const UserCreateOrder: React.FC<Props> = ({listVariant, setOpenCreate}) => {
             toast.error('Vui lòng thêm số điện thoại!');
             return;
         }
-        if (user?.shipping_address === null) {
+        if (user?.ShippingAddress === null) {
             toast.error('Vui lòng thêm địa chỉ giao hàng!');
             return;
         }
@@ -59,7 +59,7 @@ const UserCreateOrder: React.FC<Props> = ({listVariant, setOpenCreate}) => {
             setIsSubmitted(true)
 
             const payload = {
-                address: currentAddress.address === '' ? user?.shipping_address[0].address + ', ' + user?.shipping_address[0].ward + ' ,' + user?.shipping_address[0].city : currentAddress.address,
+                address: currentAddress.address === '' ? user?.ShippingAddress[0].address + ', ' + user?.ShippingAddress[0].ward + ' ,' + user?.ShippingAddress[0].city : currentAddress.address,
                 method: 'COD',
                 shipping_type: 'GIAO_HANG_NHANH'
             }
@@ -124,7 +124,7 @@ const UserCreateOrder: React.FC<Props> = ({listVariant, setOpenCreate}) => {
         };
     }, []);
 
-    //get address data on first load
+    //get address data on the first load
     useEffect(() => {
         fetchData(endpoints.user.getAllAddress, false, setDataAddress, 'Có lỗi xảy ra!');
     }, []);
@@ -139,8 +139,8 @@ const UserCreateOrder: React.FC<Props> = ({listVariant, setOpenCreate}) => {
                 try {
                     fetchData(endpoints.user.getUserInfo, false, setUser, 'Lấy địa chỉ thất bại')
                     setCurrentAddress({
-                        address: user?.shipping_address[0].address + ', ' + user?.shipping_address[0].ward + ' ,' + user?.shipping_address[0].city,
-                        default: user?.shipping_address[0].is_default ?? false
+                        address: user?.ShippingAddress[0].address + ', ' + user?.ShippingAddress[0].ward + ' ,' + user?.ShippingAddress[0].city,
+                        default: user?.ShippingAddress[0].is_default ?? false
                     })
                 } catch
                     (e) {
@@ -183,14 +183,14 @@ const UserCreateOrder: React.FC<Props> = ({listVariant, setOpenCreate}) => {
                             <p className={'text-lg font-bold text-[rgb(var(--main-color))] px-2 py-1'}>Địa chỉ giao
                                 hàng</p>
                             <div className={'w-full h-fit flex flex-row justify-between items-center gap-2 p-2'}>
-                                {user?.shipping_address.length !== 0 ? (
+                                {user?.ShippingAddress.length !== 0 ? (
                                     <div
                                         className={'w-full h-fit flex flex-row justify-between items-center gap-4 py-1'}>
                                         <div
                                             className="w-full h-fit flex flex-row justify-between items-center gap-4 py-1">
                                             <p className="text-lg">
-                                                {currentAddress.address === '' ? user?.shipping_address[0].address + ', ' + user?.shipping_address[0].ward + ' ,' + user?.shipping_address[0].city : currentAddress.address}
-                                                {currentAddress.default || (currentAddress.address === '' && user?.shipping_address[0].is_default) ?
+                                                {currentAddress.address === '' ? user?.ShippingAddress[0].address + ', ' + user?.ShippingAddress[0].ward + ' ,' + user?.ShippingAddress[0].city : currentAddress.address}
+                                                {currentAddress.default || (currentAddress.address === '' && user?.ShippingAddress[0].is_default) ?
                                                     <strong className="text-[rgb(var(--secondary-color))]">
                                                         (Mặc định)
                                                     </strong> : null}
@@ -255,7 +255,7 @@ const UserCreateOrder: React.FC<Props> = ({listVariant, setOpenCreate}) => {
                     </div>
                 </div>
                 {/*main content*/}
-                <div className={'w-full h-fit my-2 p-2 bg-white absolute top-75 z-[99]'}>
+                <div className={'w-full h-fit my-2 p-2 bg-white absolute top-70 z-[99]'}>
                     <div className={'w-full h-full flex flex-col justify-start items-center my-2'}>
                         {listVariant.list.map((item, index) => {
                             return (
@@ -330,7 +330,7 @@ const UserCreateOrder: React.FC<Props> = ({listVariant, setOpenCreate}) => {
                 <div
                     className={'w-full h-fit flex flex-col justify-center items-center bg-white px-2 py-5 rounded-t-lg border-t-2 border-[rgb(var(--main-color))] fixed bottom-0 right-0 z-[99]'}>
                     <p className={'text-sm italic text-[rgb(var(--text-error))]'}>{user?.numberphone === null ? 'Ban chưa có số điện thoại' : null}</p>
-                    <p className={'text-sm italic text-[rgb(var(--text-error))]'}>{user?.shipping_address && user.shipping_address.length === 0 ? 'Bạn chưa có địa chỉ giao hàng' : null}</p>
+                    <p className={'text-sm italic text-[rgb(var(--text-error))]'}>{user?.ShippingAddress && user.ShippingAddress.length === 0 ? 'Bạn chưa có địa chỉ giao hàng' : null}</p>
                     <div className={'w-full h-fit flex flex-row justify-between items-center gap-2 p-2'}>
                         <div>
                             Tổng hóa đơn: <strong className={'text-[rgb(var(--main-color))]'}>{1}</strong>

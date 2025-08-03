@@ -83,6 +83,7 @@ const endpoints = {
         cancelOrder: (id: string) => buildUrlWithParams("/api/user/cancel-order/:id", {id}),
         getOrderDetail: (id: string) => buildUrlWithParams("/api/user/get-order-detail/:id", {id}),
         searchOrder: '/api/user/search-by-id',
+        getEmptyOrderReview: '/api/user/get-order-reviews',
 
         getReceiptByOrderId: (id: string) => buildUrlWithParams("/api/user/get-receipt-from-order/:id", {id}),
 
@@ -98,7 +99,7 @@ const endpoints = {
 
         getAllProducts: "/api/public/get-all-products",
         getProductByIdFromUser: (id: string) => buildUrlWithParams("/api/public/get-product-by-id/:id", {id}),
-        getProductByKeyword:"/api/public/search-product",
+        getProductByKeyword: "/api/public/search-product",
         getProductByPrice: "/api/public/get-product-by-price",
         getAllProductsFromBrand: (id: string | undefined) => buildUrlWithParams("/api/public/get-all-products/:id", {id}),
 
@@ -106,6 +107,8 @@ const endpoints = {
         getAllVariants: (id: string) => buildUrlWithParams("/api/public/get-all-variants/:id", {id}),
 
         getAllAttributes: "/api/public/get-all-variant-attributes",
+
+        getAllReviews: '/api/public/get-all-review',
 
         getBrandDetail: (id: string) => buildUrlWithParams("/api/public/get-brand-by-id/:id", {id}),
 

@@ -16,7 +16,7 @@ const VendorManage = () => {
     const {setProduct} = useProduct();
 
     useEffect(() => {
-        fetchDataWithQuery(endpoints.brand.getAllProducts, setData, 1, 7);
+        fetchDataWithQuery(endpoints.brand.getAllProducts, setData, undefined, 1, 7);
     }, [reload]);
 
     const createNewProduct = () => {
@@ -47,7 +47,7 @@ const VendorManage = () => {
                         count={data.total_pages}
                         page={data.current_page}
                         onChange={(_e, value) =>
-                            fetchDataWithQuery(endpoints.brand.getAllProducts, setData, value, 7)
+                            fetchDataWithQuery(endpoints.brand.getAllProducts, setData, undefined, value ?? 1, 7)
                         }
                     />
                 </Stack>

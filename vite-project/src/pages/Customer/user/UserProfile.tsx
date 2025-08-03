@@ -76,7 +76,7 @@ const UserProfile = () => {
                         <strong>Địa chỉ giao hàng</strong>
                     </p>
                     <div className={'w-full h-fit'}>
-                        {user?.shipping_address && user?.shipping_address.map((item, index) => (
+                        {user?.ShippingAddress && user?.ShippingAddress.map((item, index) => (
                             <div className={' grid grid-cols-8 gap-1 items-center my-1'}>
                                 <p className={'col-span-7'}>
                                     <strong>{index + 1}.</strong> {item.address}, {item.ward}, {item.city}</p>

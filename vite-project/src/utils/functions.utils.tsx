@@ -92,8 +92,6 @@ export const fetchDataWithQuery = async (
         });
         if (response.status === 200) {
             setData(response.data)
-        } else if (response.status === 201) {
-            setData(undefined)
         }
     } catch (e) {
         console.error(e)

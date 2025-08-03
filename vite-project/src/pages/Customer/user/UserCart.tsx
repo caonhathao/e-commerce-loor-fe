@@ -146,10 +146,10 @@ const UserCart = () => {
                         return {
                             variant_id: item.variant_id,
                             cart_id: item.id,
-                            image_link: item.image_link,
-                            variant_name: item.product_variants.name,
+                            image_link: item.ProductVariants.image_link,
+                            variant_name: item.ProductVariants.name,
                             amount: found.amount,
-                            cost: found.amount * item.product_variants.price
+                            cost: found.amount * item.ProductVariants.price
                         };
                     });
 
@@ -352,11 +352,11 @@ const UserCart = () => {
                                             <div
                                                 className={'w-full flex flex-row justify-start items-center gap-2 p-2'}>
                                                 <div className={'w-[30%] flex flex-col justify-center items-center'}>
-                                                    <img src={item.image_link} alt={'thumbnail'}/>
+                                                    <img src={item.ProductVariants.image_link} alt={'thumbnail'}/>
                                                 </div>
                                                 <div className={'w-[70%]'}>
-                                                    <p className={'text-lg font-bold h-15 overflow-hidden'}>{item.product_variants.name}</p>
-                                                    <p className={'text-gray-600 italic'}>({item.product_variants.stock === 0 ? 'Ngừng kinh doanh' : null})</p>
+                                                    <p className={'text-lg font-bold h-15 overflow-hidden'}>{item.ProductVariants.name}</p>
+                                                    <p className={'text-gray-600 italic'}>{item.ProductVariants.stock === 0 ? '(Ngừng kinh doanh)' : null}</p>
                                                 </div>
                                             </div>
                                             <div className={'w-full grid grid-cols-5 grid-rows-1 gap-2 p-2'}>
@@ -370,7 +370,7 @@ const UserCart = () => {
                                                             Tổng: <strong className={'text-[rgb(var(--main-color))]'}>{
                                                             formatedNumber(
                                                                 (amount.find(a => a.variant_id === item.variant_id)?.amount ?? item.amount)
-                                                                * item.product_variants.price
+                                                                * item.ProductVariants.price
                                                             )
                                                         }đ</strong>
                                                         </p>

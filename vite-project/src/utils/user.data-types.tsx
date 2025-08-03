@@ -18,7 +18,7 @@ export interface productType {
     category_id: string,
     subcategory_id: string,
     name: string,
-    image_products: {
+    ImageProducts: {
         image_link: string,
     }[],
     average_price: string,
@@ -27,12 +27,63 @@ export interface productType {
     stock: number,
 }
 
-export interface productDataType {
+export interface productListDataType {
     current_page: number,
     total_pages: number,
     current_items: number,
     total_items: number,
     data: productType[]
+}
+
+export interface productVariantType {
+    id: string,
+    name: string,
+    price: string,
+    ProductAttributes: {
+        name_att: string,
+        value_att: string,
+    }[],
+    image_link: string,
+    sku: string,
+}
+
+export interface productDetailDataType {
+    id: string,
+    brand_id: string,
+    category_id: string,
+    subcategory_id: string,
+    name: string,
+    ImageProducts: {
+        image_link: string,
+    }[],
+    FeaturedProduct: {
+        product_wishlist: 0
+    }
+    average_price: string,
+    status: string,
+    origin: string,
+    promotion: number,
+    stock: number,
+    description: string,
+    ProductVariants: productVariantType[]
+}
+
+export interface reviewDataType {
+    current_page: number,
+    total_pages: number,
+    current_items: number,
+    total_items: number,
+    data: {
+        content: string,
+    },
+    review_has_image: number,
+    start: {
+        1: number,
+        2: number,
+        3: number,
+        4: number,
+        5: number,
+    }
 }
 
 export interface cartType {
@@ -44,12 +95,12 @@ export interface cartType {
         amount: number,
         pinned: boolean,
         variant_id: string,
-        image_link: string,
-        product_variants: {
+       ProductVariants: {
             name: string,
             price: number,
             stock: number,
-            products: {
+           image_link: string,
+            Products: {
                 status: boolean,
             }
         }
@@ -98,7 +149,7 @@ export interface userType {
     gender: '',
     email: '',
     numberphone: '',
-    shipping_address: addressType[],
+    ShippingAddress: addressType[],
     notify_count: 0,
     image_link: '',
 }
@@ -145,7 +196,7 @@ export const orderStatus = {
     DELIVERING: 'Đang vận chuyển',
     CANCELED: 'Bị hủy',
     ABORTED: ' Bị tư chối',
-    POSTPONED: 'Trì hoãn',
+    POSTPONED: 'Chờ thanh toán',
     REFUNDED: 'Hoàn trả',
     COMPLETE: 'Hoàn thành'
 }
@@ -163,7 +214,7 @@ export interface orderDetailType {
         amount: number,
         cost: number,
         variant_id: string,
-        product_variants: {
+        ProductVariants: {
             name: string,
             sku: string,
             price: number

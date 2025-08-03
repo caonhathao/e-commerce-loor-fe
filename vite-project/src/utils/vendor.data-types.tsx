@@ -25,6 +25,48 @@ export interface productListType {
     data: productListDetailType[]
 }
 
+export interface imageType {
+    file: File,
+    url: string,
+}
+
+export interface imgStored {
+    id: string,
+    image_id: string,
+    image_link: string,
+}
+
+export interface productDataType{
+    id: string,
+    category_id: string,
+    subcategory_id: string,
+    name: string,
+    origin: string,
+    status: number,
+    average_price: number,
+    description: string,
+    promotion: number,
+    tags: string,
+    stock: number,
+    ImageProducts: imgStored[],
+}
+
+export interface productVariantType {
+    id: string,
+    product_id: string,
+    name: string,
+    sku: string,
+    price: number,
+    stock: number,
+    status: string,
+    image_link: string,
+}
+
+export interface attributesType {
+    name_att: string;
+    value_att: string;
+}
+
 export interface variantListType {
     id: string,
     sku: string,

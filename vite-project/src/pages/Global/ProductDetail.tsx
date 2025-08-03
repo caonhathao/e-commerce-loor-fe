@@ -1,6 +1,6 @@
 import {useEffect, useState} from "react";
 import apiClient from "../../services/apiClient.tsx";
-import {Link, useParams} from "react-router-dom";
+import {Link, useNavigate, useParams} from "react-router-dom";
 import endpoints from "../../services/endpoints.tsx";
 import {toast, ToastContainer} from "react-toastify";
 import {
@@ -10,52 +10,23 @@ import {
     BsStarHalf, BsTwitterX,
     BsWhatsapp
 } from "react-icons/bs";
-import {formatedNumber} from "../../utils/functions.utils.tsx";
+import {fetchData, fetchDataWithQuery, formatedNumber} from "../../utils/functions.utils.tsx";
 import AmountInput from "../../components/modules/AmountInput.tsx";
 import SlideShowImg from "../../components/modules/SlideShowImg.tsx";
 import {getAccessToken} from "../../services/tokenStore.tsx";
-
-interface productVariantType {
-    id: string,
-    name: string,
-    price: string,
-    product_attributes: {
-        name_att: string,
-        value_att: string,
-    }[],
-    sku: string,
-}
-
-interface dataType {
-    id: string,
-    brand_id: string,
-    category_id: string,
-    subcategory_id: string,
-    name: string,
-    image_products: {
-        image_link: string,
-    }[],
-    featured_product: {
-        product_wishlist: 0
-    }
-    average_price: string,
-    status: string,
-    origin: string,
-    promotion: number,
-    stock: number,
-    description: string,
-    product_variants: productVariantType[]
-}
+import {productDetailDataType, productVariantType, reviewDataType} from "../../utils/user.data-types.tsx";
 
 const ProductDetail = () => {
-    const [data, setData] = useState<dataType>()
+    const [data, setData] = useState<productDetailDataType>()
     const [openAttributes, setOpenAttributes] = useState<productVariantType>()
     const [listVariants, setListVariants] = useState<productVariantType[]>([])
+    const [reviewData, setReviewData] = useState<reviewDataType>()
     const [total, setTotal] = useState<number>(0)
 
     const [amount, setAmount] = useState<number[]>([])
 
     const params = useParams()
+    const navigate = useNavigate()
 
     const handleOpenAttributes = (variant: productVariantType) => {
         setOpenAttributes(variant)
@@ -65,6 +36,7 @@ const ProductDetail = () => {
         const exist = listVariants.find(item => item.id === variant.id)
         if (!exist) {
             setListVariants(prevState => [...prevState, variant])
+            setAmount(prevState => [...prevState, 1])
         }
     }
 
@@ -86,7 +58,7 @@ const ProductDetail = () => {
                 const temp = {
                     id: variants[i].id,
                     amount: amount[i],
-                    image_link: data?.image_products[0].image_link,
+                    image_link: data?.ImageProducts[0].image_link,
                 }
                 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                 // @ts-expect-error
@@ -117,23 +89,13 @@ const ProductDetail = () => {
         }
     }
 
-    const fetchData = async () => {
-        try {
-            if (params.id !== undefined) {
-                const response = await apiClient.get(endpoints.public.getProductByIdFromUser(params.id))
-                if (response.status === 200) {
-                    setData(response.data)
-                    setAmount(new Array(response.data.product_variants.length).fill(1))
-                }
-            }
-        } catch (err) {
-            console.log(err)
-            toast.error('Sản phẩm không tồn tại hoặc có lỗi xảy ra!')
-        }
-    }
-
     useEffect(() => {
-        fetchData()
+        if (params.id !== undefined) {
+            fetchData(endpoints.public.getProductByIdFromUser(params.id), false, setData, 'Sản phẩm không tồn tại hoặc có lỗi xảy ra!')
+            fetchDataWithQuery(endpoints.public.getAllReviews, setReviewData, {id: params.id})
+        } else {
+            navigate('/')
+        }
     }, []);
 
     useEffect(() => {
@@ -146,13 +108,14 @@ const ProductDetail = () => {
 
     useEffect(() => {
         console.log(listVariants)
-    }, [listVariants])
+        console.log(amount)
+    }, [amount, listVariants])
 
     return (
         <>
             <div className={'w-full h-full flex flex-col justify-start items-center mt-5 p-2'}>
                 {/*images zone*/}
-                <SlideShowImg data={data?.image_products}/>
+                <SlideShowImg data={data?.ImageProducts}/>
                 {/*title: product's name zone*/}
                 <div className={'w-[90%] h-fit flex flex-col justify-start items-center my-2'}>
                     <p><strong className={'text-lg'}>{data?.name}</strong></p>
@@ -175,7 +138,7 @@ const ProductDetail = () => {
                             </button>
                             <p className={'text-[rgb(var(--text-error))]'}>Thích</p>
                         </div>
-                        <p className={'text-[rgb(var(--text-error))]'}>({data?.featured_product.product_wishlist} lượt
+                        <p className={'text-[rgb(var(--text-error))]'}>({data?.FeaturedProduct.product_wishlist} lượt
                             thích)</p>
                     </div>
                 </div>
@@ -204,42 +167,44 @@ const ProductDetail = () => {
                         Các phiên bản
                     </p>
 
-                    <div
-                        className={'w-full border-b-2 border-[rgb(var(--border-color))] bg-[rgb(var(--main-color))] rounded-tl-lg rounded-tr-lg grid grid-cols-6'}>
-                        <div className={'col-span-4 text-left p-1'}>Tên</div>
-                        <div className={'col-1 text-left p-1'}>Giá</div>
-                        <div className={'col-1 text-left p-1'}></div>
-                    </div>
-
-                    {data?.product_variants && data?.product_variants.map((item) => (
-                        <div key={item.id}
-                             className={'w-full border-b-2 border-[rgb(var(--border-color))] bg-[rgb(var(--main-color)/0.2)] grid grid-cols-6'}
-                        >
-                            <div className={'p-1 col-span-4 text-left h-full'} onClick={() => {
-                                handleOpenAttributes(item)
-                            }}>
-                                <p>{item.name}</p>
-                                <p className={'text-sm italic text-gray-400'}>Mã sku: {item.sku}</p>
-                            </div>
-                            <div
-                                className={'p-1 col-1 flex justify-center items-center'}>{formatedNumber(Number(item.price))}đ
-                            </div>
-                            <div className={'p-1 col-1 flex justify-center items-center'}
-                                 onClick={() => {
-                                     handleAddVariants(item)
-                                 }}
-                            >
-                                <BsPlusCircle size={20}/>
-                            </div>
+                    <div className={'w-full max-h-50 overflow-y-auto'}>
+                        <div
+                            className={'w-full border-b-2 border-[rgb(var(--border-color))] bg-[rgb(var(--main-color))] rounded-tl-lg rounded-tr-lg grid grid-cols-6'}>
+                            <div className={'col-span-4 text-left p-1 text-white font-bold'}>Tên</div>
+                            <div className={'col-1 text-left p-1 text-white font-bold'}>Giá</div>
+                            <div className={'col-1 text-left p-1'}></div>
                         </div>
-                    ))}
 
+                        {data?.ProductVariants && data?.ProductVariants.map((item) => (
+                            <div key={item.id}
+                                 className={'w-full border-b-2 border-[rgb(var(--border-color))] bg-[rgb(var(--main-color)/0.2)] grid grid-cols-6'}
+                            >
+                                <div className={'p-1 col-span-4 text-left h-full'} onClick={() => {
+                                    handleOpenAttributes(item)
+                                }}>
+                                    <p>{item.name}</p>
+                                    <p className={'text-sm italic text-gray-400'}>Mã sku: {item.sku}</p>
+                                </div>
+                                <div
+                                    className={'p-1 col-1 flex justify-center items-center'}>{formatedNumber(Number(item.price))}đ
+                                </div>
+                                <div className={'p-1 col-1 flex justify-center items-center'}
+                                     onClick={() => {
+                                         handleAddVariants(item)
+                                     }}
+                                >
+                                    <BsPlusCircle size={20}/>
+                                </div>
+                            </div>
+                        ))}
+
+                    </div>
                 </div>
 
                 {/*price and amount or promotion*/}
                 <div className={'w-[90%] h-fit flex flex-col justify-between items-center my-2'}>
                     <div
-                        className={'bg-[rgb(var(--main-color))] w-full h-fit p-2 text-[rgb(var(--text-color)] text-lg text-center rounded-tl-lg rounded-tr-lg'}>
+                        className={'bg-[rgb(var(--main-color))] w-full h-fit p-2 text-white text-lg font-bold text-center rounded-tl-lg rounded-tr-lg'}>
                         GIÁ TRỊ ĐƠN HÀNG
                     </div>
                     {listVariants.map((item, i) => (
@@ -264,12 +229,12 @@ const ProductDetail = () => {
                         </div>
                     ))}
                     <div
-                        className={'w-full p-1 bg-[rgb(var(--main-color))] flex justify-between items-center rounded-bl-lg rounded-br-lg'}>
+                        className={'w-full p-1 bg-[rgb(var(--main-color)/0.2)] flex justify-between items-center rounded-bl-lg rounded-br-lg'}>
                         <p className={'text-lg'}>TỔNG: <strong>{formatedNumber(total)}đ</strong></p>
                     </div>
                 </div>
 
-                {/*buy button now and add to cart button*/}
+                {/*buy button now and add to the cart button*/}
                 <div className={'w-[90%] h-fit flex flex-row justify-between items-center my-2'}>
                     <button type={'button'}
                             className={'w-fit h-fit text-(rgb(var(--text-color))] text-lg rounded-lg p-2 flex flex-row jus-center items-center gap-2 border-2 border-[rgb(var(--main-color))]'}
@@ -280,7 +245,7 @@ const ProductDetail = () => {
                         Vào giỏ
                     </button>
                     <button type={'button'}
-                            className={'w-fit h-fit bg-[rgb(var(--main-color))] text-(rgb(var(--text-color))] text-lg rounded-lg p-2'}
+                            className={'w-fit h-fit bg-[rgb(var(--main-color))] text-white text-lg rounded-lg p-2'}
                     >
                         Mua ngay
                     </button>
@@ -299,30 +264,29 @@ const ProductDetail = () => {
                     <p className={'text-lg font-bold border-b-[1px] border-(rgb(var(--border-color))] w-full my-2'}>
                         Đánh giá sản phẩm
                     </p>
+                    {reviewData?.total_items === 0 ? 'Chưa có đánh giá' : ''}
                 </div>
-                {
-                    openAttributes !== undefined ? (
-                        <div
-                            className={'absolute bg-white shadow-lg shadow-gray-500 bottom-10 w-[50%] min-h-40 rounded-lg'}>
-                            <div className={'grid grid-cols-8'}>
-                                <p className={'w-full bg-[rgb(var(--main-color))] col-span-7 rounded-tl-lg p-1'}>Thuộc
-                                    tính
-                                    phiên bản</p>
-                                <div
-                                    className={'bg-red-600 rounded-tr-lg w-full h-full flex justify-center items-center text-white top-0 right-0 col-1'}
-                                    onClick={() => {
-                                        setOpenAttributes(undefined)
-                                    }}>x
-                                </div>
+
+                {openAttributes !== undefined ? (
+                    <div
+                        className={'absolute bg-white shadow-lg shadow-gray-500 bottom-10 w-[60%] min-h-40 max-h-50 rounded-lg overflow-y-auto'}>
+                        <div className={'grid grid-cols-8'}>
+                            <p className={'w-full bg-[rgb(var(--main-color))] text-white col-span-7 rounded-tl-lg p-1'}>
+                                Chi tiết</p>
+                            <div
+                                className={'bg-red-600 rounded-tr-lg w-full h-full flex justify-center items-center text-white top-0 right-0 col-1'}
+                                onClick={() => {
+                                    setOpenAttributes(undefined)
+                                }}>x
                             </div>
-                            <p className={'text-center text-sm italic text-gray-400'}>SKU: {openAttributes.sku}</p>
-                            {openAttributes.product_attributes.length !== 0 ? openAttributes.product_attributes.map((item) => (
-                                <div className={'p-2'}>{item.name_att}: {item.value_att}</div>
-                            )) : <div className={'text-center text-red-400 italic'}>Sản phẩm không có thêm thuộc
-                                tính</div>}
                         </div>
-                    ) : null
-                }
+                        <p className={'text-center text-sm italic text-gray-400'}>SKU: {openAttributes.sku}</p>
+                        {openAttributes.ProductAttributes.length !== 0 ? openAttributes.ProductAttributes.map((item) => (
+                            <div className={'p-2'}>{item.name_att}: {item.value_att}</div>
+                        )) : <div className={'text-center text-red-400 italic'}>Sản phẩm không có thêm thuộc
+                            tính</div>}
+                    </div>
+                ) : null}
             </div>
             <ToastContainer/>
         </>

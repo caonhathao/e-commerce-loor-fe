@@ -57,8 +57,24 @@ const UserNotifyDetail: React.FC<UserNotifyDetailProps> = ({setOpen, id}) => {
     }
 
     const handleGetID = (url: string) => {
-        const id = url.split('/').pop()
-        return id;
+        const id = url.split('/')
+        if (id.length === 0) return null
+        if (id[0] === 'order-detail') {
+            return (
+                <p>
+                    Xem chi tiết <Link to={`/user/show-orders/${id[1]}`}
+                                       className={'text-[rgb(var(--secondary-color))]'}>tại đây</Link>
+                </p>
+            )
+        }
+        if (id[0] === 'order-review') {
+            return (
+                <p>
+                    Xem chi tiết <Link to={`/user/orders-review/${id[1]}`}
+                                       className={'text-[rgb(var(--secondary-color))]'}>tại đây</Link>
+                </p>
+            )
+        }
     }
 
     useEffect(() => {
@@ -88,10 +104,7 @@ const UserNotifyDetail: React.FC<UserNotifyDetailProps> = ({setOpen, id}) => {
                 </div>
                 <div className={'w-full h-fit p-3 leading-7'}>
                     <p>{notifyData?.content}</p>
-                    <p>
-                        Xem chi tiết <Link to={`/user/show-orders/${handleGetID(notifyData?.redirect_url)}`}
-                                           className={'text-[rgb(var(--secondary-color))]'}>tại đây</Link>
-                    </p>
+                    {handleGetID(notifyData?.redirect_url)}
                 </div>
             </div>
         </div>

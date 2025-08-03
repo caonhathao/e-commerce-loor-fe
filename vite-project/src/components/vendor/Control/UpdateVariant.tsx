@@ -9,43 +9,20 @@ import endpoints from "../../../services/endpoints.tsx";
 import apiClient from "../../../services/apiClient.tsx";
 import {BsBoxArrowInLeft, BsGearWideConnected} from "react-icons/bs";
 import UpdateAttribute from "./UpdateAttribute.tsx";
+import {productVariantType} from "../../../utils/vendor.data-types.tsx";
+import {attributesType} from "../../../utils/vendor.data-types.tsx";
 
-interface data {
-    id: string,
-    product_id: string,
-    name: string,
-    sku: string,
-    price: number,
-    stock: number,
-    status: string,
-}
-
-interface Attributes {
-    name_att: string;
-    value_att: string;
-}
 
 const UpdateProduct = () => {
     const navigate = useNavigate();
     const params = useParams();
 
-    const [data, setData] = useState<data>();
+    const [data, setData] = useState<productVariantType>();
     const [isResponse, setIsResponse] = useState(false);
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [openUpdateAttribute, setOpenUpdateAttribute] = useState(false);
-    const [attribute, setAttribute] = useState<Attributes[]>([])
+    const [attribute, setAttribute] = useState<attributesType[]>([])
 
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-expect-error
-    const handleResetForm = ({setValues}) => {
-        setValues({
-            name: data ? data['name'] : 'unknown',
-            price: data ? data['price'] : 0,
-            sku: data ? data['sku'] : '',
-            status: data ? data['status'] : false,
-            stock: data ? data['stock'] : 0,
-        })
-    }
 
     const handleUpdateAttribute = (id: string | undefined) => {
         if (id !== undefined) {
@@ -92,6 +69,10 @@ const UpdateProduct = () => {
         }
         fetchData()
     }, []);
+
+    useEffect(() => {
+        console.log(data)
+    }, [data])
 
     if (!data) return <Loading/>;
 
@@ -166,7 +147,7 @@ const UpdateProduct = () => {
                           handleSubmit,
                           errors,
                           touched,
-                          setValues
+                          resetForm
                       }) => {
                         return (
                             <div className={'h-full w-full relative'}>
@@ -286,7 +267,7 @@ const UpdateProduct = () => {
                                         </button>
                                         <button type={'button'}
                                                 className={'bg-purple-500 p-2 rounded-4xl text-white font-bold flex justify-center items-center'}
-                                                onClick={() => handleResetForm({setValues: setValues})}>
+                                                onClick={() => resetForm()}>
                                             Cài lại
                                         </button>
                                         <button type={'submit'}

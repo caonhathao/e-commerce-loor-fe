@@ -5,31 +5,11 @@ import endpoints from "../../services/endpoints.tsx";
 import {Pagination, Stack} from "@mui/material";
 import ProductCard from "../../components/modules/ProductCard.tsx";
 import err404 from '../../assets/img/404.png'
+import {productListDataType} from "../../utils/user.data-types.tsx";
 
-interface productType {
-    id: string,
-    brand_id: string,
-    category_id: string,
-    subcategory_id: string,
-    name: string,
-    image_products: {
-        image_link: string,
-    }[],
-    average_price: string,
-    status: string,
-    origin: string,
-}
-
-interface dataType {
-    current_page: number,
-    total_pages: number,
-    current_items: number,
-    total_items: number,
-    data: productType[]
-}
 
 const Home = () => {
-    const [data, setData] = useState<dataType>()
+    const [data, setData] = useState<productListDataType>()
     const fetchData = async (page: number, limit: number | 10) => {
         try {
             const response = await apiClient.get(endpoints.public.getAllProducts, {
@@ -62,7 +42,7 @@ const Home = () => {
         <div className={'w-full h-full'}>
             <div className={'flex flex-row flex-wrap justify-start items-center m-2'}>
                 {data && data.data.map((item, i) => (
-                    <ProductCard url_path={item.id} img_path={item.image_products[0].image_link ?? err404} index={i}
+                    <ProductCard url_path={item.id} img_path={item.ImageProducts[0].image_link ?? err404} index={i}
                                  name={item.name} price={item.average_price} rating={'5.0'}/>
                 ))}
             </div>

@@ -23,7 +23,7 @@ const UserNotify = () => {
     const [choose, setChoose] = useState<string>('');
 
     const [currentTab, setCurrentTab] = useState<number>(0)
-    const [activeTab, setActiveTab] = useState(new Array(7).fill(false));
+    const [activeTab, setActiveTab] = useState(new Array(8).fill(false));
 
     const {setUser} = useUser();
 
@@ -71,7 +71,7 @@ const UserNotify = () => {
             if (data && data.status === 200) {
                 toast.success(data.data.message, {autoClose: 1500})
                 setTimeout(async () => {
-                    await fetchDataWithQuery(endpoints.user.getAllNotifications, setData, 1, 10,)
+                    await fetchDataWithQuery(endpoints.user.getAllNotifications, setData, undefined, 1, 10,)
                     await fetchData(endpoints.user.getUserInfo, false, setUser)
                 }, 1500)
             }
@@ -80,7 +80,7 @@ const UserNotify = () => {
 
     useEffect(() => {
         const fetch = async () => {
-            await fetchDataWithQuery(endpoints.user.getAllNotifications, setData, 1, 10,)
+            await fetchDataWithQuery(endpoints.user.getAllNotifications, setData, undefined, 1, 10,)
             await fetchData(endpoints.user.getUserInfo, false, setUser)
         }
         fetch()
@@ -114,34 +114,38 @@ const UserNotify = () => {
                         </button>
                         <button
                             className={`border-2  whitespace-nowrap  border-[rgb(var(--btn-primary-bg))] p-2 rounded-lg ${activeTab[1] ? `text-white bg-[rgb(var(--btn-primary-bg))]` : `text-black bg-white`}`}
-                            onClick={() => handleFilterByType(['NOTICE', 'SUCCESS'], 1)}>Thông báo
+                            onClick={() => handleFilterByType(['NOTICE'], 1)}>Thông báo
                         </button>
                         <button
-                            className={`border-2  border-[rgb(var(--btn-primary-bg))] whitespace-nowrap p-2 rounded-lg ${activeTab[2] ? `text-white bg-[rgb(var(--btn-primary-bg))]` : `text-black bg-white`}`}
-                            onClick={() => handleFilterByType(['ADS'], 2)}>Quáng cáo
+                            className={`border-2  whitespace-nowrap  border-[rgb(var(--btn-primary-bg))] p-2 rounded-lg ${activeTab[2] ? `text-white bg-[rgb(var(--btn-primary-bg))]` : `text-black bg-white`}`}
+                            onClick={() => handleFilterByType(['SUCCESS'], 2)}>Đơn hàng
                         </button>
                         <button
                             className={`border-2  border-[rgb(var(--btn-primary-bg))] whitespace-nowrap p-2 rounded-lg ${activeTab[3] ? `text-white bg-[rgb(var(--btn-primary-bg))]` : `text-black bg-white`}`}
-                            onClick={() => handleFilterByType(['WARNING'], 3)}>Cảnh báo
+                            onClick={() => handleFilterByType(['ADS'], 3)}>Quáng cáo
                         </button>
                         <button
                             className={`border-2  border-[rgb(var(--btn-primary-bg))] whitespace-nowrap p-2 rounded-lg ${activeTab[4] ? `text-white bg-[rgb(var(--btn-primary-bg))]` : `text-black bg-white`}`}
-                            onClick={() => handleFilterByType(['ERROR'], 4)}>Lỗi
+                            onClick={() => handleFilterByType(['WARNING'], 4)}>Cảnh báo
                         </button>
                         <button
                             className={`border-2  border-[rgb(var(--btn-primary-bg))] whitespace-nowrap p-2 rounded-lg ${activeTab[5] ? `text-white bg-[rgb(var(--btn-primary-bg))]` : `text-black bg-white`}`}
-                            onClick={() => handleFilterByType(['BAN'], 5)}>Lệnh cấm
+                            onClick={() => handleFilterByType(['ERROR'], 5)}>Lỗi
                         </button>
                         <button
-                            className={`border-2 border-[rgb(var(--btn-primary-bg))] whitespace-nowrap p-2 rounded-lg ${activeTab[6] ? `text-white bg-[rgb(var(--btn-primary-bg))]` : `text-black bg-white`}`}
-                            onClick={() => handleFilterByType(['OTHERS'], 6)}>Khác
+                            className={`border-2  border-[rgb(var(--btn-primary-bg))] whitespace-nowrap p-2 rounded-lg ${activeTab[6] ? `text-white bg-[rgb(var(--btn-primary-bg))]` : `text-black bg-white`}`}
+                            onClick={() => handleFilterByType(['BAN'], 6)}>Lệnh cấm
+                        </button>
+                        <button
+                            className={`border-2 border-[rgb(var(--btn-primary-bg))] whitespace-nowrap p-2 rounded-lg ${activeTab[7] ? `text-white bg-[rgb(var(--btn-primary-bg))]` : `text-black bg-white`}`}
+                            onClick={() => handleFilterByType(['OTHERS'], 7)}>Khác
                         </button>
                     </div>
                     {data !== null && data !== undefined ? (
                         <Stack spacing={2} alignItems={'center'}>
                             <Pagination count={data?.total_pages}
                                         page={data?.current_page}
-                                        onChange={(_e, value) => fetchDataWithQuery(endpoints.user.getOrders, setData, value, 10)}/>
+                                        onChange={(_e, value) => fetchDataWithQuery(endpoints.user.getOrders, setData, undefined, value, 10)}/>
                         </Stack>
                     ) : null}
                 </div>
@@ -169,12 +173,10 @@ const UserNotify = () => {
                         ))
                     ) : (<p className={'w-full text-center'}>Thông báo trống!</p>)}
                 </div>
-            </div>
-            {openDetail && choose !== '' ? (
-                <div className={'w-full h-full relative'}>
+                {openDetail && choose !== '' ? (
                     <UserNotifyDetail setOpen={setOpenDetail} id={choose}/>
-                </div>
-            ) : null}
+                ) : null}
+            </div>
         </>
     )
 }

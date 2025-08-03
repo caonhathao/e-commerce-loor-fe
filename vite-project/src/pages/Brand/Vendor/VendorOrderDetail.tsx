@@ -84,8 +84,8 @@ const VendorOrderDetail = () => {
                 onClick={() => navigate(-1)}><BsBoxArrowInLeft size={20} color={'white'}/>
             </div>
             <div className={'w-full h-fit flex flex-col justify-start items-center gap-4'}>
-                <p className={'font-bold text-xl text-[rgb(var(--main-color))] border-b-2 border-[rgb(var(--border-color))] mb-3'}>Thông
-                    tin đơn hàng</p>
+                <p className={'font-bold text-xl text-[rgb(var(--main-color))] border-b-2 border-[rgb(var(--border-color))] mb-3'}>
+                    Thông tin đơn hàng</p>
                 <p className={'text-sm mb-3'}><strong>Mã đơn hàng:</strong> {param.id}</p>
                 <div className={'w-[95%] h-full border-l-2 border-t-2 border-[var(--border-color)] rounded-lg'}>
                     <table>

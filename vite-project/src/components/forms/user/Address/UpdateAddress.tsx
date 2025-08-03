@@ -72,7 +72,7 @@ const UpdateAddress: React.FC<CreateAddressProps> = ({setOpen, setSuccess}) => {
                               onSubmit={handleSubmit}>
                             <p className={'w-full h-fit text-center font-bold text-2xl p-2 border-b-2 border-[rgb(var(--border-color))] mb-3 text-[rgb(var(--main-color))]'}>
                                 Cập nhật địa chỉ giao hàng</p>
-                            {user?.shipping_address.map((value, index) => (
+                            {user?.ShippingAddress.map((value, index) => (
                                 <div key={index}
                                      className={'w-full h-fit border-b-2 border-[rgb(var(--border-color))] p-2 flex flex-row justify-between items-center gap-2'}>
                                     <div className={'w-full h-fit flex flex-row justify-start items-center gap-2'}>

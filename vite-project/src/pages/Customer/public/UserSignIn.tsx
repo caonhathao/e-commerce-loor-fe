@@ -33,12 +33,11 @@ function UserSignIn() {
                 if (response.status === 200) {
                     const {access, data} = response.data;
                     login(access, data);
-                    toast.success('Sign in successfully.', {autoClose: 2000});
+                    toast.success('Đăng nhập thành công', {autoClose: 1500});
                     setTimeout(() => {
                         navigate('/');
-                        // window.location.reload();
-                    }, 2500);
-                } else toast.warning('Sign in failed.');
+                    }, 1700);
+                }
             } catch (err) {
                 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                 // @ts-expect-error
@@ -46,8 +45,8 @@ function UserSignIn() {
             }
         },
         validationSchema: Yup.object({
-            email: Yup.string().email('Your email is invalid').required('Your Customer email is required'),
-            password: Yup.string().min(6, 'Your password must be at least 6 characters').required('Your password is required')
+            email: Yup.string().email('Email không hợp lệ').required('Thiếu email'),
+            password: Yup.string().min(6, 'Tối thiểu 6 kí tự').required('Thiếu mật khẩu')
         })
     })
 
@@ -231,7 +230,8 @@ function UserSignIn() {
                                             type={'submit'}>Submit
                                     </button>
                                 </div>
-                                <Link to={'/user/sign-up'} className={'text-sm sm:max-lg:text-xl'}>You are new? <strong className={'text-[rgb(var(--secondary-color))]'}>
+                                <Link to={'/user/sign-up'} className={'text-sm sm:max-lg:text-xl'}>You are new? <strong
+                                    className={'text-[rgb(var(--secondary-color))]'}>
                                     Sign up here</strong></Link>
                             </div>
                         </form>

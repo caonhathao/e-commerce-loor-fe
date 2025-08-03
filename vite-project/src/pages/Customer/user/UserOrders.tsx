@@ -12,7 +12,12 @@ const UserOrders = () => {
     const [openDetail, setOpenDetail] = useState<boolean>(false);
     const [reload, setReload] = useState<boolean>(false);
     const [choose, setChoose] = useState<string>('');
+
+    const [currentTab, setCurrentTab] = useState<number>(0)
+    const [activeTab, setActiveTab] = useState(new Array(6).fill(false));
+
     const {order_id} = useParams<{ order_id?: string }>();
+
     const handleOrderStatusMean = (_status: keyof typeof orderStatus) => {
         if (_status === 'PENDING') {
             return <p>Tình trạng: <strong className={'text-yellow-500'}>
@@ -46,6 +51,34 @@ const UserOrders = () => {
         }
     };
 
+    const handleGetOrderByStatus = (status: string, index: number) => {
+        setActiveTab((prevState) => {
+            const newContent = [...prevState];
+            newContent[currentTab] = !newContent[currentTab];
+            newContent[index] = true;
+            return newContent;
+        })
+        setCurrentTab(index)
+
+        if (status === '') {
+            fetchDataWithQuery(endpoints.user.getOrders, setData, undefined, 1, 10)
+        } else
+            fetchDataWithQuery(endpoints.user.getOrdersByStatus, setData, {status: status}, 1, 10)
+    }
+
+    const handleReview = (index: number) => {
+        setActiveTab((prevState) => {
+            const newContent = [...prevState];
+            newContent[currentTab] = !newContent[currentTab];
+            newContent[index] = true;
+            return newContent;
+        })
+        setCurrentTab(index)
+
+        fetchDataWithQuery(endpoints.user.getEmptyOrderReview, setData, undefined, 1, 10)
+        return null;
+    }
+
     const handleOpenDetail = (order_id: string) => {
         setChoose(order_id);
         setOpenDetail(true);
@@ -57,6 +90,11 @@ const UserOrders = () => {
 
     useEffect(() => {
         fetchData(endpoints.user.getOrders, false, setData, 'Lấy dữ liệu thất bại')
+        setActiveTab((prevState) => {
+            const newContent = [...prevState];
+            newContent[currentTab] = true;
+            return newContent;
+        })
         setReload(false)
     }, [openDetail, reload])
 
@@ -69,12 +107,39 @@ const UserOrders = () => {
                                   setData={setData} setReload={setReload}
                                   placeholderText={"Tìm kiếm đơn hàng,.."}/>
                 </div>
+                <div className={'w-full min-w-0 h-fit grid grid-flow-col auto-cols-max my-2 overflow-x-auto gap-2'}>
+                    <button
+                        className={`border-2 border-[rgb(var(--main-color))]  rounded-lg p-2 min-w-30 ${activeTab[0] ? `bg-[rgb(var(--main-color))] text-white` : ``}`}
+                        onClick={() => handleGetOrderByStatus('', 0)}>Tất cả
+                    </button>
+                    <button
+                        className={`border-2 border-[rgb(var(--main-color))] rounded-lg p-2 min-w-30  ${activeTab[1] ? `bg-[rgb(var(--main-color))] text-white` : ``}`}
+                        onClick={() => handleGetOrderByStatus('POSTPONED', 1)}>
+                        Chờ thanh toán
+                    </button>
+                    <button
+                        className={`border-2 border-[rgb(var(--main-color))] rounded-lg p-2 min-w-30  ${activeTab[2] ? `bg-[rgb(var(--main-color))] text-white` : ``}`}
+                        onClick={() => handleGetOrderByStatus('DELIVERING', 2)}>Chờ vân chuyển
+                    </button>
+                    <button
+                        className={`border-2 border-[rgb(var(--main-color))] rounded-lg p-2 min-w-30  ${activeTab[3] ? `bg-[rgb(var(--main-color))] text-white` : ``}`}
+                        onClick={() => handleGetOrderByStatus('DELIVERING', 3)}>Chờ giao hàng
+                    </button>
+                    <button
+                        className={`border-2 border-[rgb(var(--main-color))] rounded-lg p-2 min-w-30  ${activeTab[4] ? `bg-[rgb(var(--main-color))] text-white` : ``}`}
+                        onClick={() => handleReview(4)}>Chờ đánh giá
+                    </button>
+                    <button
+                        className={`border-2 border-[rgb(var(--main-color))] rounded-lg p-2 min-w-30  ${activeTab[5] ? `bg-[rgb(var(--main-color))] text-white` : ``}`}
+                        onClick={() => handleGetOrderByStatus('REFUNDED', 5)}>Trả hàng & Hủy
+                    </button>
+                </div>
                 <div className={'w-full h-fit flex flex-row justify-center items-center my-2'}>
                     {data !== null && data !== undefined ? (
                         <Stack spacing={2} alignItems={'center'}>
                             <Pagination count={data?.total_pages}
                                         page={data?.current_page}
-                                        onChange={(_e, value) => fetchDataWithQuery(endpoints.user.getOrders, setData, value, 10)}/>
+                                        onChange={(_e, value) => fetchDataWithQuery(endpoints.user.getOrders, setData, undefined, value, 10)}/>
                         </Stack>
                     ) : null}
                 </div>

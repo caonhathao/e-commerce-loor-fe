@@ -32,7 +32,7 @@ const VendorVariant = () => {
         if (product) {
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-expect-error
-            fetchDataWithQuery(endpoints.brand.getAllVariants, setData, 0, 0, {id: product?.id})
+            fetchDataWithQuery(endpoints.brand.getAllVariants, setData, {id: product?.id}, 1, 10)
         }
     }, [product])
 
@@ -44,11 +44,6 @@ const VendorVariant = () => {
             socket.off('search-product');
         }
     }, []);
-
-    useEffect(() => {
-        console.log(data)
-        console.log(product)
-    }, [data, product])
 
     if (!data) return <Loading/>
 

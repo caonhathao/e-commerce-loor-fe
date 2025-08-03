@@ -1,4 +1,4 @@
-import {Formik, FormikValues} from "formik";
+import {Formik} from "formik";
 import * as Yup from "yup";
 import {toast, ToastContainer} from "react-toastify";
 import {useNavigate, useParams} from "react-router-dom";
@@ -8,32 +8,7 @@ import * as Bs from "react-icons/bs";
 import apiClient from "../../../services/apiClient.tsx";
 import endpoints from "../../../services/endpoints.tsx";
 import {BsBoxArrowInLeft} from "react-icons/bs";
-
-interface img {
-    file: File,
-    url: string,
-}
-
-interface imgStored {
-    id: string,
-    image_id: string,
-    image_link: string,
-}
-
-interface data {
-    id: string,
-    category_id: string,
-    subcategory_id: string,
-    name: string,
-    origin: string,
-    status: number,
-    average_price: number,
-    description: string,
-    promotion: number,
-    tags: string,
-    stock: number,
-    image_products: imgStored[],
-}
+import {imageType, imgStored, productDataType} from "../../../utils/vendor.data-types.tsx";
 
 interface FormValues {
     id: string;
@@ -46,7 +21,7 @@ interface FormValues {
     average_price: number;
     promotion: number | string;
     tags: string;
-    images: img[]; // chính là cái bạn cần
+    images: imageType[];
     deletedImages: string[];
 }
 
@@ -56,12 +31,12 @@ const UpdateProduct = () => {
 
     const [category, setCategory] = useState([]);
     const [subCategory, setSubCategory] = useState([]);
-    const [data, setData] = useState<data>();
+    const [data, setData] = useState<productDataType>();
     const [isResponse, setIsResponse] = useState(false);
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [imageData, setImageData] = useState<imgStored[]>([]);//store image in previous
     const [delImage, setDelImage] = useState<string[]>([]); //store image's id that will be deleted
-    const [imgUpload, setImgUpload] = useState<img[]>([]);//store image to upload
+    const [imgUpload, setImgUpload] = useState<imageType[]>([]);//store image to upload
 
 
     const handleGetImage = ({e, setFieldValue, values}: {
@@ -83,33 +58,13 @@ const UpdateProduct = () => {
     //Remove image:
     //1. Remove image from db or
     //2. Remove the image when it is added (while editing info)
-    const handleRemoveImage = (obj: imgStored | img, type: string) => {
+    const handleRemoveImage = (obj: imgStored | imageType, type: string) => {
         if (type === 'db') {
             setImageData((prev) => prev.filter(item => item["image_id"] !== obj["image_id"]));
             setDelImage(prev => [...prev, obj["image_id"]]);
         } else if (type === 'upload') {
             setImgUpload((prev) => prev.filter(item => item["file"] !== obj["file"]));
         }
-    }
-
-    const handleResetForm = (setValues: FormikValues) => {
-        setValues({
-            id: data ? data["id"] : "",
-            category_id: data ? data['category_id'] : '',
-            subcategory_id: data ? data['subcategory_id'] : '',
-            name: data ? data['name'] : '',
-            origin: data ? data['origin'] : '',
-            status: data ? data['status'] : 0,
-            description: data ? data['description'] : '',
-            stock: data ? data['stock'] : 0,
-            average_price: data ? data['average_price'] : 0,
-            promotion: data ? data['promotion'] : 0,
-            tags: data ? data['tags'] : '',
-            images: [],
-            deletedImages: []
-        })
-        setImageData(data ? data['image_products'] : [])
-        setDelImage([]);
     }
 
     const handleGetSubCategory = async (id: string) => {
@@ -130,7 +85,7 @@ const UpdateProduct = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                if(params.id!==undefined){
+                if (params.id !== undefined) {
                     const id = params.id;
                     const response = await apiClient.get(endpoints.brand.getProductByIdFromBrand(id))
                     if (response.status === 200) {
@@ -182,7 +137,7 @@ const UpdateProduct = () => {
 
     useEffect(() => {
         if (data) {
-            setImageData(data.image_products ?? []);
+            setImageData(data.ImageProducts ?? []);
         }
     }, [data]);
 
@@ -275,7 +230,7 @@ const UpdateProduct = () => {
                       setFieldValue,
                       errors,
                       touched,
-                      setValues
+                      resetForm,
                   }) => {
                     return (
                         <form
@@ -293,7 +248,7 @@ const UpdateProduct = () => {
                                         <legend>Nhóm 1</legend>
                                         <select name={'category_id'}
                                                 className={'w-full'}
-                                                onChange={(e)=>{
+                                                onChange={(e) => {
                                                     handleChange(e);
                                                     handleGetSubCategory(e.target.value)
                                                 }}
@@ -522,7 +477,12 @@ const UpdateProduct = () => {
                                 </button>
                                 <button type={'button'}
                                         className={'bg-purple-500 p-2 rounded-4xl text-white font-bold mx-5 flex justify-center items-center'}
-                                        onClick={() => handleResetForm(setValues)}>
+                                        onClick={() => {
+                                            setImageData(data ? data['ImageProducts'] : [])
+                                            setDelImage([]);
+                                            resetForm()
+                                        }}
+                                >
                                     Reset
                                 </button>
                                 <button type={'submit'}

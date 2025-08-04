@@ -9,6 +9,7 @@ import apiClient from "../../../services/apiClient.tsx";
 import endpoints from "../../../services/endpoints.tsx";
 import {BsBoxArrowInLeft} from "react-icons/bs";
 import {imageType, imgStored, productDataType} from "../../../utils/vendor.data-types.tsx";
+import {fetchData} from "../../../utils/functions.utils.tsx";
 
 interface FormValues {
     id: string;
@@ -38,7 +39,6 @@ const UpdateProduct = () => {
     const [delImage, setDelImage] = useState<string[]>([]); //store image's id that will be deleted
     const [imgUpload, setImgUpload] = useState<imageType[]>([]);//store image to upload
 
-
     const handleGetImage = ({e, setFieldValue, values}: {
         e: React.ChangeEvent<HTMLInputElement>;
         setFieldValue: (field: string, value: any, shouldValidate?: boolean) => void;
@@ -60,9 +60,15 @@ const UpdateProduct = () => {
     //2. Remove the image when it is added (while editing info)
     const handleRemoveImage = (obj: imgStored | imageType, type: string) => {
         if (type === 'db') {
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-expect-error
             setImageData((prev) => prev.filter(item => item["image_id"] !== obj["image_id"]));
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-expect-error
             setDelImage(prev => [...prev, obj["image_id"]]);
         } else if (type === 'upload') {
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-expect-error
             setImgUpload((prev) => prev.filter(item => item["file"] !== obj["file"]));
         }
     }
@@ -70,10 +76,7 @@ const UpdateProduct = () => {
     const handleGetSubCategory = async (id: string) => {
         try {
             if (id !== '0') {
-                const response = await apiClient.get(endpoints.public.getAllSubCategories(id))
-                if (response.status === 200) {
-                    setSubCategory(response.data);
-                } else toast.error('Failed to get sub category!');
+                fetchData(endpoints.public.getAllSubCategories(id), false, setSubCategory, 'Lấy danh mục thất bại!')
             } else setSubCategory([]);
         } catch (err) {
             console.log(err);
@@ -83,57 +86,28 @@ const UpdateProduct = () => {
 
     //fetch data of the current product
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                if (params.id !== undefined) {
-                    const id = params.id;
-                    const response = await apiClient.get(endpoints.brand.getProductByIdFromBrand(id))
-                    if (response.status === 200) {
-                        setData(response.data);
-                    } else {
-                        toast.error('Failed to get product!');
-                    }
-                }
-            } catch (e) {
-                console.log(e);
+        try {
+            if (params.id !== undefined) {
+                const id = params.id;
+                fetchData(endpoints.brand.getProductByIdFromBrand(id), false, setData, 'Lấy thông tin thất bại!')
             }
+        } catch (e) {
+            console.log(e);
         }
-        fetchData()
-    }, [params.id])
+    }, [params.id, isSubmitted, isResponse]);
 
     //fetch data of categories
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await apiClient.get(endpoints.public.getAllCategories);
-                if (response) {
-                    setCategory(response.data);
-                } else toast.error('Failed to get categories!');
-            } catch (err) {
-                console.log(err);
-                toast.error('Failed to fetch data!');
-            }
-        }
-        fetchData()
+        fetchData(endpoints.public.getAllCategories, false, setCategory, 'Có lỗi xảy ra!')
     }, []);
 
     useEffect(() => {
-        if (category !== null && data !== null) {
-            const fetchData = async () => {
-                try {
-                    if (data) {
-                        const id = data.category_id
-                        const response = await apiClient(endpoints.public.getAllSubCategories(id));
-                        if (response) setSubCategory(response.data);
-                    }
-                } catch (err) {
-                    console.log(err);
-                    toast.error('Failed to get sub categories!');
-                }
+        if (category !== null && data !== null)
+            if (data) {
+                const id = data.category_id
+                fetchData(endpoints.public.getAllSubCategories(id), false, setSubCategory, 'Có lỗi xảy ra')
             }
-            fetchData()
-        }
-    }, [category, data]);
+    }, [category, data])
 
     useEffect(() => {
         if (data) {
@@ -141,11 +115,7 @@ const UpdateProduct = () => {
         }
     }, [data]);
 
-    if (category.length === 0 || subCategory.length === 0 || data === null) return (
-        <>
-            <Loading/>
-        </>
-    )
+    if (category.length === 0 || subCategory.length === 0 || data === null) return <Loading/>
 
     if (isSubmitted && !isResponse) {
         return <Loading/>
@@ -161,7 +131,7 @@ const UpdateProduct = () => {
                 initialValues={{
                     id: data ? data["id"] : '',
                     category_id: data ? data['category_id'] : '',
-                    subCategory_id: data ? data['subcategory_id'] : '',
+                    subcategory_id: data ? data['subcategory_id'] : '',
                     name: data ? data['name'] : '',
                     origin: data ? data['origin'] : '',
                     status: data ? data['status'] : '',
@@ -175,7 +145,7 @@ const UpdateProduct = () => {
                 enableReinitialize={true}
                 validationSchema={Yup.object({
                     category_id: Yup.string().required('Please choose a category'),
-                    subCategory_id: Yup.string().required('Please choose a sub category'),
+                    subcategory_id: Yup.string().required('Please choose a sub category'),
                     name: Yup.string().required('Please enter a name'),
                     origin: Yup.string().required('Please enter origin'),
                     description: Yup.string().required('Please enter description'),
@@ -190,10 +160,11 @@ const UpdateProduct = () => {
 
                         data.append('id', values.id);
                         data.append('category_id', values.category_id);
-                        data.append('subCategory_id', values.subCategory_id);
+                        data.append('subcategory_id', values.subcategory_id);
                         data.append('name', values.name);
                         data.append('origin', values.origin);
                         data.append('status', values.status.toString());
+                        data.append('average_price', values.average_price.toString());
                         data.append('description', values.description);
                         data.append('promotion', values.promotion?.toString() || '0');
                         data.append('tags', values.tags);
@@ -267,7 +238,7 @@ const UpdateProduct = () => {
                                         <select name={'subCategory_id'}
                                                 className={'w-full'}
                                                 onChange={handleChange}
-                                                value={values.subCategory_id ? values.subCategory_id : data?.subcategory_id}
+                                                value={values.subcategory_id ? values.subcategory_id : data?.subcategory_id}
                                                 onBlur={handleBlur}>
                                             <option value={'0'}>None</option>
                                             {subCategory && subCategory.map((item, i) => (
@@ -285,10 +256,10 @@ const UpdateProduct = () => {
                                                 className={'text-red-600 italic'}>{errors.category_id}</small>
                                         </p>
                                     )}
-                                    {errors.subCategory_id && touched.subCategory_id && (
+                                    {errors.subcategory_id && touched.subcategory_id && (
                                         <p className={'text-red-600'}>
                                             <small
-                                                className={'text-red-600 italic'}>{errors.subCategory_id}</small>
+                                                className={'text-red-600 italic'}>{errors.subcategory_id}</small>
                                         </p>
                                     )}
                                 </div>

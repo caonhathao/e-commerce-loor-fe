@@ -2,6 +2,7 @@ import React, {SetStateAction} from "react";
 import apiClient from "../services/apiClient.tsx";
 import {toast} from "react-toastify";
 import CryptoJS from 'crypto-js';
+import {AxiosError} from "axios";
 
 export const formatedNumber = (s: number | undefined) => {
     if (s === undefined) return '';
@@ -128,9 +129,10 @@ export const putData = async (url: string, isReturn: boolean = false, values?: a
                 // @ts-expect-error
                 setData(response.data)
             }
-        } else console.error(response.data.message)
+        }
     } catch (e) {
         console.error(e)
+        return e.response
     }
 }
 

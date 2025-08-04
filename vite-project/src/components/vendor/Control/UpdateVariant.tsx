@@ -3,31 +3,66 @@ import {Formik} from "formik";
 import * as Yup from "yup";
 import {toast, ToastContainer} from "react-toastify";
 import {useNavigate, useParams} from "react-router-dom";
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import Loading from "../../loading/Loading.tsx";
 import endpoints from "../../../services/endpoints.tsx";
 import apiClient from "../../../services/apiClient.tsx";
 import {BsBoxArrowInLeft, BsGearWideConnected} from "react-icons/bs";
 import UpdateAttribute from "./UpdateAttribute.tsx";
-import {productVariantType} from "../../../utils/vendor.data-types.tsx";
+import {imageType, productVariantType} from "../../../utils/vendor.data-types.tsx";
 import {attributesType} from "../../../utils/vendor.data-types.tsx";
-
+import * as Bs from "react-icons/bs";
+import {putData} from "../../../utils/functions.utils.tsx";
 
 const UpdateProduct = () => {
     const navigate = useNavigate();
     const params = useParams();
 
-    const [data, setData] = useState<productVariantType>();
-    const [isResponse, setIsResponse] = useState(false);
+    const [data, setData] = useState<productVariantType | null>(null);
+    const [isResponse, setIsResponse] = useState(true);
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [openUpdateAttribute, setOpenUpdateAttribute] = useState(false);
     const [attribute, setAttribute] = useState<attributesType[]>([])
 
+    const [notify, setNotify] = useState<string | null>(null);
+
+    const [imageData, setImageData] = useState<string | null>(null);//store image in previous
+    const [delImage, setDelImage] = useState<string | null>(null); //store image's id that will be deleted
+    const [imgUpload, setImgUpload] = useState<imageType | null>(null);//store image to upload
 
     const handleUpdateAttribute = (id: string | undefined) => {
         if (id !== undefined) {
             setOpenUpdateAttribute(true);
         } else console.log('id is undefined');
+    }
+
+    const handleGetImage = ({e, setFieldValue}: {
+        e: React.ChangeEvent<HTMLInputElement>;
+        setFieldValue: (field: string, value: any, shouldValidate?: boolean) => void;
+    }) => {
+        e.preventDefault();
+        if (e.target.files?.[0] !== undefined) {
+            const images = {
+                file: e.target.files?.[0],
+                url: URL.createObjectURL(e.target.files?.[0])
+            }
+            setImgUpload(images);
+            setFieldValue('images', images);
+        }
+    }
+
+    //Remove image:
+    //1. Remove image from db or
+    //2. Remove the image when it is added (while editing info)
+    const handleRemoveImage = (obj?: string | undefined, type: string) => {
+        if (type === 'db') {
+            setImageData(null);
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-expect-error
+            setDelImage(obj);
+        } else if (type === 'upload') {
+            setImgUpload(null);
+        }
     }
 
     //fetch data of the current product
@@ -71,12 +106,23 @@ const UpdateProduct = () => {
     }, []);
 
     useEffect(() => {
-        console.log(data)
-    }, [data])
+        if (data) {
+            setImageData(data?.image_link);
+        }
+    }, [data]);
+
+    useEffect(() => {
+        if (notify !== null) {
+            toast.error(notify, {autoClose: 1500})
+            setTimeout(() => {
+                setNotify(null)
+            }, 2000)
+        }
+    }, [notify])
 
     if (!data) return <Loading/>;
 
-    if (isSubmitted && !isResponse) {
+    if (isSubmitted === true && isResponse === false) {
         return <Loading/>
     }
 
@@ -96,6 +142,8 @@ const UpdateProduct = () => {
                         price: data ? data['price'] : 0,
                         stock: data ? data['stock'] : 0,
                         status: data ? data['status'] : 'OUT_OF_STOCK',
+                        images: File || null,
+                        deletedImages: []
                     }}
                     enableReinitialize={true}
                     validationSchema={Yup.object({
@@ -105,38 +153,42 @@ const UpdateProduct = () => {
                         stock: Yup.number().required('Bắt buộc phải có tồn kho')
                     })}
                     validateOnBlur={true}
-                    onSubmit={async (values, {setSubmitting}) => {
-                        try {
-                            setIsSubmitted(true);
-                            setIsResponse(false);
-                            const data = new FormData();
+                    onSubmit={async (values) => {
+                        setIsSubmitted(true);
+                        setIsResponse(false);
+                        const data = new FormData();
 
-                            data.append('name', values.name);
-                            data.append('status', values.status.toString());
-                            data.append('sku', values.sku);
-                            data.append('price', values.price.toString());
-                            data.append('stock', values.stock.toString());
+                        data.append('name', values.name);
+                        data.append('status', values.status.toString());
+                        data.append('sku', values.sku);
+                        data.append('price', values.price.toString());
+                        data.append('stock', values.stock.toString());
+                        data.append('deletedImages', JSON.stringify(delImage));
 
-                            console.log(data.values());
-                            let response;
-                            if (params.id !== undefined) {
-                                response = await apiClient.put(endpoints.brand.updateVariant(params.id), data)
+                        if (values.images !== null) {
+                            data.append('images', values.images.file);
+                        }
+                        for (const [key, value] of data.entries()) {
+                            if (value instanceof File) {
+                                console.log(`${key}: File - name: ${value.name}, size: ${value.size}`);
+                            } else {
+                                console.log(`${key}: ${value}`);
                             }
+                        }
+
+                        let response;
+                        if (params.id !== undefined) {
+                            response = await putData(endpoints.brand.updateVariant(params.id), true, data);
 
                             if (response && response.status === 200) {
                                 toast.success('Sản phẩm đã được cập nhật thành công!', {autoClose: 1000});
                                 setIsSubmitted(false);
                                 setIsResponse(true);
                             } else {
-                                console.log(response);
-                                toast.error('Cập nhật thất bại! Vui lòng kiểm tra các trường nhập!');
+                                setNotify(response?.data?.message)
+                                setIsSubmitted(false);
+                                setIsResponse(true);
                             }
-
-                        } catch (error) {
-                            toast.error('Failed');
-                            console.log(error);
-                        } finally {
-                            setSubmitting(false);
                         }
                     }}
                 >
@@ -145,6 +197,7 @@ const UpdateProduct = () => {
                           handleChange,
                           handleBlur,
                           handleSubmit,
+                          setFieldValue,
                           errors,
                           touched,
                           resetForm
@@ -156,8 +209,9 @@ const UpdateProduct = () => {
                                     className={'w-full h-fit flex flex-col items-center justify-center'}
                                     onSubmit={handleSubmit}>
                                     <div className={'flex flex-row justify-center items-center'}>
-                                        <h3 className={'font-bold text-lg w-fit m-2 text-yellow-600'}>Thông tin phiên
-                                            bản</h3>
+                                        <p className={'font-bold text-lg w-fit m-2 text-yellow-600'}>
+                                            Thông tin phiên bản
+                                        </p>
                                         <BsGearWideConnected size={20} color={'var(--text-color)'}
                                                              onClick={() => handleUpdateAttribute(params.id)}/>
                                     </div>
@@ -252,6 +306,69 @@ const UpdateProduct = () => {
                                             </fieldset>
                                         </div>
                                     </fieldset>
+
+                                    {/*Choose any image here*/}
+                                    <fieldset
+                                        className={'w-full border border-gray-700 rounded-lg leading-8 m-2 flex flex-row items-center justify-between'}>
+                                        <legend>Hình ảnh</legend>
+                                        <div className={'flex flex-row  flex-wrap items-center justify-start p-1'}>
+                                            {imageData && imageData?.length !== 0 ? (
+                                                    <div
+                                                        className={'w-15 h-15 relative mx-1 border-indigo-500 border-2 rounded-lg flex item-center justify-center'}
+                                                    >
+                                                        {/*delete button here (remove image*/}
+                                                        <button className={'absolute -top-2 -right-2'} type={'button'}
+                                                                onClick={() => handleRemoveImage(imageData, 'db')}>
+                                                            <Bs.BsXCircleFill
+                                                                color={'red'}/>
+                                                        </button>
+                                                        <img className={'object-contain'} src={imageData}
+                                                             alt={'image'}/>
+                                                    </div>
+                                                ) :
+                                                imgUpload ? (
+                                                    <div
+                                                        className={'w-15 h-15 relative mx-1 border-indigo-500 border-2 rounded-lg flex item-center justify-center'}
+                                                    >
+                                                        {/*delete button here (remove image*/}
+                                                        <button className={'absolute -top-2 -right-2'} type={'button'}
+                                                                onClick={() => handleRemoveImage(undefined, 'upload')}>
+                                                            <Bs.BsXCircleFill
+                                                                color={'red'}/>
+                                                        </button>
+                                                        <img className={'object-contain'} src={imgUpload.url}
+                                                             alt={'image'}/>
+                                                    </div>
+                                                ) : (
+                                                    <div>
+                                                        <input type={'file'} hidden={true} accept={'image/*'}
+                                                               id={'imageInput'}
+                                                               multiple={false}
+                                                               onChange={(e) => {
+                                                                   handleGetImage({e, setFieldValue})
+                                                               }}/>
+                                                        <button type={'button'}
+                                                                className={'w-15 h-15 m-1 rounded-lg flex justify-center items-center focus:outline-indigo-400 focus:outline-2 '}
+                                                                onClick={() => {
+                                                                    const input = document.getElementById("imageInput") as HTMLInputElement;
+                                                                    if (input) {
+                                                                        input.click();
+                                                                    }
+                                                                }}>
+                                                            <Bs.BsPlusSquare className={'w-20 h-20'} color={'gray'}/>
+                                                        </button>
+                                                    </div>
+                                                )}
+                                        </div>
+                                        {
+                                            typeof errors.images === 'string' && touched.images && (
+                                                <p className={'text-red-600'}>
+                                                    <small className={'text-red-600 italic'}>{errors.images}</small>
+                                                </p>
+                                            )
+                                        }
+                                    </fieldset>
+
                                     <fieldset
                                         className={'w-full border border-gray-700 rounded-lg p-2 m-2 flex flex-row items-center justify-between flex-wrap text-sm text-gray-400'}>
                                         <legend>Thuộc tính sản phẩm</legend>
@@ -278,7 +395,8 @@ const UpdateProduct = () => {
                                     </div>
                                 </form>
                             </div>
-                        );
+                        )
+                            ;
                     }}
                 </Formik>
                 <div className={'flex flex-row justify-center items-center mt-5'}>

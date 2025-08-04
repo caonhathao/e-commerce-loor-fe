@@ -29,11 +29,7 @@ const VendorVariant = () => {
     }
 
     useEffect(() => {
-        if (product) {
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-expect-error
-            fetchDataWithQuery(endpoints.brand.getAllVariants, setData, {id: product?.id}, 1, 10)
-        }
+        fetchDataWithQuery(endpoints.brand.getAllVariants, setData, {id: product?.id || params.id}, 1, 10)
     }, [product])
 
     useEffect(() => {

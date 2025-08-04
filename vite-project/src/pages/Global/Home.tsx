@@ -19,7 +19,6 @@ const Home = () => {
                 }
             });
             if (response.status === 200) {
-                console.log(response.data)
                 setData(response.data)
             } else
                 toast.error('Failed to get products')

@@ -131,27 +131,25 @@ const UserCreateOrder: React.FC<Props> = ({listVariant, setOpenCreate}) => {
 
     useEffect(() => {
         console.log(listVariant)
-    }, [listVariant]);
+        console.log(user)
+    }, [listVariant, user]);
 
     //update address data
     useEffect(() => {
-            if (addressSuccess) {
-                try {
-                    fetchData(endpoints.user.getUserInfo, false, setUser, 'Lấy địa chỉ thất bại')
-                    setCurrentAddress({
-                        address: user?.ShippingAddress[0].address + ', ' + user?.ShippingAddress[0].ward + ' ,' + user?.ShippingAddress[0].city,
-                        default: user?.ShippingAddress[0].is_default ?? false
-                    })
-                } catch
-                    (e) {
-                    console.error(e)
-                    toast.error('Có lỗi xảy ra')
-                }
+        if (addressSuccess) {
+            try {
+                fetchData(endpoints.user.getUserInfo, false, setUser, 'Lấy địa chỉ thất bại')
+                setCurrentAddress({
+                    address: user?.ShippingAddress[0].address + ', ' + user?.ShippingAddress[0].ward + ' ,' + user?.ShippingAddress[0].city,
+                    default: user?.ShippingAddress[0].is_default ?? false
+                })
+            } catch
+                (e) {
+                console.error(e)
+                toast.error('Có lỗi xảy ra')
             }
         }
-        ,
-        [addressSuccess]
-    )
+    }, [addressSuccess])
 
     if (isSubmitted) {
         return <Loading/>
@@ -160,201 +158,202 @@ const UserCreateOrder: React.FC<Props> = ({listVariant, setOpenCreate}) => {
     if (listVariant === undefined) return <Loading/>
 
     return (
-        <div className={'w-screen h-screen flex flex-col justify-center items-center absolute top-0 right-0 z-[999]'}>
-            <div
-                className={'bg-[rgb(var(--secondary-background))] flex flex-col justify-center items-center'}>
-                {/*header*/}
-                <div
-                    className={'w-full h-fit flex flex-col justify-start items-center fixed top-0 right-0 z-[100] border-b-2 border-[rgb(var(--main-color))] rounded-b-lg'}>
+        <div className={'w-screen h-full bg-white flex flex-col fixed top-0 right-0 z-[999]'}>
+            <div className={'w-full h-full flex flex-col overflow-y-auto'}>
+                <div className={'w-full flex-shrink-0 flex flex-col justify-start items-center sticky top-0 right-0 z-[900] border-b-2 border-[rgb(var(--main-color))] rounded-b-lg bg-white'}>
+                    {/*header*/}
                     <div
-                        className={'w-full h-fit grid grid-cols-7 grid-rows-1 gap-2 items-center p-2 bg-white'}>
-                        <p className={'col-span-1 text-center'}>Tất cả (2)</p>
-                        <p className={'col-span-5 text-center'}><strong className={'text-2xl'}>Thông tin đơn
-                            hàng</strong>
-                        </p>
-                        <button type={'button'}
-                                className={'w-10 h-10 rounded-lg flex justify-center items-center text-white text-lg bg-red-500 col-span-1'}
-                                onClick={() => setOpenCreate(false)}><BsX size={40}/>
-                        </button>
-                    </div>
-                    <div className={'w-full h-fit p-2 bg-white'}>
+                        className={'w-full h-fit flex flex-col justify-start items-center sticky top-0 right-0 z-[900] border-b-2 border-[rgb(var(--main-color))] rounded-b-lg'}>
                         <div
-                            className={'border-2 border-[rgb(var(--border-color))] rounded-lg flex flex-col justify-center items-start mb-5'}>
-                            <p className={'text-lg font-bold text-[rgb(var(--main-color))] px-2 py-1'}>Địa chỉ giao
-                                hàng</p>
-                            <div className={'w-full h-fit flex flex-row justify-between items-center gap-2 p-2'}>
-                                {user?.ShippingAddress.length !== 0 ? (
-                                    <div
-                                        className={'w-full h-fit flex flex-row justify-between items-center gap-4 py-1'}>
+                            className={'w-full h-fit grid grid-cols-7 grid-rows-1 gap-2 items-center p-2 bg-white'}>
+                            <p className={'col-span-1 text-center'}>Tất cả (2)</p>
+                            <p className={'col-span-5 text-center'}><strong className={'text-2xl'}>
+                                Thông tin đơn hàng
+                            </strong>
+                            </p>
+                            <button type={'button'}
+                                    className={'w-10 h-10 rounded-lg flex justify-center items-center text-white text-lg bg-red-500 col-span-1'}
+                                    onClick={() => setOpenCreate(false)}><BsX size={40}/>
+                            </button>
+                        </div>
+                        <div className={'w-full h-fit p-2 bg-white'}>
+                            <div
+                                className={'border-2 border-[rgb(var(--border-color))] rounded-lg flex flex-col justify-center items-start mb-5'}>
+                                <p className={'text-lg font-bold text-[rgb(var(--main-color))] px-2 py-1'}>Địa chỉ giao
+                                    hàng</p>
+                                <div className={'w-full h-fit flex flex-row justify-between items-center gap-2 p-2'}>
+                                    {user?.ShippingAddress.length !== 0 ? (
                                         <div
-                                            className="w-full h-fit flex flex-row justify-between items-center gap-4 py-1">
-                                            <p className="text-lg">
-                                                {currentAddress.address === '' ? user?.ShippingAddress[0].address + ', ' + user?.ShippingAddress[0].ward + ' ,' + user?.ShippingAddress[0].city : currentAddress.address}
-                                                {currentAddress.default || (currentAddress.address === '' && user?.ShippingAddress[0].is_default) ?
-                                                    <strong className="text-[rgb(var(--secondary-color))]">
-                                                        (Mặc định)
-                                                    </strong> : null}
-                                            </p>
-                                        </div>
-                                        <div className={'w-fit h-fit p-2 text-[rgb(var(--main-color))]'}
-                                             onClick={() => setOpenChangeAddress(true)}>Đổi
-                                        </div>
-                                    </div>
-                                ) : (
-                                    dataAddress.length !== 0 ? (
-                                        <div
-                                            className="w-full h-fit flex flex-row justify-between items-center px-2 py-1">
-                                            <p className="text-lg">
-                                                {dataAddress[0].address}, {dataAddress[0].ward}, {dataAddress[0].city}
-                                                <strong className="text-[rgb(var(--secondary-color))]">(Mặc
-                                                    định)</strong>
-                                            </p>
+                                            className={'w-full h-fit flex flex-row justify-between items-center gap-4 py-1'}>
+                                            <div
+                                                className="w-full h-fit flex flex-row justify-between items-center gap-4 py-1">
+                                                <p className="text-lg">
+                                                    {currentAddress.address === '' ? user?.ShippingAddress[0].address + ', ' + user?.ShippingAddress[0].ward + ' ,' + user?.ShippingAddress[0].city : currentAddress.address}
+                                                    {currentAddress.default || (currentAddress.address === '' && user?.ShippingAddress[0].is_default) ?
+                                                        <strong className="text-[rgb(var(--secondary-color))]">
+                                                            (Mặc định)
+                                                        </strong> : null}
+                                                </p>
+                                            </div>
                                             <div className={'w-fit h-fit p-2 text-[rgb(var(--main-color))]'}
-                                            >Đổi
+                                                 onClick={() => setOpenChangeAddress(true)}>Đổi
                                             </div>
                                         </div>
                                     ) : (
+                                        dataAddress.length !== 0 ? (
+                                            <div
+                                                className="w-full h-fit flex flex-row justify-between items-center px-2 py-1">
+                                                <p className="text-lg">
+                                                    {dataAddress[0].address}, {dataAddress[0].ward}, {dataAddress[0].city}
+                                                    <strong className="text-[rgb(var(--secondary-color))]">(Mặc
+                                                        định)</strong>
+                                                </p>
+                                                <div className={'w-fit h-fit p-2 text-[rgb(var(--main-color))]'}
+                                                >Đổi
+                                                </div>
+                                            </div>
+                                        ) : (
+                                            <div
+                                                className="w-full h-fit flex flex-row justify-between items-center px-2 py-1">
+                                                <p className="italic">Bạn chưa có địa chỉ giao hàng nào</p>
+                                                <p className="text-[rgb(var(--main-color))]"
+                                                   onClick={() => setOpenUpdateAddress(true)}>
+                                                    Thêm địa chỉ
+                                                </p>
+                                            </div>
+                                        )
+                                    )}
+                                </div>
+                            </div>
+                            <div className={'w-full h-full rounded-b-lg'}>
+                                <div
+                                    className={'border-2 border-[rgb(var(--border-color))] rounded-lg flex flex-col justify-center items-start'}>
+                                    <p className={'text-lg font-bold text-[rgb(var(--main-color))] px-2 py-1'}>Số liên
+                                        lạc</p>
+                                    {user?.numberphone !== '' && user?.numberphone !== null ? (
                                         <div
                                             className="w-full h-fit flex flex-row justify-between items-center px-2 py-1">
-                                            <p className="italic">Bạn chưa có địa chỉ giao hàng nào</p>
-                                            <p className="text-[rgb(var(--main-color))]"
-                                               onClick={() => setOpenUpdateAddress(true)}>
-                                                Thêm địa chỉ
+                                            <p className="text-lg">
+                                                {user?.numberphone}
+                                            </p>
+                                            <p className="text-[rgb(var(--secondary-color))]">(Mặc định)</p>
+                                        </div>
+                                    ) : (
+                                        <div
+                                            className={'w-full h-fit flex flex-row justify-between items-center px-2 py-1'}>
+                                            <p className={'italic'}>Bạn chưa có số điện thoại</p>
+                                            <p className={'text-[rgb(var(--main-color))]'}
+                                               onClick={() => setOpenUpdatePhone(true)}
+                                            >
+                                                Thêm số điện thoại
                                             </p>
                                         </div>
-                                    )
-                                )}
-                            </div>
-                        </div>
-                        <div className={'w-full h-full rounded-b-lg'}>
-                            <div
-                                className={'border-2 border-[rgb(var(--border-color))] rounded-lg flex flex-col justify-center items-start'}>
-                                <p className={'text-lg font-bold text-[rgb(var(--main-color))] px-2 py-1'}>Số liên
-                                    lạc</p>
-                                {user?.numberphone !== '' && user?.numberphone !== null ? (
-                                    <div
-                                        className="w-full h-fit flex flex-row justify-between items-center px-2 py-1">
-                                        <p className="text-lg">
-                                            {user?.numberphone}
-                                        </p>
-                                        <p className="text-[rgb(var(--secondary-color))]">(Mặc định)</p>
-                                    </div>
-                                ) : (
-                                    <div
-                                        className={'w-full h-fit flex flex-row justify-between items-center px-2 py-1'}>
-                                        <p className={'italic'}>Bạn chưa có số điện thoại</p>
-                                        <p className={'text-[rgb(var(--main-color))]'}
-                                           onClick={() => setOpenUpdatePhone(true)}
-                                        >
-                                            Thêm số điện thoại
-                                        </p>
-                                    </div>
-                                )}
+                                    )}
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                {/*main content*/}
-                <div className={'w-full h-fit my-2 p-2 bg-white absolute top-70 z-[99]'}>
-                    <div className={'w-full h-full flex flex-col justify-start items-center my-2'}>
-                        {listVariant.list.map((item, index) => {
-                            return (
-                                <div key={index}
-                                     className={'w-full h-fit bg-white flex flex-col justify-center items-center mb-25'}>
-                                    <div
-                                        className={'w-full h-fit flex flex-row justify-start items-center gap-2 my-5 px-2'}>
-                                        <p className={'col-span-1 text-center'}>
-                                            <BsHouse size={20} className={'text-[rgb(var(--text-color))]'}/>
-                                        </p>
-                                        <p className={'col-span-5 text-center'}><strong
-                                            className={'text-lg'}>{item.brand_name}</strong></p>
-                                        <div className={'w-full border-1 border-[rgb(var(--border-color))]'}></div>
-                                    </div>
-                                    {item.list.map((variant, index) => {
-                                        return (
-                                            <div key={index}
-                                                 className={'w-full h-fit p-4'}>
-                                                <div
-                                                    className={'w-full h-fit flex flex-row justify-center items-start gap-2'}>
-                                                    <img src={variant.image_link} alt={'thumbnail'}
-                                                         className={'w-30 rounded-lg'}/>
+                    {/*main content*/}
+                    <div className={'w-full h-full flex-grow overflow-y-auto p-2 bg-white'}>
+                        <div className={'w-full flex flex-col justify-start items-center pb-4'}>
+                            {listVariant.list.map((item, index) => {
+                                return (
+                                    <div key={index}
+                                         className={'w-full h-fit bg-white flex flex-col justify-center items-center mb-25'}>
+                                        <div
+                                            className={'w-full h-fit flex flex-row justify-start items-center gap-2 my-5 px-2'}>
+                                            <p className={'col-span-1 text-center border-2 border-[rgb(var(--border-color))] rounded-lg p-2'}>
+                                                <BsHouse size={20} className={'text-[rgb(var(--text-color))]'}/>
+                                            </p>
+                                            <p className={'col-span-5 text-center'}><strong
+                                                className={'text-lg text-nowrap'}>{item.brand_name}</strong></p>
+                                            <div className={'w-full border-1 border-[rgb(var(--border-color))]'}></div>
+                                        </div>
+                                        {item.list.map((variant, index) => {
+                                            return (
+                                                <div key={index}
+                                                     className={'w-full h-fit p-4'}>
                                                     <div
-                                                        className={'w-full h-full flex flex-col justify-between items-start gap-2'}>
-                                                        <p><strong>{variant.variant_name}</strong></p>
+                                                        className={'w-full h-fit flex flex-row justify-center items-start gap-2'}>
+                                                        <img src={variant.image_link} alt={'thumbnail'}
+                                                             className={'w-30 rounded-lg'}/>
                                                         <div
-                                                            className={'w-full h-fit flex flex-row justify-between items-center'}>
-                                                            <p>{formatedNumber(variant.cost / variant.amount)} đ</p>
-                                                            <p>Số lượng: {variant.amount}</p>
+                                                            className={'w-full h-full flex flex-col justify-between items-start gap-2'}>
+                                                            <p><strong>{variant.variant_name}</strong></p>
+                                                            <div
+                                                                className={'w-full h-fit flex flex-row justify-between items-center'}>
+                                                                <p>{formatedNumber(variant.cost / variant.amount)} đ</p>
+                                                                <p>Số lượng: {variant.amount}</p>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
+                                            )
+                                        })}
+                                        <div
+                                            className={'w-full h-fit flex flex-row justify-between items-center my-5 px-2'}>
+                                            <p>Tùy chọn thanh toán</p>
+                                            <div
+                                                className={'w-fit h-fit flex flex-row justify-center items-center gap-2'}>
+                                                <p className={'text-[rgb(var(--secondary-color))]'}>Xem tất cả tùy
+                                                    chọn </p>
+                                                <BsCaretRightFill/>
                                             </div>
-                                        )
-                                    })}
-                                    <div
-                                        className={'w-full h-fit flex flex-row justify-between items-center my-5 px-2'}>
-                                        <p>Tùy chọn thanh toán</p>
+                                        </div>
                                         <div
-                                            className={'w-fit h-fit flex flex-row justify-center items-center gap-2'}>
-                                            <p className={'text-[rgb(var(--secondary-color))]'}>Xem tất cả tùy
-                                                chọn </p>
-                                            <BsCaretRightFill/>
+                                            className={'w-full h-fit flex flex-row justify-between items-center my-5 px-2'}>
+                                            <p>Tùy chọn giao hàng</p>
+                                            <div
+                                                className={'w-fit h-fit flex flex-row justify-center items-center gap-2'}>
+                                                <p className={'text-[rgb(var(--secondary-color))]'}>Xem tất cả tùy
+                                                    chọn </p>
+                                                <BsCaretRightFill/>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div
-                                        className={'w-full h-fit flex flex-row justify-between items-center my-5 px-2'}>
-                                        <p>Tùy chọn giao hàng</p>
                                         <div
-                                            className={'w-fit h-fit flex flex-row justify-center items-center gap-2'}>
-                                            <p className={'text-[rgb(var(--secondary-color))]'}>Xem tất cả tùy
-                                                chọn </p>
-                                            <BsCaretRightFill/>
+                                            className={'w-[90%] h-fit p-2 m-2 rounded-lg border-2 border-[rgb(var(--border-color))]'}>
+                                            <div className={'w-full h-fit flex flex-row justify-between items-center'}>
+                                                <p>Giao tiêu chuẩn</p>
+                                                <p>{formatedNumber(item.fee)} đ</p>
+                                            </div>
+                                            <div>
+                                                <p><strong>Lưu ý:</strong> Có thể nhận hàng vào cuối tuần</p>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div
-                                        className={'w-[90%] h-fit p-2 m-2 rounded-lg border-2 border-[rgb(var(--border-color))]'}>
-                                        <div className={'w-full h-fit flex flex-row justify-between items-center'}>
-                                            <p>Giao tiêu chuẩn</p>
-                                            <p>{formatedNumber(item.fee)} đ</p>
-                                        </div>
-                                        <div>
-                                            <p><strong>Lưu ý:</strong> Có thể nhận hàng vào cuối tuần</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            )
-                        })}
-                    </div>
-                </div>
-                {/*footer*/}
-                <div
-                    className={'w-full h-fit flex flex-col justify-center items-center bg-white px-2 py-5 rounded-t-lg border-t-2 border-[rgb(var(--main-color))] fixed bottom-0 right-0 z-[99]'}>
-                    <p className={'text-sm italic text-[rgb(var(--text-error))]'}>{user?.numberphone === null ? 'Ban chưa có số điện thoại' : null}</p>
-                    <p className={'text-sm italic text-[rgb(var(--text-error))]'}>{user?.ShippingAddress && user.ShippingAddress.length === 0 ? 'Bạn chưa có địa chỉ giao hàng' : null}</p>
-                    <div className={'w-full h-fit flex flex-row justify-between items-center gap-2 p-2'}>
-                        <div>
-                            Tổng hóa đơn: <strong className={'text-[rgb(var(--main-color))]'}>{1}</strong>
+                                )
+                            })}
                         </div>
-                        <div>
-                            <button type={'button'}
-                                    className={'border-none bg-[rgb(var(--main-color))] px-3 py-2 text-white  rounded-lg'}
-                                    onClick={() => handleSubmit()}>
-                                Đặt hàng
-                            </button>
+                    </div>
+                    {/*footer*/}
+                    <div className={'w-full flex-shrink-0 flex flex-col justify-center items-center bg-white px-2 py-5 rounded-t-lg border-t-2 border-[rgb(var(--main-color))] sticky bottom-0 right-0 z-[900]'}>
+                        <p className={'text-sm italic text-[rgb(var(--text-error))]'}>{user?.numberphone === null ? 'Ban chưa có số điện thoại' : null}</p>
+                        <p className={'text-sm italic text-[rgb(var(--text-error))]'}>{user?.ShippingAddress && user.ShippingAddress.length === 0 ? 'Bạn chưa có địa chỉ giao hàng' : null}</p>
+                        <div className={'w-full h-fit flex flex-row justify-between items-center gap-2 p-2'}>
+                            <div>
+                                Tổng hóa đơn: <strong className={'text-[rgb(var(--main-color))]'}>{1}</strong>
+                            </div>
+                            <div>
+                                <button type={'button'}
+                                        className={'border-none bg-[rgb(var(--main-color))] px-3 py-2 text-white  rounded-lg'}
+                                        onClick={() => handleSubmit()}>
+                                    Đặt hàng
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
+                <ToastContainer/>
+                {openUpdateAddress ? (
+                    <CreateAddress setOpen={setOpenUpdateAddress} setSuccess={setAddressSuccess}/>
+                ) : null}
+                {openUpdatePhone ? (
+                    <CreatePhone setOpen={setOpenUpdatePhone} setSuccess={setPhoneSuccess}/>
+                ) : null}
+                {openChangeAddress ? (
+                    <ChangeAddress setOpen={setOpenChangeAddress} setCurrent={setCurrentAddress}/>
+                ) : null}
             </div>
-            <ToastContainer/>
-            {openUpdateAddress ? (
-                <CreateAddress setOpen={setOpenUpdateAddress} setSuccess={setAddressSuccess}/>
-            ) : null}
-            {openUpdatePhone ? (
-                <CreatePhone setOpen={setOpenUpdatePhone} setSuccess={setPhoneSuccess}/>
-            ) : null}
-            {openChangeAddress ? (
-                <ChangeAddress setOpen={setOpenChangeAddress} setCurrent={setCurrentAddress}/>
-            ) : null}
         </div>
     )
 }

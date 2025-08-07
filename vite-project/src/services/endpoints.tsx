@@ -29,6 +29,8 @@ const endpoints = {
         getAllBrands: "/api/manager/get-all-brands",
         getAllUsers: "/api/manager/get-all-users",
 
+        createOrderStatus:"/api/user/create-order-status",
+
         lockUser: "/api/manager/lock-user-by-id",
         restoreUser: "/api/manager/restore-user-by-id",
     },
@@ -58,6 +60,8 @@ const endpoints = {
         searchOrders: "/api/vendor/search-by-id",
         acceptOrder: "/api/vendor/accept-order",
         updateOrder: "/api/vendor/update-status-order",
+
+        getAllOrderStatus:"/api/role/get-order-status",
     },
     user: {
         getUserInfo: "/api/user/get-user-by-id",
@@ -92,6 +96,9 @@ const endpoints = {
         searchCart: "/api/user/search-cart",
         updateCart: "/api/user/update-cart",
         deleteCart: "/api/user/delete-cart",
+
+        getAllOrderStatus:"/api/user/get-all-order-status",
+
     },
     public: {
         getAllProvinces: "/api/public/get-all-provinces",

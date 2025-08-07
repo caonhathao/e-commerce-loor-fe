@@ -29,8 +29,9 @@ const VendorVariant = () => {
     }
 
     useEffect(() => {
-        fetchDataWithQuery(endpoints.brand.getAllVariants, setData, {id: product?.id || params.id}, 1, 10)
-    }, [product])
+        if (data)
+            fetchDataWithQuery(endpoints.brand.getAllVariants, setData, {id: product?.id || params.id}, 1, 10)
+    }, [product, params.id, data])
 
     useEffect(() => {
         socket.on('search-product', ({results}) => {

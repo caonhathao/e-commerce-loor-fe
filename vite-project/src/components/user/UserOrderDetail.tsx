@@ -1,9 +1,9 @@
 import React, {SetStateAction, useEffect, useState} from "react";
 import {fetchData, formatedDate, formatedNumber} from "../../utils/functions.utils.tsx";
 import endpoints from "../../services/endpoints.tsx";
-import {orderDetailType, orderStatus, receiptData} from "../../utils/user.data-types.tsx";
+import {orderDetailType, orderStatusType, receiptData} from "../../utils/user.data-types.tsx";
 import Loading from "../loading/Loading.tsx";
-import {BsExclamationTriangleFill, BsXLg, BsXSquareFill} from "react-icons/bs";
+import {BsExclamationTriangleFill, BsHouse, BsXLg, BsXSquareFill} from "react-icons/bs";
 import {toast} from "react-toastify";
 import apiClient from "../../services/apiClient.tsx";
 import {Formik, useField} from "formik";
@@ -22,6 +22,8 @@ interface img {
 const UserOrderDetail: React.FC<Props> = ({order_id, setOpen}) => {
     const [data, setData] = useState<orderDetailType | null>(null)
     const [billData, setBillData] = useState<receiptData | null>(null)
+    const [orderStatus, setOrderStatus] = useState<orderStatusType[]>([])
+
     const [images, setImages] = useState<img[]>([]);
 
     const [showInfo, setShowInfo] = useState<boolean[]>([false, false, false])
@@ -103,7 +105,12 @@ const UserOrderDetail: React.FC<Props> = ({order_id, setOpen}) => {
     useEffect(() => {
         fetchData(endpoints.user.getOrderDetail(order_id), false, setData, 'Có lỗi xẩy ra')
         fetchData(endpoints.user.getReceiptByOrderId(order_id), false, setBillData, 'Có lỗi xảy ra');
+        fetchData(endpoints.user.getAllOrderStatus, false, setOrderStatus, "Có lỗi xảy ra!")
     }, [order_id])
+
+    // useEffect(() => {
+    //     console.log((orderStatus))
+    // }, [orderStatus]);
 
     if (data === null || billData === null) return <Loading/>
 
@@ -120,6 +127,15 @@ const UserOrderDetail: React.FC<Props> = ({order_id, setOpen}) => {
                             onClick={() => setOpen(false)}>
                         <BsXLg size={20}/>
                     </button>
+                </div>
+            </div>
+
+            <div className={'w-full h-fit'}>
+                <div>
+                    <BsHouse size={20}/>
+                    <div>
+
+                    </div>
                 </div>
             </div>
 

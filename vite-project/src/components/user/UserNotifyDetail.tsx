@@ -58,11 +58,12 @@ const UserNotifyDetail: React.FC<UserNotifyDetailProps> = ({setOpen, id}) => {
 
     const handleGetID = (url: string) => {
         const id = url.split('/')
+        console.log(id)
         if (id.length === 0) return null
-        if (id[0] === 'order-detail') {
+        if (id[1] === 'order-detail') {
             return (
                 <p>
-                    Xem chi tiết <Link to={`/user/show-orders/${id[1]}`}
+                    Xem chi tiết <Link to={`/user/show-orders/${id[2]}`}
                                        className={'text-[rgb(var(--secondary-color))]'}>tại đây</Link>
                 </p>
             )
@@ -70,7 +71,7 @@ const UserNotifyDetail: React.FC<UserNotifyDetailProps> = ({setOpen, id}) => {
         if (id[0] === 'order-review') {
             return (
                 <p>
-                    Xem chi tiết <Link to={`/user/orders-review/${id[1]}`}
+                    Xem chi tiết <Link to={`/user/orders-review/${id[2]}`}
                                        className={'text-[rgb(var(--secondary-color))]'}>tại đây</Link>
                 </p>
             )
@@ -81,6 +82,10 @@ const UserNotifyDetail: React.FC<UserNotifyDetailProps> = ({setOpen, id}) => {
         if (id)
             fetchDataWithPayload(endpoints.user.getNotificationDetail, setNotifyData, {id})
     }, [id])
+
+    useEffect(() => {
+        console.log(notifyData)
+    }, [notifyData]);
 
     if (notifyData === null) return (<Loading/>)
 

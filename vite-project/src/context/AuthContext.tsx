@@ -96,6 +96,7 @@ export const AuthProvider = ({children}: { children: ReactNode }) => {
             socket.emit('register_user', decoded.id);
         }
         setAccessToken(token);
+        console.log('user data login: ', userData)
         setUser(userData);
     }
 

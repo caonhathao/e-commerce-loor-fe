@@ -101,10 +101,10 @@ const VendorOrderDetail = () => {
                         {
                             data && Object.entries(data?.OrderDetail).map(([key, value]) => (
                                 <tr key={key}>
-                                    <td className={'text-center w-3/10 h-30 p-1 border-r-2 border-b-2 border-[var(--border-color)] rounded-lg'}>{value.product_variants["sku"]}</td>
-                                    <td className={'text-center w-2/5 h-30 p-1 border-r-2 border-b-2 border-[var(--border-color)] rounded-lg'}>{value.product_variants["name"]}</td>
+                                    <td className={'text-center w-3/10 h-30 p-1 border-r-2 border-b-2 border-[var(--border-color)] rounded-lg'}>{value.ProductVariants["sku"]}</td>
+                                    <td className={'text-center w-2/5 h-30 p-1 border-r-2 border-b-2 border-[var(--border-color)] rounded-lg'}>{value.ProductVariants["name"]}</td>
                                     <td className={'text-center w-2/5 h-30 p-1 border-r-2 border-b-2 border-[var(--border-color)] rounded-lg'}></td>
-                                    <td className={'text-center w-1/5 h-30 p-1 border-r-2 border-b-2 border-[var(--border-color)] rounded-lg'}>{formatedNumber(value.product_variants["price"])}đ</td>
+                                    <td className={'text-center w-1/5 h-30 p-1 border-r-2 border-b-2 border-[var(--border-color)] rounded-lg'}>{formatedNumber(value.ProductVariants["price"])}đ</td>
                                 </tr>
                             ))
                         }
@@ -126,9 +126,9 @@ const VendorOrderDetail = () => {
                         {
                             data && Object.entries(data?.OrderDetail).map(([key, value]) => (
                                 <tr key={key}>
-                                    <td className={'text-center w-3/5 h-30 p-1 border-b-2 border-[var(--border-color)] rounded-lg'}>{value.product_variants["name"]}</td>
+                                    <td className={'text-center w-3/5 h-30 p-1 border-b-2 border-[var(--border-color)] rounded-lg'}>{value.ProductVariants["name"]}</td>
                                     <td className={'text-center w-1/5 h-30 p-1 border-b-2 border-[var(--border-color)] rounded-lg'}>{value.amount}</td>
-                                    <td className={'text-center w-1/5 h-30 p-1 border-r-2  border-b-2 border-[var(--border-color)] rounded-lg'}>{formatedNumber(value.amount * value.product_variants["price"])}đ</td>
+                                    <td className={'text-center w-1/5 h-30 p-1 border-r-2  border-b-2 border-[var(--border-color)] rounded-lg'}>{formatedNumber(value.amount * value.ProductVariants["price"])}đ</td>
                                 </tr>
                             ))
                         }

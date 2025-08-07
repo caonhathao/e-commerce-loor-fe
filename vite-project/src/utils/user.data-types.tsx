@@ -66,6 +66,10 @@ export interface productDetailDataType {
     stock: number,
     description: string,
     ProductVariants: productVariantType[]
+    Brands: {
+        name: string,
+        image_link: string,
+    }
 }
 
 export interface reviewDataType {
@@ -95,11 +99,11 @@ export interface cartType {
         amount: number,
         pinned: boolean,
         variant_id: string,
-       ProductVariants: {
+        ProductVariants: {
             name: string,
             price: number,
             stock: number,
-           image_link: string,
+            image_link: string,
             Products: {
                 status: boolean,
             }
@@ -220,6 +224,14 @@ export interface orderDetailType {
             price: number
         }
     }[]
+}
+
+export interface orderStatusType {
+    id: string,
+    status_code: string,
+    status_name: string,
+    status_mean: string,
+    status_color: string,
 }
 
 export interface receiptData {

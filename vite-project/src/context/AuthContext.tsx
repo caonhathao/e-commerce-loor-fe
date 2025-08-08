@@ -26,7 +26,7 @@ type payload = {
 };
 
 type AuthContextType = {
-    user: User | null;
+    userAuth: User | null;
     isLoading: boolean;
     isAuthenticated: boolean;
     logout: () => void;
@@ -42,15 +42,16 @@ const socket = io(endpoints.system.socketConnection, {
 });
 
 export const AuthProvider = ({children}: { children: ReactNode }) => {
-    const [user, setUser] = useState<User | null>(null);
+    const [userAuth, setUserAuth] = useState<User | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(true);
-    const isAuthenticated = !!user
+    const isAuthenticated = !!userAuth
     const navigate = useNavigate();
 
     useEffect(() => {
         const refreshToken = async () => {
             try {
                 const response = await apiClient.get(endpoints.auth.refresh);
+                console.log('refresh token response: ', response)
                 if (response.status === 200) {
                     login(response.data.access, response.data.data);
                 }
@@ -71,7 +72,7 @@ export const AuthProvider = ({children}: { children: ReactNode }) => {
                     const isTokenExpired = exp * 1000 < Date.now() + 60 * 1000;
 
                     if (!isTokenExpired) {
-                        setUser({
+                        setUserAuth({
                             id: res.id,
                             role: res.role,
                             name: res.name,
@@ -86,9 +87,15 @@ export const AuthProvider = ({children}: { children: ReactNode }) => {
                 alert('error')
                 //logout();
             }
-        }
+        } else refreshToken()
         setIsLoading(false);
     }, []);
+
+    useEffect(() => {
+        console.log('user: ', userAuth)
+        console.log('user role: ', userAuth?.role)
+        console.log("is auth:", isAuthenticated)
+    }, [userAuth])
 
     const login = (token: string, userData: User) => {
         const decoded = JWTDecode(token);
@@ -97,7 +104,7 @@ export const AuthProvider = ({children}: { children: ReactNode }) => {
         }
         setAccessToken(token);
         console.log('user data login: ', userData)
-        setUser(userData);
+        setUserAuth(userData);
     }
 
     const logout = async () => {
@@ -114,7 +121,7 @@ export const AuthProvider = ({children}: { children: ReactNode }) => {
             }
         }
         Cookies.remove('refresh')
-        setUser(null);
+        setUserAuth(null);
 
         toast.success('Đăng xuất thành công', {
             autoClose: 1000,
@@ -127,12 +134,12 @@ export const AuthProvider = ({children}: { children: ReactNode }) => {
     };
 
     const hasRole = (role: string) => {
-        return user?.role === role;
+        return userAuth?.role === role;
     }
 
     return (
         <AuthContext.Provider
-            value={{user, isAuthenticated, isLoading, login, logout, hasRole}}
+            value={{userAuth, isAuthenticated, isLoading, login, logout, hasRole}}
         >
             {children}
         </AuthContext.Provider>

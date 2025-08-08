@@ -21,6 +21,7 @@ import {
     reviewDataType
 } from "../../utils/user.data-types.tsx";
 import UserCreateOrder from "../Customer/user/UserCreateOrder.tsx";
+import {useUser} from "../../context/UserContext.tsx";
 
 const ProductDetail = () => {
     const [data, setData] = useState<productDetailDataType>()
@@ -35,6 +36,7 @@ const ProductDetail = () => {
 
     const params = useParams()
     const navigate = useNavigate()
+    const {user} = useUser();
 
     const handleOpenAttributes = (variant: productVariantType) => {
         setOpenAttributes(variant)
@@ -89,6 +91,12 @@ const ProductDetail = () => {
             toast.warn('Bạn chưa chọn sản phẩm nào!')
             return;
         }
+
+        if (!user) {
+            toast.warn("Bạn cần đăng nhập!")
+            return;
+        }
+
         const listData = []
 
         for (const item of listVariants) {
@@ -108,8 +116,6 @@ const ProductDetail = () => {
             cost: total,
             fee: 0
         }]
-
-        console.log(payload)
 
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-expect-error
@@ -146,9 +152,9 @@ const ProductDetail = () => {
         setTotal(total)
     }, [amount, listVariants]);
 
-    useEffect(() => {
-        console.log(data)
-    }, [data])
+    // useEffect(() => {
+    //     console.log(user)
+    // }, [user])
 
     return (
         <>

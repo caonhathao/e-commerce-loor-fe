@@ -1,10 +1,10 @@
-import { Outlet } from "react-router-dom";
-import { UserProvider } from "../context/UserContext.tsx";
+import {Outlet} from "react-router-dom";
+import {UserProvider} from "../context/UserContext.tsx";
 
 const UserProviderWrapper = () => {
     return (
         <UserProvider>
-            <Outlet />
+            <Outlet/>
         </UserProvider>
     );
 };

@@ -33,7 +33,7 @@ const UpdateProduct = () => {
     const handleUpdateAttribute = (id: string | undefined) => {
         if (id !== undefined) {
             setOpenUpdateAttribute(true);
-        } else console.log('id is undefined');
+        }else return;
     }
 
     const handleGetImage = ({e, setFieldValue}: {

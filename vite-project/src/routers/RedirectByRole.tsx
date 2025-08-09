@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext.tsx";
 
 const RedirectByRole = () => {
-    const { user, isAuthenticated, isLoading } = useAuth();
+    const { userAuth, isAuthenticated, isLoading } = useAuth();
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -11,7 +11,7 @@ const RedirectByRole = () => {
         if (!isLoading && isAuthenticated) {
             const currentPath = location.pathname;
 
-            if (user?.role === 'ROLE_VENDOR') {
+            if (userAuth?.role === 'ROLE_VENDOR') {
                 if (!currentPath.startsWith('/vendor')) {
                     navigate('/vendor', { replace: true });
                 }
@@ -21,7 +21,7 @@ const RedirectByRole = () => {
                 }
             }
         }
-    }, [user, isAuthenticated, isLoading, location.pathname]);
+    }, [userAuth, isAuthenticated, isLoading, location.pathname]);
 
     return null;
 };

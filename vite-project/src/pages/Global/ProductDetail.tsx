@@ -5,12 +5,12 @@ import endpoints from "../../services/endpoints.tsx";
 import {toast, ToastContainer} from "react-toastify";
 import {
     BsCart, BsEraser, BsFacebook,
-    BsHeart, BsPinterest, BsPlusCircle,
+    BsHeart, BsHeartFill, BsPinterest, BsPlusCircle,
     BsStarFill,
     BsStarHalf, BsTwitterX,
     BsWhatsapp
 } from "react-icons/bs";
-import {fetchData, fetchDataWithQuery, formatedNumber} from "../../utils/functions.utils.tsx";
+import {fetchData, fetchDataWithQuery, formatedNumber, putData} from "../../utils/functions.utils.tsx";
 import AmountInput from "../../components/modules/AmountInput.tsx";
 import SlideShowImg from "../../components/modules/SlideShowImg.tsx";
 import {getAccessToken} from "../../services/tokenStore.tsx";
@@ -22,6 +22,7 @@ import {
 } from "../../utils/user.data-types.tsx";
 import UserCreateOrder from "../Customer/user/UserCreateOrder.tsx";
 import {useUser} from "../../context/UserContext.tsx";
+import Loading from "../../components/loading/Loading.tsx";
 
 const ProductDetail = () => {
     const [data, setData] = useState<productDetailDataType>()
@@ -31,6 +32,8 @@ const ProductDetail = () => {
     const [total, setTotal] = useState<number>(0)
     const [openCreate, setOpenCreate] = useState<boolean>(false)
     const [list, setList] = useState<listVariantsType | null>(null)
+
+    const [addWishlist, setAddWishlist] = useState<boolean | null>(null)
 
     const [amount, setAmount] = useState<number[]>([])
 
@@ -139,10 +142,20 @@ const ProductDetail = () => {
         if (params.id !== undefined) {
             fetchData(endpoints.public.getProductByIdFromUser(params.id), false, setData, 'Sản phẩm không tồn tại hoặc có lỗi xảy ra!')
             fetchDataWithQuery(endpoints.public.getAllReviews, setReviewData, {id: params.id})
+            putData(endpoints.public.addProductView, false, {id: params.id})
         } else {
             navigate('/')
         }
     }, []);
+
+    useEffect(() => {
+        if (addWishlist === null) return
+        if (addWishlist) {
+            putData(endpoints.public.addProductWishlist, false, {id: params.id, is_add: true})
+        } else {
+            putData(endpoints.public.addProductWishlist, false, {id: params.id, is_add: false})
+        }
+    }, [addWishlist]);
 
     useEffect(() => {
         let total = 0
@@ -155,6 +168,10 @@ const ProductDetail = () => {
     // useEffect(() => {
     //     console.log(user)
     // }, [user])
+
+    if (!data) {
+        return <Loading/>
+    }
 
     return (
         <>
@@ -179,8 +196,15 @@ const ProductDetail = () => {
                         </div>
                         <div className={'w-fit h-fit flex flex-col justify-between items-end gap-2'}>
                             <div className={'w-fit h-fit flex flex-row justify-between items-center gap-2'}>
-                                <button className={'w-fit h-fit '}>
-                                    <BsHeart size={20} color={'rgb(var(--text-error))'}/>
+                                <button className={'w-fit h-fit'}
+                                        onClick={() => {
+                                            setAddWishlist(!addWishlist)
+                                        }}>
+                                    {addWishlist ? (
+                                        <BsHeartFill size={20} color={'rgb(var(--text-error))'}/>
+                                    ) : (
+                                        <BsHeart size={20} color={'rgb(var(--text-error))'}/>
+                                    )}
                                 </button>
                                 <p className={'text-[rgb(var(--text-error))]'}>Thích</p>
                             </div>

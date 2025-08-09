@@ -93,11 +93,11 @@ export const attJSON = {
 export const orderStatusOptions = {
     PENDING: 'Đang chờ',
     CONFIRMED: 'Đã xác nhận',
-    PREPARING: 'Đang chuẩn bị',
+    PACKING: 'Đang chuẩn bị',
     DELIVERING: 'Đang vận chuyển',
     CANCELED: 'Hủy bỏ',
     ABORTED: 'Từ chối',
     POSTPONED: 'Hoãn lại',
     REFUNDED: 'Hoàn trả',
-    COMPLETE: 'Hoàn thành',
+    COMPLETED: 'Hoàn thành',
 } as const

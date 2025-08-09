@@ -4,9 +4,9 @@ import apiClient from "../../../services/apiClient.tsx";
 import endpoints from "../../../services/endpoints.tsx";
 import {useNavigate} from "react-router-dom";
 import {orderStatusOptions} from "../../../utils/attributes.tsx";
-import {fetchDataWithQuery, formatedDate, postData} from "../../../utils/functions.utils.tsx";
+import {fetchDataWithQuery, formatedDate} from "../../../utils/functions.utils.tsx";
 import Loading from "../../../components/loading/Loading.tsx";
-import {BsBookmarkFill, BsCalendar2DayFill, BsCheckCircleFill, BsFunnel, BsUpc} from "react-icons/bs";
+import {BsBookmarkFill, BsCalendar2DayFill, BsCheckCircleFill, BsUpc} from "react-icons/bs";
 import SearchingBar from "../../../components/modules/SearchingBar.tsx";
 import {orderListType} from "../../../utils/vendor.data-types.tsx";
 import {Pagination, Stack} from "@mui/material";
@@ -48,7 +48,7 @@ const VendorOrders = () => {
                 {orderStatusOptions[_status as keyof typeof orderStatusOptions]}
             </p>
         }
-        if (_status === 'PREPARING') {
+        if (_status === 'PACKING') {
             return <p className={'text-cyan-700'}>
                 {orderStatusOptions[_status as keyof typeof orderStatusOptions]}
             </p>
@@ -73,7 +73,7 @@ const VendorOrders = () => {
                 {orderStatusOptions[_status as keyof typeof orderStatusOptions]}
             </p>
         }
-        if (_status === 'COMPLETE') {
+        if (_status === 'COMPLETED') {
             return <p className={'text-green-700'}>
                 {orderStatusOptions[_status as keyof typeof orderStatusOptions]}
             </p>

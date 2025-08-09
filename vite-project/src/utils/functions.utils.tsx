@@ -124,9 +124,7 @@ export const putData = async (url: string, isReturn: boolean = false, values?: a
         const response = await apiClient.put(url, values);
         if (response.status === 200) {
             if (isReturn) return response
-            else {
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-expect-error
+            else if (setData) {
                 setData(response.data)
             }
         }

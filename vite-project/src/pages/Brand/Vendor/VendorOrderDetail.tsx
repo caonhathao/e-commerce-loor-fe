@@ -11,6 +11,7 @@ import {orderDetailType} from "../../../utils/user.data-types.tsx";
 const VendorOrderDetail = () => {
     const [data, setData] = useState<orderDetailType>();
     const [status, setStatus] = useState<string>('');
+    const [reload, setReload] = useState<boolean>(false);
     const navigate = useNavigate();
     const param = useParams();
 
@@ -33,13 +34,13 @@ const VendorOrderDetail = () => {
                     defaultValue={value}>
                 <option value={'PENDING'} disabled={arr[0]}>Đang chờ</option>
                 <option value={'CONFIRMED'} disabled={arr[1]}>Đã xác nhận</option>
-                <option value={'PREPARING'} disabled={arr[2]}>Đang chuẩn bị</option>
+                <option value={'PACKING'} disabled={arr[2]}>Đang chuẩn bị</option>
                 <option value={'DELIVERING'} disabled={arr[3]}>Đang vận chuyển</option>
                 <option value={'CANCELED'} disabled={arr[4]}>Hủy bỏ</option>
                 <option value={'ABORTED'} disabled={arr[5]}>Từ chối</option>
                 <option value={'POSTPONED'} disabled={arr[6]}>Hoãn lại</option>
                 <option value={'REFUNDED'} disabled={arr[7]}>Hoàn trả</option>
-                <option value={'COMPLETE'} disabled={arr[8]}>Hoàn thành</option>
+                <option value={'COMPLETED'} disabled={arr[8]}>Hoàn thành</option>
             </select>
         )
     }
@@ -50,8 +51,12 @@ const VendorOrderDetail = () => {
             if (data !== null || data !== undefined) {
                 const payload = {id: param.id, status};
                 const response = await apiClient.put(endpoints.brand.updateOrder, payload);
-                if (response.status === 200) toast.success('Cập nhật trạng thái thành công')
-                else toast.error('Cập nhật trạng thái thất bại')
+                if (response.status === 200) {
+                    toast.success('Cập nhật trạng thái thành công', {autoClose: 1500})
+                    setTimeout(() => {
+                        setReload(!reload)
+                    }, 1600)
+                } else toast.error('Cập nhật trạng thái thất bại')
             } else toast.error('Cập nhật trang thái thất bại')
         } catch (e) {
             console.error(e)
@@ -75,7 +80,7 @@ const VendorOrderDetail = () => {
             }
         }
         fetchData();
-    }, [])
+    }, [reload])
 
     return (
         <div className={'w-full h-full flex flex-col justify-between items-center'}>

@@ -29,7 +29,7 @@ const endpoints = {
         getAllBrands: "/api/manager/get-all-brands",
         getAllUsers: "/api/manager/get-all-users",
 
-        createOrderStatus:"/api/user/create-order-status",
+        createOrderStatus: "/api/user/create-order-status",
 
         lockUser: "/api/manager/lock-user-by-id",
         restoreUser: "/api/manager/restore-user-by-id",
@@ -61,7 +61,7 @@ const endpoints = {
         acceptOrder: "/api/vendor/accept-order",
         updateOrder: "/api/vendor/update-status-order",
 
-        getAllOrderStatus:"/api/role/get-order-status",
+        getAllOrderStatus: "/api/role/get-order-status",
     },
     user: {
         getUserInfo: "/api/user/get-user-by-id",
@@ -97,7 +97,7 @@ const endpoints = {
         updateCart: "/api/user/update-cart",
         deleteCart: "/api/user/delete-cart",
 
-        getAllOrderStatus:"/api/user/get-all-order-status",
+        getAllOrderStatus: "/api/user/get-all-order-status",
 
     },
     public: {
@@ -122,6 +122,9 @@ const endpoints = {
         getAllCategories: "/api/public/get-all-category",
         getAllSubCategories: (id: string) => buildUrlWithParams("/api/public/get-all-sub-from-category/:id", {id}),
         getSubCategory: (id: string) => buildUrlWithParams("/api/public/get-sub-category/:id", {id}),
+
+        addProductView: '/api/public/add-product-view',
+        addProductWishlist:'/api/public/add-product-wishlist'
     }
 };
 

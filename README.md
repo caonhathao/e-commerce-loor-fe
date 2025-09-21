@@ -84,16 +84,14 @@ npm install
 Create a `.env` file in the root directory:
 ```env
 # API Configuration
-VITE_API_BASE_URL=your_api_base_url
-VITE_SOCKET_URL=your_socket_server_url
+VITE_SERVER_PORT=your_server_port
+VITE_API_HOST=your_domain_server
 
-# Firebase Configuration (for authentication)
-VITE_FIREBASE_API_KEY=your_firebase_api_key
-VITE_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
-VITE_FIREBASE_PROJECT_ID=your_project_id
-VITE_FIREBASE_STORAGE_BUCKET=your_project.appspot.com
-VITE_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
-VITE_FIREBASE_APP_ID=your_app_id
+VITE_CLOUD_B_URL=your_cloud_storage_url+'/'
+VITE_CLOUD_NAME=your_cloud_id+'/'
+VITE_CLOUD_T_I=your_asset_type+'/'
+VITE_CLOUD_VER='upload/'+your_cloud_version+'/'
+VITE_CLOUD_F_P=your_asset_folder
 ```
 
 ### 4. Run the development server

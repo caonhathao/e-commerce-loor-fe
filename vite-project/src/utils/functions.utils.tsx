@@ -2,7 +2,6 @@ import React, {SetStateAction} from "react";
 import apiClient from "../services/apiClient.tsx";
 import {toast} from "react-toastify";
 import CryptoJS from 'crypto-js';
-import {AxiosError} from "axios";
 
 export const formatedNumber = (s: number | undefined) => {
     if (s === undefined) return '';
@@ -96,7 +95,6 @@ export const fetchDataWithQuery = async (
         }
     } catch (e) {
         console.error(e)
-        toast.error('Failed')
     }
 }
 
@@ -115,7 +113,6 @@ export const postData = async (url: string, isReturn: boolean = false, values?: 
         }
     } catch (e) {
         console.error(e)
-        toast.error('Failed')
     }
 }
 
@@ -130,7 +127,11 @@ export const putData = async (url: string, isReturn: boolean = false, values?: a
         }
     } catch (e) {
         console.error(e)
-        return e.response
+        if (e && typeof e === 'object' && 'response' in e) {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            return (e as any).response;
+        }
+        return undefined;
     }
 }
 
@@ -142,6 +143,5 @@ export const deleteData = async (url: string, values?: any) => {
         } else toast.success('Xóa thành công')
     } catch (e) {
         console.error(e)
-        toast.error('Failed')
     }
 }

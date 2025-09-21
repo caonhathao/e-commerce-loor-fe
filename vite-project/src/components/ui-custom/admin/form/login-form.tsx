@@ -30,7 +30,7 @@ export function LoginForm({
             login(access, data);
             toast.success("Đăng nhập thành công", { autoClose: 1500 });
             setTimeout(() => {
-              navigate("/");
+              navigate("/admin", { replace: true });
             }, 1700);
           }
         } catch (err) {

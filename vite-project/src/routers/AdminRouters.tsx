@@ -1,25 +1,18 @@
-import { AdminProvider } from "@/context/AdminContext";
 import ProtectedRouter from "./ProtectedRouter";
 import { Route } from "react-router-dom";
 import AdminLayout from "@/layout/AdminLayout";
-import AdminDashdoard from "@/pages/admin/dashboard/AdminDashboard";
+import AdminDashboard from "@/pages/admin/dashboard/AdminDashboard";
 
 const AdminRouters = () => {
   return (
     <>
       <Route
         path={"/admin"}
-        element={<ProtectedRouter requiredRoles={["ROLE_ADMIN"]} />}
+        element={<ProtectedRouter requiredRoles={["ROLE_MANAGER"]} />}
       >
-        <Route
-          element={
-            <AdminProvider>
-                <AdminLayout />
-            </AdminProvider>
-          }
-        >
-          <Route index element={<AdminDashdoard />} />
-          
+        <Route element={<AdminLayout />}>
+          <Route index element={<AdminDashboard />} />
+          <Route path="dashboard" element={<AdminDashboard />} />
         </Route>
       </Route>
     </>

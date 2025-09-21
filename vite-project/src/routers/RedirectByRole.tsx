@@ -15,7 +15,7 @@ const RedirectByRole = () => {
         if (!currentPath.startsWith("/vendor")) {
           navigate("/vendor", { replace: true });
         }
-      } else if (userAuth?.role === "ROLE_ADMIN") {
+      } else if (userAuth?.role === "ROLE_MANAGER") {
         if (!currentPath.startsWith("/admin")) {
           navigate("/admin", { replace: true });
         }

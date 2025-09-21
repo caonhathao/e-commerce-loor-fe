@@ -3,7 +3,7 @@ import {fetchData, formatedDate, formatedNumber} from "../../utils/functions.uti
 import endpoints from "../../services/endpoints.tsx";
 import {orderDetailType, orderStatusType, receiptData} from "../../utils/user.data-types.tsx";
 import Loading from "../loading/Loading.tsx";
-import {BsExclamationTriangleFill, BsHouse, BsXLg, BsXSquareFill} from "react-icons/bs";
+import {BsExclamationTriangleFill, BsXLg, BsXSquareFill} from "react-icons/bs";
 import {toast} from "react-toastify";
 import apiClient from "../../services/apiClient.tsx";
 import {Formik, useField} from "formik";
@@ -127,15 +127,6 @@ const UserOrderDetail: React.FC<Props> = ({order_id, setOpen}) => {
                             onClick={() => setOpen(false)}>
                         <BsXLg size={20}/>
                     </button>
-                </div>
-            </div>
-
-            <div className={'w-full h-fit'}>
-                <div>
-                    <BsHouse size={20}/>
-                    <div>
-
-                    </div>
                 </div>
             </div>
 

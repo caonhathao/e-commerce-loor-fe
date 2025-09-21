@@ -14,12 +14,13 @@ const AppRouters = () => {
         <Suspense fallback={<Loading />}>
             <RedirectByRole />
             <Routes>
+                {PublicRouters()}
+
                 <Route element={<VendorProviderWrapper />}>
                     {VendorRouters()}
                 </Route>
 
                 <Route element={<UserProviderWrapper />}>
-                    {PublicRouters()}
                     {UserRouters()}
                 </Route>
             </Routes>

@@ -260,3 +260,15 @@ export interface notificationType {
     total_pages: number;
     data: notificationDetailData[]
 }
+
+export interface orderLogType    {
+    status: string,
+    type: string,
+    createdAt: string,
+    statusInfo:{
+        status_code: string,
+        status_name: string,
+        status_mean: string,
+        status_color: string,
+    }
+}

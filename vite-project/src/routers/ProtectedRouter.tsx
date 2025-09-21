@@ -11,13 +11,13 @@ const ProtectedRouter = ({requiredRoles}: ProtectedRouterProps) => {
 
     if (isLoading) return <Loading/>;
 
-    if (!isAuthenticated) {
-        return <Navigate to="/account" replace/>
-    }
-    if (requiredRoles && !requiredRoles.some((role) => hasRole(role))) {
-        alert(requiredRoles)
-        return <Navigate to="/account" replace/>;
-    }
+    // if (!isAuthenticated) {
+    //     return <Navigate to="/account" replace/>
+    // }
+    // if (requiredRoles && !requiredRoles.some((role) => hasRole(role))) {
+    //     alert(requiredRoles)
+    //     return <Navigate to="/account" replace/>;
+    // }
 
     return <Outlet/>
 }

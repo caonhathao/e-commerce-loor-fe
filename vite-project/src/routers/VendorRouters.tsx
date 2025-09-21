@@ -1,18 +1,18 @@
 import {Route} from "react-router-dom";
-import VendorHome from "../pages/Brand/Vendor/VendorHome.tsx";
-import VendorManage from "../pages/Brand/Vendor/VendorManage.tsx";
+import VendorHome from "../pages/vendor/manage/VendorHome.tsx";
+import VendorManage from "../pages/vendor/manage/VendorManage.tsx";
 import NewProduct from "../components/vendor/Control/NewProduct.tsx";
-import VendorVariant from "../pages/Brand/Product/VendorVariant.tsx";
+import VendorVariant from "../pages/vendor/product/VendorVariant.tsx";
 import NewVariant from "../components/vendor/Control/NewVariant.tsx";
 import UpdateProduct from "../components/vendor/Control/UpdateProduct.tsx";
 import UpdateVariant from "../components/vendor/Control/UpdateVariant.tsx";
-import VendorOrders from "../pages/Brand/Vendor/VendorOrders.tsx";
-import VendorProfile from "../pages/Brand/Vendor/VendorProfile.tsx";
+import VendorOrders from "../pages/vendor/manage/VendorOrders.tsx";
+import VendorProfile from "../pages/vendor/manage/VendorProfile.tsx";
 import ProtectedRouter from "./ProtectedRouter.tsx";
 import {ProductProvider} from "../context/ProductContext.tsx";
 import VendorLayout from "../layout/VendorLayout.tsx";
-import VendorOrderDetail from "../pages/Brand/Vendor/VendorOrderDetail.tsx";
-import NotFound from "../pages/Global/NotFound.tsx";
+import VendorOrderDetail from "../pages/vendor/manage/VendorOrderDetail.tsx";
+import NotFound from "../pages/global/NotFound.tsx";
 import {VendorProvider} from "../context/VendorContext.tsx";
 
 const VendorRouters = () => {

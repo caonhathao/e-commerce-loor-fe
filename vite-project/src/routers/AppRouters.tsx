@@ -8,6 +8,8 @@ import UserRouters from "./UserRouters.tsx";
 import PublicRouters from "./PublicRouters.tsx";
 import VendorProviderWrapper from "../context/VendorProviderWrapper.tsx";
 import UserProviderWrapper from "../context/UserProviderWrapper.tsx";
+import AdminProviderWrapper from "@/context/AdminProviderWrapper.tsx";
+import AdminRouters from "./AdminRouters.tsx";
 
 const AppRouters = () => {
     return (
@@ -22,6 +24,10 @@ const AppRouters = () => {
 
                 <Route element={<UserProviderWrapper />}>
                     {UserRouters()}
+                </Route>
+
+                <Route element={<AdminProviderWrapper />}>
+                    {AdminRouters()}
                 </Route>
             </Routes>
         </Suspense>

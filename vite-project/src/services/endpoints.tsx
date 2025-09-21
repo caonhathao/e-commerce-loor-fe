@@ -98,7 +98,7 @@ const endpoints = {
         deleteCart: "/api/user/delete-cart",
 
         getAllOrderStatus: "/api/user/get-all-order-status",
-
+        getOrderLog:"/user/order-log"
     },
     public: {
         getAllProvinces: "/api/public/get-all-provinces",
@@ -124,7 +124,8 @@ const endpoints = {
         getSubCategory: (id: string) => buildUrlWithParams("/api/public/get-sub-category/:id", {id}),
 
         addProductView: '/api/public/add-product-view',
-        addProductWishlist:'/api/public/add-product-wishlist'
+        addProductWishlist:'/api/public/add-product-wishlist',
+        getFeaturedProductsBySort: '/api/public/get-featured-product',
     }
 };
 

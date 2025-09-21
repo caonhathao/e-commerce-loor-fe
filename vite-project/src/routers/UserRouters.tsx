@@ -1,10 +1,10 @@
 import {Route} from "react-router-dom";
 import ProtectedRouter from "./ProtectedRouter.tsx";
 import {UserLayout} from "../layout/UserLayout.tsx";
-import UserCart from "../pages/Customer/user/UserCart.tsx";
-import UserOrders from "../pages/Customer/user/UserOrders.tsx";
-import UserNotify from "../pages/Customer/user/UserNotify.tsx";
-import UserProfile from "../pages/Customer/user/UserProfile.tsx";
+import UserCart from "../pages/guest/customer/UserCart.tsx";
+import UserOrders from "../pages/guest/customer/UserOrders.tsx";
+import UserNotify from "../pages/guest/customer/UserNotify.tsx";
+import UserProfile from "../pages/guest/customer/UserProfile.tsx";
 
 const UserRouters = () => {
     return (

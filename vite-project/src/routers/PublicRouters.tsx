@@ -1,14 +1,16 @@
 import {Route} from "react-router-dom";
 import Layout from "../layout/Layout.tsx";
-import Home from "../pages/Global/Home.tsx";
-import VendorOffer from "../pages/Brand/public/VendorOffer.tsx";
-import UserSignUp from "../pages/Customer/public/UserSignUp.tsx";
-import UserSignIn from "../pages/Customer/public/UserSignIn.tsx";
-import Account from "../pages/Global/Account.tsx";
-import VendorSignUp from "../pages/Brand/public/VendorSignUp.tsx";
-import VendorSignIn from "../pages/Brand/public/VendorSignIn.tsx";
-import NotFound from "../pages/Global/NotFound.tsx";
-import ProductDetail from "../pages/Global/ProductDetail.tsx";
+import Home from "../pages/global/Home.tsx";
+import VendorOffer from "../pages/vendor/public/VendorOffer.tsx";
+import UserSignUp from "../pages/guest/public/UserSignUp.tsx";
+import UserSignIn from "../pages/guest/public/UserSignIn.tsx";
+import Account from "../pages/global/Account.tsx";
+import VendorSignUp from "../pages/vendor/public/VendorSignUp.tsx";
+import VendorSignIn from "../pages/vendor/public/VendorSignIn.tsx";
+import NotFound from "../pages/global/NotFound.tsx";
+import ProductDetail from "../pages/global/ProductDetail.tsx";
+import AdminSignIn from "@/pages/admin/account/AdminSignIn.tsx";
+import AdminSignUp from "@/pages/admin/account/AdminSignUp.tsx";
 
 const PublicRouters = () => {
     return (
@@ -24,6 +26,8 @@ const PublicRouters = () => {
             <Route path="/user-sign-in" element={<UserSignIn/>}/>
             <Route path="/register-new-vendor" element={<VendorSignUp/>}/>
             <Route path="/sign-in-vendor" element={<VendorSignIn/>}/>
+            <Route path="/admin-sign-in" element={<AdminSignIn/>}/>
+            <Route path="/admin-sign-up" element={<AdminSignUp/>}/>
         </>
     )
 }

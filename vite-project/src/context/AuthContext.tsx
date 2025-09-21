@@ -51,13 +51,13 @@ export const AuthProvider = ({children}: { children: ReactNode }) => {
         const refreshToken = async () => {
             try {
                 const response = await apiClient.get(endpoints.auth.refresh);
-                console.log('refresh token response: ', response)
+                //console.log('refresh token response: ', response)
                 if (response.status === 200) {
                     login(response.data.access, response.data.data);
                 }
             } catch (e) {
                 console.log(e);
-                logout();
+                //logout();
             } finally {
                 setIsLoading(false)
             }
@@ -91,11 +91,11 @@ export const AuthProvider = ({children}: { children: ReactNode }) => {
         setIsLoading(false);
     }, []);
 
-    useEffect(() => {
-        console.log('user: ', userAuth)
-        console.log('user role: ', userAuth?.role)
-        console.log("is auth:", isAuthenticated)
-    }, [userAuth])
+    // useEffect(() => {
+    //     console.log('user: ', userAuth)
+    //     console.log('user role: ', userAuth?.role)
+    //     console.log("is auth:", isAuthenticated)
+    // }, [userAuth])
 
     const login = (token: string, userData: User) => {
         const decoded = JWTDecode(token);
@@ -103,7 +103,7 @@ export const AuthProvider = ({children}: { children: ReactNode }) => {
             socket.emit('register_user', decoded.id);
         }
         setAccessToken(token);
-        console.log('user data login: ', userData)
+        //console.log('user data login: ', userData)
         setUserAuth(userData);
     }
 

@@ -20,7 +20,7 @@ import {
     productVariantType,
     reviewDataType
 } from "../../utils/user.data-types.tsx";
-import UserCreateOrder from "../Customer/user/UserCreateOrder.tsx";
+import UserCreateOrder from "../guest/customer/UserCreateOrder.tsx";
 import {useUser} from "../../context/UserContext.tsx";
 import Loading from "../../components/loading/Loading.tsx";
 

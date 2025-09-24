@@ -1,15 +1,13 @@
-import '../assets/css/components/Layout.css'
-import {Outlet} from "react-router-dom";
+import AppSidebar from "@/components/ui-custom/admin/dashboard/app-sidebar";
+import { Outlet } from "react-router-dom";
 
 const AdminLayout = () => {
-    return (
-        <div className={'bg-white w-full h-screen flex justify-center items-center'}>
-            <div className={'w-full h-full flex flex-col justify-between items-center'}>
-                <main className={'w-full h-full'}>
-                    <Outlet/>
-                </main>
-            </div>
-        </div>
-    )
-}
-export default AdminLayout
+  return (
+    <div className="w-full h-screen flex flex-row justify-around items-center">
+      <AppSidebar />
+      <Outlet />
+    </div>
+  );
+};
+
+export default AdminLayout;

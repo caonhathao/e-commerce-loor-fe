@@ -155,8 +155,8 @@ const SectionCards = () => {
           />
           <CardContent>
             <p>Today: 23.000k+</p>
-            <p>This month: 230.000k</p>
-            <p>Total: 230.000k</p>
+            <p>This month: 230m</p>
+            <p>Total: 230m</p>
           </CardContent>
         </CardActionArea>
       </Card>

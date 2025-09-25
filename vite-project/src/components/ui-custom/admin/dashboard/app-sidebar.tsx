@@ -164,7 +164,7 @@ const AppSidebar = () => {
       sx={{
         width: "250px",
         height: "100vh",
-        bgcolor: "#f5f5f5",
+        bgcolor: "hsl(var(--sidebar-background))",
         p: 1,
         overflowY: "auto",
       }}

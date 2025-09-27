@@ -60,9 +60,11 @@ const dataLast90Days = {
 };
 
 const SectionRevenueChart = () => {
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
+    null
+  );
   const open = Boolean(anchorEl);
-  const handleClick = (event) => {
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
 
@@ -87,13 +89,12 @@ const SectionRevenueChart = () => {
     setAnchorEl(null);
   };
 
-
   return (
     <div className="w-full flex flex-col justify-start items-center">
       <Card
         sx={{
           width: "100%",
-          borderRadius: 5,
+          borderRadius: 1,
           p: 0.5,
           boxShadow: "inset 0 -20px 35px -10px rgba(0,0,0,0.12)",
         }}
@@ -149,7 +150,10 @@ const SectionRevenueChart = () => {
                   data: xAxisData,
                   scaleType: "point",
                   disableTicks: true,
-                  tickInterval: (value, index) => index % 7 === 0,
+                  tickInterval:
+                    xAxisData.length >= 90
+                      ? (value, index) => index % 7 === 0
+                      : undefined,
                 },
               ]}
               yAxis={[{ position: "none" }]}

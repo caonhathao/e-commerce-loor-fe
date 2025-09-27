@@ -111,9 +111,11 @@ interface typeDataChart {
 }
 
 const SectionOrderStatusChart = () => {
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
+    null
+  );
   const open = Boolean(anchorEl);
-  const handleClick = (event) => {
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
 
@@ -134,11 +136,11 @@ const SectionOrderStatusChart = () => {
     setAnchorEl(null);
   };
   return (
-    <div className="w-fit">
+    <div className="w-full">
       <Card
         sx={{
-          width: 350,
-          borderRadius: 5,
+          height:'100%',
+          borderRadius: 1,
           p: 0.5,
           boxShadow: "inset 0 -20px 35px -10px rgba(0,0,0,0.12)",
         }}
@@ -198,8 +200,8 @@ const SectionOrderStatusChart = () => {
                   arcLabel: "value",
                 },
               ]}
-              height={200}
-              margin={{ right: 24, bottom: 0 }}
+              height={250}
+              margin={{ right: 0, bottom: 0 }}
               sx={{
                 [`& .${areaElementClasses.root}`]: {
                   fill: "url(#smooth-gradient)", // gọi id gradient

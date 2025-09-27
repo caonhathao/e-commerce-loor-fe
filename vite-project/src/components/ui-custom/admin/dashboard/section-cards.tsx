@@ -1,9 +1,8 @@
-import { Avatar, CardActionArea, IconButton } from "@mui/material";
+import { Avatar, CardActionArea } from "@mui/material";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardHeader from "@mui/material/CardHeader";
 import { blue, green, orange, purple, red } from "@mui/material/colors";
-import { MdOpenInNew } from "react-icons/md";
 const SectionCards = () => {
   return (
     <div className="w-full grid grid-cols-5 grid-rows-1 gap-4">
@@ -11,9 +10,8 @@ const SectionCards = () => {
       <Card
         variant="outlined"
         sx={{
-          maxWidth: 250,
           p: 0.5,
-          borderRadius: 5,
+          borderRadius: 1,
           boxShadow: "inset 0 -20px 35px -10px rgba(0,0,0,0.12)",
         }}
       >
@@ -43,7 +41,7 @@ const SectionCards = () => {
         variant="outlined"
         sx={{
           p: 0.5,
-          borderRadius: 5,
+          borderRadius: 1,
           boxShadow: "inset 0 -20px 35px -10px rgba(0,0,0,0.12)",
         }}
       >
@@ -73,7 +71,7 @@ const SectionCards = () => {
         variant="outlined"
         sx={{
           p: 0.5,
-          borderRadius: 5,
+          borderRadius: 1,
           boxShadow: "inset 0 -20px 35px -10px rgba(0,0,0,0.12)",
         }}
       >
@@ -103,7 +101,7 @@ const SectionCards = () => {
         variant="outlined"
         sx={{
           p: 0.5,
-          borderRadius: 5,
+          borderRadius: 1,
           boxShadow: "inset 0 -20px 35px -10px rgba(0,0,0,0.12)",
         }}
       >
@@ -134,7 +132,7 @@ const SectionCards = () => {
         variant="outlined"
         sx={{
           p: 0.5,
-          borderRadius: 5,
+          borderRadius: 1,
           boxShadow: "inset 0 -20px 35px -10px rgba(0,0,0,0.12)",
         }}
       >

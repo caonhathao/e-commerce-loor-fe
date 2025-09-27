@@ -10,6 +10,7 @@ import {
   CssBaseline,
   ThemeProvider,
   createTheme,
+  Box,
 } from "@mui/material";
 import React from "react";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -62,10 +63,11 @@ const AdminLayout = () => {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <div className="w-full h-screen flex flex-row justify-around items-center relative bg-[hsl(var(--background))] text-[hsl(var(--foreground))]">
+      <div className="w-full h-full flex flex-row justify-around items-center relative bg-[hsl(var(--muted))] text-[hsl(var(--foreground))] ">
         <AppSidebar />
-        <Outlet />
-
+        <div className="ml-[300px]">
+          <Outlet />
+        </div>
         {/* Toggle theme button */}
         <div className="absolute h-fit w-fit bottom-10 right-10">
           <IconButton

@@ -162,14 +162,16 @@ const AppSidebar = () => {
     <Box
       component={"section"}
       sx={{
-        width: "250px",
+        width: "300px",
         height: "100vh",
-        bgcolor: "hsl(var(--sidebar-background))",
         p: 1,
         overflowY: "auto",
+        position: "fixed",
+        left: 0,
+        top: 0,
       }}
     >
-      <Card variant="outlined">
+      <Card variant="outlined" sx={{ backgroundColor: "transparent" }}>
         <CardHeader
           avatar={
             <Avatar alt="Admin Avatar" src={avatar}>
@@ -210,7 +212,7 @@ const AppSidebar = () => {
           <MenuItem onClick={handleClose}>Đăng xuất</MenuItem>
         </Menu>
       </Card>
-      <Card variant="outlined" sx={{ mt: 0.5 }}>
+      <Card variant="outlined" sx={{ mt: 2 }}>
         <List>
           <ListItemButton>
             <ListItemIcon>{dashboard.icon}</ListItemIcon>
@@ -221,9 +223,9 @@ const AppSidebar = () => {
           </ListItemButton>
         </List>
       </Card>
-      <Card variant="outlined" sx={{ mt: 0.5 }}>
+      <Card variant="outlined" sx={{ mt: 2, backgroundColor: "transparent" }}>
         <List
-          sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}
+          sx={{ width: "100%", maxWidth: 360 }}
           component="nav"
           aria-labelledby="nested-list-subheader"
           subheader={
@@ -260,9 +262,9 @@ const AppSidebar = () => {
           ))}
         </List>
       </Card>
-      <Card variant="outlined" sx={{ mt: 0.5 }}>
+      <Card variant="outlined" sx={{ mt: 2, backgroundColor: "transparent" }}>
         <List
-          sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}
+          sx={{ width: "100%", maxWidth: 360 }}
           component="nav"
           aria-labelledby="nested-list-subheader"
           subheader={
